@@ -7,3 +7,6 @@
 문서
 - 대회 공고문: docs/guildlines.md
 
+지원 사항 (ncloud)
+- 알반 서버: s2-g3 (2 vCPU / 8GB) - ubuntu-24.04-base
+- gpu 서버: gp1l4-g3 (L4 24GB) - ubuntu-24.04-gpu
