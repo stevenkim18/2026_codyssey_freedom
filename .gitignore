@@ -1,0 +1,239 @@
+# ============================================================
+# AI PII Gateway — .gitignore
+# 해커톤 팀 공용 (2026-10-31)
+# ============================================================
+# 개발 코드는 dev/ 하위에 각자 폴더를 만들어 작업합니다.
+# PRD §4 기준 소유 구조:
+#   dev/training/, dev/evaluation/       → A
+#   dev/gateway/, dev/detector/,
+#   dev/launcher/, dev/integration/      → B
+#   dev/observability/                   → C
+#   dev/contracts/                       → 공용
+# ============================================================
+
+# ────────────────────────────────────────────────────────────
+# 1. 개인별 상용 LLM / AI 에이전트 설정 파일
+#    팀원마다 ChatGPT, Claude, Gemini, Copilot 등
+#    서로 다른 LLM을 사용하므로 개인 설정은 공유하지 않음
+#    ※ 프로젝트 루트의 AGENTS.md는 공용 프로젝트 컨텍스트이므로 추적
+# ────────────────────────────────────────────────────────────
+
+# Claude
+claude.md
+CLAUDE.md
+.claude/
+.claudeignore
+
+# Cursor
+.cursor/
+.cursorignore
+cursor.md
+CURSOR.md
+.cursorrules
+
+# GitHub Copilot
+.github/copilot*.md
+copilot.md
+COPILOT.md
+.copilot/
+
+# Gemini / Antigravity
+.gemini/
+gemini.md
+GEMINI.md
+
+# Aider
+.aider*
+
+# Continue
+.continue/
+
+# Codeium / Windsurf
+.codeium/
+.windsurf/
+windsurf.md
+WINDSURF.md
+
+# ChatGPT / Codex
+codex.md
+CODEX.md
+.codex/
+chatgpt.md
+CHATGPT.md
+
+# 범용 에이전트 설정 (dev/ 하위 개인 설정만 무시)
+dev/**/AGENTS.md
+dev/**/agents.md
+dev/**/agent.md
+dev/**/AGENT.md
+
+# ────────────────────────────────────────────────────────────
+# 2. Python
+# ────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+*.whl
+pip-log.txt
+pip-delete-this-directory.txt
+.Python
+develop-eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+
+# 환경 변수 (.env.example 은 추적)
+.env
+.env.*
+!.env.example
+
+# ────────────────────────────────────────────────────────────
+# 3. ML / 모델 관련 (PRD §6: 모델 가중치, 학습 산출물)
+#    dev/training/, dev/evaluation/ 에서 생성되는 대용량 파일
+# ────────────────────────────────────────────────────────────
+*.pt
+*.pth
+*.bin
+*.onnx
+*.safetensors
+*.ckpt
+*.h5
+models/
+checkpoints/
+runs/
+wandb/
+mlruns/
+lightning_logs/
+*.tfevents
+tensorboard/
+
+# 학습 데이터 (대용량 — PRD §6 S2: k-pii-bench)
+data/raw/
+data/processed/
+*.csv
+*.tsv
+*.jsonl
+!dev/contracts/**/*.jsonl
+*.parquet
+*.arrow
+
+# ────────────────────────────────────────────────────────────
+# 4. 비밀 키 / 인증 정보 (PRD §9: OpenAI 키는 PC에만 보관)
+# ────────────────────────────────────────────────────────────
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+secrets/
+.secrets
+credentials/
+*.credentials
+service-account*.json
+token.json
+.netrc
+
+# ────────────────────────────────────────────────────────────
+# 5. SQLite / DB (PRD §9: 사건 저장 — SQLite)
+# ────────────────────────────────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+*.db-wal
+*.db-shm
+
+# ────────────────────────────────────────────────────────────
+# 6. 로컬 사건 저널 (PRD §9: 로컬 저널 100MiB 한도)
+# ────────────────────────────────────────────────────────────
+journal/
+*.journal
+*.journal.gz
+
+# ────────────────────────────────────────────────────────────
+# 7. 로그 / 프로파일링
+# ────────────────────────────────────────────────────────────
+logs/
+*.log
+*.log.*
+profile_results/
+*.prof
+*.lprof
+
+# ────────────────────────────────────────────────────────────
+# 8. IDE / 에디터
+# ────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# ────────────────────────────────────────────────────────────
+# 9. OS 생성 파일
+# ────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+._*
+.Spotlight-V100
+.Trashes
+
+# ────────────────────────────────────────────────────────────
+# 10. Node.js (대시보드 프론트엔드가 있을 경우)
+# ────────────────────────────────────────────────────────────
+node_modules/
+.npm
+.yarn/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+.next/
+.nuxt/
+
+# ────────────────────────────────────────────────────────────
+# 11. Docker / 배포
+# ────────────────────────────────────────────────────────────
+docker-compose.override.yml
+.docker/
+
+# ────────────────────────────────────────────────────────────
+# 12. 테스트 / 커버리지 (PRD §11: TDD)
+# ────────────────────────────────────────────────────────────
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ────────────────────────────────────────────────────────────
+# 13. 기타
+# ────────────────────────────────────────────────────────────
+*.bak
+*.tmp
+*.temp
+.cache/
+tmp/
+
