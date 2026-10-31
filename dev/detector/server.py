@@ -1,4 +1,4 @@
-"""Environment-only loopback entrypoint; actual GPU/TLS deployment is separate."""
+"""Environment-only entrypoint; non-loopback serving requires validated TLS."""
 import asyncio
 from collections.abc import Mapping, Sequence
 from contextlib import asynccontextmanager
@@ -7,6 +7,8 @@ import importlib
 from functools import partial
 import os
 from pathlib import Path
+import ssl
+import stat
 import sys
 
 from fastapi import FastAPI
@@ -23,12 +25,34 @@ class DetectorConfigError(Exception):
         super().__init__(code)
 
 
+def validate_tls_files(cert_file, key_file):
+    """Validate operator-owned files before loading a model or opening a port."""
+    try:
+        for path in (cert_file, key_file):
+            if (not isinstance(path, Path) or not path.is_absolute() or path.resolve() != path
+                    or path.is_symlink() or not path.is_file() or not 0 < path.stat().st_size <= 1024 * 1024):
+                raise ValueError
+        key = key_file.stat()
+        if stat.S_IMODE(key.st_mode) != 0o600 or key.st_uid != os.getuid() or key.st_nlink != 1:
+            raise ValueError
+        def no_password():
+            raise ValueError  # Encrypted keys must not trigger an interactive OpenSSL prompt.
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        context.minimum_version = ssl.TLSVersion.TLSv1_2
+        context.load_cert_chain(cert_file, key_file, password=no_password)
+    except Exception:
+        raise DetectorConfigError() from None
+
+
 @dataclass(frozen=True)
 class ServerSettings:
     token: str = field(repr=False)
     package_dir: Path = field(repr=False)
     port: int = 8766
     device: str = "cpu"
+    host: str = "127.0.0.1"
+    tls_cert_file: Path | None = field(default=None, repr=False)
+    tls_key_file: Path | None = field(default=None, repr=False)
 
     def __post_init__(self):
         if not isinstance(self.device, str) or self.device not in {"cpu", "cuda"}:
@@ -45,11 +69,20 @@ class ServerSettings:
             raise DetectorConfigError() from None
         if type(self.port) is not int or not 1 <= self.port <= 65535:
             raise DetectorConfigError()
+        if not isinstance(self.host, str) or self.host not in {"127.0.0.1", "0.0.0.0"}:
+            raise DetectorConfigError()
+        if (self.tls_cert_file is None) != (self.tls_key_file is None):
+            raise DetectorConfigError()
+        if self.host == "0.0.0.0" and self.tls_cert_file is None:
+            raise DetectorConfigError()
+        if self.tls_cert_file is not None:
+            validate_tls_files(self.tls_cert_file, self.tls_key_file)
 
     @classmethod
     def from_env(cls, env: Mapping[str, str] | None = None):
         values = os.environ if env is None else env
-        permitted = {"PII_DETECTOR_TOKEN", "PII_MODEL_PACKAGE", "PII_DETECTOR_PORT", "PII_DETECTOR_DEVICE"}
+        permitted = {"PII_DETECTOR_TOKEN", "PII_MODEL_PACKAGE", "PII_DETECTOR_PORT", "PII_DETECTOR_DEVICE",
+                     "PII_DETECTOR_HOST", "PII_DETECTOR_TLS_CERT_FILE", "PII_DETECTOR_TLS_KEY_FILE"}
         if any(isinstance(key, str) and key.startswith(("PII_DETECTOR_", "PII_MODEL_")) and key not in permitted for key in values):
             raise DetectorConfigError()
         try:
@@ -59,8 +92,15 @@ class ServerSettings:
             if (not isinstance(package, str) or not package
                     or not isinstance(raw_port, str) or not raw_port.isascii() or not raw_port.isdecimal()):
                 raise ValueError
+            tls = {}
+            for key, name in (("PII_DETECTOR_TLS_CERT_FILE", "tls_cert_file"), ("PII_DETECTOR_TLS_KEY_FILE", "tls_key_file")):
+                if key in values:
+                    if not isinstance(values[key], str) or not values[key]:
+                        raise ValueError
+                    tls[name] = Path(values[key])
             return cls(token=token, package_dir=Path(package), port=int(raw_port),
-                       device=values.get("PII_DETECTOR_DEVICE", "cpu"))
+                       device=values.get("PII_DETECTOR_DEVICE", "cpu"),
+                       host=values.get("PII_DETECTOR_HOST", "127.0.0.1"), **tls)
         except (KeyError, TypeError, ValueError):
             raise DetectorConfigError() from None
 
@@ -119,7 +159,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 2
     try:
         uvicorn = importlib.import_module("uvicorn")
-        uvicorn.run(create_server(settings), host="127.0.0.1", port=settings.port, access_log=False)
+        tls = {}
+        if settings.tls_cert_file is not None:
+            tls = {"ssl_certfile": str(settings.tls_cert_file), "ssl_keyfile": str(settings.tls_key_file),
+                   "ssl_version": ssl.PROTOCOL_TLS_SERVER, "ssl_keyfile_password": ""}
+        uvicorn.run(create_server(settings), host=settings.host, port=settings.port, access_log=False, **tls)
         return 0
     except KeyboardInterrupt:
         return 130

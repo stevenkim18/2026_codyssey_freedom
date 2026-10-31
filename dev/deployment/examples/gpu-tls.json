@@ -1,0 +1,12 @@
+{
+  "role": "gpu",
+  "root": "/home/service/codyssey-pii-gpu",
+  "python": "/home/service/miniforge3/envs/py312/bin/python",
+  "env_file": "/home/service/private/detector.env",
+  "device": "cuda",
+  "bind_host": "0.0.0.0",
+  "health_url": "https://127.0.0.1:8766/healthz",
+  "ready_url": "https://127.0.0.1:8766/readyz",
+  "tls_ca_file": "/home/service/private/detector-ca.pem",
+  "timeout": 300
+}

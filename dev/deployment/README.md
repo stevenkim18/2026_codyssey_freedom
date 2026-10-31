@@ -30,10 +30,14 @@ CUDA, systemd, TLS, 성능 및 C 서비스 검증을 완료했다는 뜻이 아�
   GPU 환경에는 `PII_DETECTOR_TOKEN`, `PII_MODEL_PACKAGE`가 필요하고,
   `PII_DETECTOR_PORT`, `PII_DETECTOR_DEVICE`는 서비스 계약과 일치해야 한다.
   모델 패키지는 별도로 준비한다. 토큰·모델·SQLite·환경 파일은 업로드하지 않는다.
-- 두 서비스는 IPv4 `127.0.0.1`에 직접 바인딩해야 한다. 서비스의 main PID가
+- 기본 bind는 IPv4 `127.0.0.1`이다. GPU 직접 TLS는 `bind_host: "0.0.0.0"`와
+  HTTPS health/ready를 함께 설정할 수 있다. 해당 URL의 대상은 항상 loopback이다.
+  GPU 환경의 `PII_DETECTOR_HOST` 및 인증서/키 쌍과 계약이 일치해야 하며
+  `tls_ca_file`로 신뢰 CA를 지정할 수 있다. [TLS 준비·전환·롤백](GPU_TLS.md)을 따른다.
+  서비스의 main PID가
   health/ready 포트를 실제로 소유하는지 `/proc`로 확인한다. fork한 자식만
-  포트를 여는 서비스는 이 실행기의 계약에 맞지 않는다. 외부 TLS 종단은
-  별도로 구성하고 검증해야 한다.
+  포트를 여는 서비스는 이 실행기의 계약에 맞지 않는다. listener 주소도 계약의
+  bind와 정확히 일치해야 한다. 실제 클라이언트의 TLS 경로는 별도로 검증한다.
 
 ## 호스트 신뢰 및 인증
 

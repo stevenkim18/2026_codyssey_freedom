@@ -9,6 +9,7 @@ from pathlib import Path, PurePosixPath
 import platform
 import re
 import socket
+import ssl
 import stat
 import subprocess
 import sys
@@ -75,6 +76,57 @@ def environment(path):
     return values
 
 
+def tls_context(spec):
+    """Load only an explicit regular CA file or the system trust store."""
+    ca = spec.get("tls_ca_file")
+    if ca is not None:
+        path = Path(ca)
+        if (not path.is_absolute() or path.resolve() != path or path.is_symlink()
+                or not path.is_file() or not 0 < path.stat().st_size <= 1024 * 1024):
+            raise RemoteError("invalid_detector_tls")
+    return ssl.create_default_context(cafile=ca)
+
+
+def detector_transport(spec, values):
+    """Check external TLS inputs before probing an app or changing a release."""
+    from urllib.parse import urlsplit
+    try:
+        host = spec.get("bind_host", "127.0.0.1")
+        if host not in {"127.0.0.1", "0.0.0.0"} or values.get("PII_DETECTOR_HOST", "127.0.0.1") != host:
+            raise ValueError
+        cert, key = values.get("PII_DETECTOR_TLS_CERT_FILE"), values.get("PII_DETECTOR_TLS_KEY_FILE")
+        if (cert is None) != (key is None):
+            raise ValueError
+        scheme = "https" if cert is not None else "http"
+        if host == "0.0.0.0" and scheme != "https":
+            raise ValueError
+        for name in ("health_url", "ready_url"):
+            url = urlsplit(spec[name])
+            if url.scheme != scheme or url.hostname != "127.0.0.1":
+                raise ValueError
+        if cert is None:
+            if spec.get("tls_ca_file") is not None:
+                raise ValueError
+            return
+        for item in (cert, key):
+            path = Path(item)
+            if (not path.is_absolute() or path.resolve() != path or path.is_symlink()
+                    or not path.is_file() or not 0 < path.stat().st_size <= 1024 * 1024
+                    or Path(spec["root"]) == path or Path(spec["root"]) in path.parents):
+                raise ValueError
+        info = Path(key).stat()
+        if stat.S_IMODE(info.st_mode) != 0o600 or info.st_uid != os.getuid() or info.st_nlink != 1:
+            raise ValueError
+        def no_password():
+            raise ValueError
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        context.minimum_version = ssl.TLSVersion.TLSv1_2
+        context.load_cert_chain(cert, key, password=no_password)
+        tls_context(spec)
+    except Exception:
+        raise RemoteError("invalid_detector_tls") from None
+
+
 def preflight(request):
     spec = request.get("spec")
     expected = request.get("expected_hostname")
@@ -90,7 +142,8 @@ def preflight(request):
         return result
     values = environment(spec["env_file"])
     if spec["role"] == "gpu":
-        allowed = {"PII_DETECTOR_TOKEN", "PII_MODEL_PACKAGE", "PII_DETECTOR_PORT", "PII_DETECTOR_DEVICE"}
+        allowed = {"PII_DETECTOR_TOKEN", "PII_MODEL_PACKAGE", "PII_DETECTOR_PORT", "PII_DETECTOR_DEVICE",
+                   "PII_DETECTOR_HOST", "PII_DETECTOR_TLS_CERT_FILE", "PII_DETECTOR_TLS_KEY_FILE"}
         if (set(values) - allowed or not values.get("PII_DETECTOR_TOKEN")
                 or values.get("PII_DETECTOR_DEVICE", "cpu") != spec["device"]):
             raise RemoteError("invalid_detector_environment")
@@ -101,6 +154,7 @@ def preflight(request):
         port = str(urlsplit(spec["ready_url"]).port)
         if values.get("PII_DETECTOR_PORT", "8766") != port or str(urlsplit(spec["health_url"]).port) != port:
             raise RemoteError("detector_port_mismatch")
+        detector_transport(spec, values)
     result.update(application_probe(spec))
     command(["systemctl", "--user", "show-environment"])
     return result
@@ -163,7 +217,10 @@ def healthy(spec, control=command):
         pid = control(["systemctl", "--user", "show", unit_name(spec), "--property=MainPID", "--value"])
         if not owns_endpoints(spec, pid):
             return False
-        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())
+        handlers = [urllib.request.ProxyHandler({}), NoRedirect()]
+        if any(spec[name].startswith("https:") for name in ("health_url", "ready_url")):
+            handlers.append(urllib.request.HTTPSHandler(context=tls_context(spec)))
+        opener = urllib.request.build_opener(*handlers)
         for key in ("health", "ready"):
             with opener.open(spec[key+"_url"], timeout=2) as response:
                 if response.status != 200:
@@ -180,7 +237,7 @@ def healthy(spec, control=command):
 
 
 def owns_endpoints(spec, pid, proc=Path("/proc")):
-    """Require the managed Python main process to own both loopback listeners."""
+    """Require the main process to own the configured IPv4 listener address."""
     from urllib.parse import urlsplit
     try:
         if not pid.isascii() or not pid.isdecimal() or int(pid) < 1:
@@ -196,10 +253,13 @@ def owns_endpoints(spec, pid, proc=Path("/proc")):
         ports = {urlsplit(spec[key+"_url"]).port for key in ("health", "ready")}
         owned = {os.readlink(fd) for fd in (process / "fd").iterdir()}
         found = set()
+        expected_address = {"127.0.0.1": "0100007F", "0.0.0.0": "00000000"}.get(spec.get("bind_host", "127.0.0.1"))
+        if expected_address is None:
+            return False
         for line in (proc / "net/tcp").read_text().splitlines()[1:]:
             fields = line.split()
             address, port = fields[1].split(":")
-            if fields[3] == "0A" and address == "0100007F" and "socket:["+fields[9]+"]" in owned:
+            if fields[3] == "0A" and address == expected_address and "socket:["+fields[9]+"]" in owned:
                 found.add(int(port, 16))
         return ports <= found
     except Exception:
