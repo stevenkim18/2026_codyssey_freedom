@@ -7,7 +7,7 @@ This plugin has two parts. Its lifecycle hooks work in ordinary Codex sessions
 after the user trusts them at startup; the status line `PII 보호 켜짐` confirms
 they run. They check prompts and tool results before sending, and only warn about
 responses after display. They cannot rewrite a prompt. Without a detector setting
-they use local pattern rules, which do not detect names. Never claim that the
+they use local rules that find only representative formats. Never claim that the
 hooks prevent a response from being displayed, and never trust hooks for the user.
 
 The separate gateway client below inspects responses before display. Use it when

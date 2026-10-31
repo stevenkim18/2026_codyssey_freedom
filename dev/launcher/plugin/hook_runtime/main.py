@@ -21,7 +21,7 @@ import events  # noqa: E402
 
 INPUT_LIMIT = 8 * 1024 * 1024
 WATCHDOG_S = 25  # Below the 30-second hook timeout, after which Codex would forward.
-TYPE_LABELS = {"KR_RRN": "주민등록번호", "CREDIT_CARD": "카드번호", "API_KEY": "API 키", "PRIVATE_KEY": "개인 키",
+TYPE_LABELS = {"KR_RRN": "주민등록번호", "CREDIT_CARD": "카드번호", "API_KEY": "API 키·비밀번호", "PRIVATE_KEY": "개인 키",
                "PERSON": "이름", "EMAIL_ADDRESS": "이메일", "KR_PHONE_NUMBER": "전화번호",
                "KR_BANK_ACCOUNT": "계좌번호", "KR_LOCATION": "주소", "DATE_OF_BIRTH": "생년월일",
                "KR_DRIVER_LICENSE": "운전면허번호", "KR_PASSPORT": "여권번호", "KR_NHIS": "건강보험번호",
@@ -140,7 +140,7 @@ def on_stop(data):
 
 def on_session(_data):
     try:
-        mode = "모델 + 규칙 검사" if detect.load_settings() else "규칙 검사만 (이름은 탐지 안 됨)"
+        mode = "모델 + 규칙 검사" if detect.load_settings() else "규칙 검사 (대표 형식만 탐지)"
         emit({"systemMessage": f"PII 보호 켜짐: {mode}"})
     except detect.InspectionError:
         emit({"systemMessage": "PII 검사 설정 오류: 입력 전송이 차단됩니다."})

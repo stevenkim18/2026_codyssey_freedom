@@ -352,6 +352,67 @@ def test_detector_outage_does_not_loop_on_stop(tmp_path, remote):
     assert (result.returncode, result.stdout) == (0, b"")
 
 
+DEMO_RULES = [
+    # False positives that must stay usable.
+    ("상품 8801234567890 재고 확인", "allow", None), ("ts=1701012345678 처리", "allow", None),
+    ("주문 2101154567890 조회", "allow", None), ("id 4532015112830366 조회", "allow", None),
+    ("git@github.com:org/repo.git 를 클론해 줘", "allow", None), ("npm i @types/node", "allow", None),
+    ("password=os.environ[\"DB\"]", "allow", None), ("password: ${DB_PASS}", "allow", None),
+    ("api_key=YOUR_API_KEY", "allow", None), ("password=self.password", "allow", None),
+    ("비밀번호를 입력해 주세요", "allow", None), ("암호화된 값을 저장해", "allow", None),
+    ("담당자에게 전달해 줘", "allow", None), ("전문가에게 물어봐", "allow", None), ("임직원에게 공지해", "allow", None),
+    ("이사장님께 보고해", "allow", None), ("신청자에게 안내해", "allow", None), ("고객님께 사과해", "allow", None),
+    ("원격 비밀번호 인증·호스트 확인", "allow", None), ("출력 파일은 새 이름이어야 한다", "allow", None),
+    ("이름 정답만 빼고 처리", "allow", None), ("이름 정답은 그대로 둬", "allow", None), ("조만간 과장님께 보고할게", "allow", None), ("한동안 대표님이 안 계셔", "allow", None),
+    ("이번주 팀장님 일정", "allow", None), ("오전에 고객님께 전화", "allow", None), ("정기적 사원 교육", "allow", None),
+    ("30분 1234개 처리", "allow", None), ("계좌 개설 방법 알려줘", "allow", None), ("서울 날씨 알려줘", "allow", None),
+    # Format variants of supported values.
+    ("주민번호 900101–1234567", "block", "KR_RRN"), ("900101-\n1234567", "block", "KR_RRN"),
+    ("９００１０１-１２３４５６７", "block", "KR_RRN"), ("주민번호 9001011234567", "block", "KR_RRN"),
+    ("카드 4111.1111.1111.1111", "block", "CREDIT_CARD"), ("카드번호 4111111111111111", "block", "CREDIT_CARD"),
+    ("(010)1234-5678", "mask", "KR_PHONE_NUMBER"), ("user＠example.com", "mask", "EMAIL_ADDRESS"),
+    # Secrets.
+    ("ghp_" + "a" * 36, "block", "API_KEY"), ("AKIAIOSFODNN7EXAMPLE", "block", "API_KEY"),
+    ("sk-abcdefghijklmnopqrstuvwxyz123456", "block", "API_KEY"), ("xoxb-1234567890-abcdefghij", "block", "API_KEY"),
+    ("AIza" + "a" * 35, "block", "API_KEY"), ("-----BEGIN OPENSSH PRIVATE KEY-----", "block", "PRIVATE_KEY"),
+    ("password=hunter2", "block", "API_KEY"), ("DB 비밀번호는 Qwer1234! 야", "block", "API_KEY"),
+    ("비밀번호: 1234", "block", "API_KEY"),
+    # Rule-detectable personal data.
+    ("국민은행 123-456-789012 로 입금해", "mask", "KR_BANK_ACCOUNT"), ("계좌번호 110123456789", "mask", "KR_BANK_ACCOUNT"),
+    ("여권 M12345678", "mask", "KR_PASSPORT"), ("운전면허 11-22-333333-44", "mask", "KR_DRIVER_LICENSE"),
+    ("건강보험 번호 12345678901", "mask", "KR_NHIS"), ("차량 12가 3456 조회", "mask", "KR_VEHICLE_PLATE"),
+    ("서울특별시 강남구 테헤란로 123 으로 보내", "mask", "KR_LOCATION"), ("생년월일 1990-01-01", "mask", "DATE_OF_BIRTH"),
+    ("이름: 김가상", "mask", "PERSON"), ("김가상에게 메일 보내줘", "mask", "PERSON"), ("홍길동 과장님 일정", "mask", "PERSON"), ("수신인 이민수 확인", "mask", "PERSON"),
+]
+
+
+@pytest.fixture(scope="module")
+def demo_verdicts():
+    code = ("import json, sys; sys.path[:0] = [%r, %r]; import detect\n"
+            "out = []\n"
+            "for text in json.load(sys.stdin):\n"
+            "    decision, _ = detect.inspect(text, 'outbound', 'test', None)\n"
+            "    out.append([decision.action, sorted({item['type'] for item in decision.findings}), decision.segments[0]['text'] if decision.segments else ''])\n"
+            "print(json.dumps(out))" % (str(PLUGIN / "hook_runtime"), str(PLUGIN / "hook_runtime/vendor")))
+    result = subprocess.run(["/usr/bin/python3", "-I", "-S", "-B", "-c", code], capture_output=True, timeout=30,
+                            input=json.dumps([case[0] for case in DEMO_RULES]).encode())
+    assert result.returncode == 0, result.stderr.decode()[-400:]
+    return dict(zip(range(len(DEMO_RULES)), json.loads(result.stdout)))
+
+
+@pytest.mark.parametrize("index,case", list(enumerate(DEMO_RULES)), ids=lambda value: value[0][:24] if isinstance(value, tuple) else "")
+def test_demo_rule_outcomes(demo_verdicts, index, case):
+    action, kinds, _ = demo_verdicts[index]
+    assert action == case[1], kinds
+    if case[2]:
+        assert case[2] in kinds
+
+
+def test_fullwidth_masking_keeps_original_offsets(tmp_path):
+    result = execute(prompt("메일 user＠example.com 입니다"), tmp_path)
+    assert "메일 [REDACTED] 입니다" in output(result)["reason"]
+
+
 def test_system_python_is_the_supported_runtime():
     version = subprocess.run(["/usr/bin/python3", "-c", "import sys; print(sys.version_info[:2] >= (3, 9))"],
                              capture_output=True, text=True, timeout=10)
