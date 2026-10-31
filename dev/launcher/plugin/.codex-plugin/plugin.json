@@ -1,6 +1,6 @@
 {
   "name": "pii-gateway",
-  "version": "0.2.0-hook.1",
+  "version": "0.2.0-hook.3",
   "description": "Check prompts and tool results for personal data before Codex sends them, warn about personal data in responses, and install the packaged protected gateway client.",
   "skills": "./skills"
 }
