@@ -65,17 +65,20 @@
 | [segmentation/README.md](segmentation/README.md) | 분할 호환성 분석 및 B 파트 연동 규격 제안서 |
 | [evaluation/README.md](evaluation/README.md) | 4단계 평가 시스템 구조, 지표 정의, CLI 가이드 |
 | [evaluation/service-test-v1.manifest.json](evaluation/service-test-v1.manifest.json) | 독립 서비스 시험셋 300건 무결성·통계·중복 검증 명세 |
-| [reports/segmentation-diagnosis-v1.json](reports/segmentation-diagnosis-v1.json) | K-PII-Bench 분할기 후보별 변환율/유형보존 진단 결과 |
-| [reports/candidate-townboy-v1.json](reports/candidate-townboy-v1.json) | 후보 보충 데이터셋 11,732건 상세 진단 결과 |
-| [reports/candidate-supplement-summary.md](reports/candidate-supplement-summary.md) | 후보 보충 데이터셋 검증 결과 요약 보고서 |
+| [reports/segmentation-diagnosis-v2.json](reports/segmentation-diagnosis-v2.json) | K-PII-Bench 분할기 후보별 변환율/유형보존 진단 결과 (ko_atomic_suffix_v3 95.9% 달성) |
+| [reports/candidate-supplement-summary.md](reports/candidate-supplement-summary.md) | 후보 보충 데이터셋 검증 결과 요약 보고서 (공식 제외) |
+| [reports/m0-baseline-summary.md](reports/m0-baseline-summary.md) | **M0 GPU 베이스라인 실측 결과 보고서 (5단계 완료)** |
+| [reports/m0-baseline-record.json](reports/m0-baseline-record.json) | 독립 300건 공식 베이스라인 검증 레코드 (F1 49.16%, Critical Recall 51.88%) |
+| [to_codex.md](to_codex.md) | **Codex 인수인계 문서 (현재 진행 상황 및 6~8단계 실행 가이드)** |
 
 ---
 
-## GPU 접속 후 해야 할 일
+## 단계별 진행 현황 및 남은 작업
 
-1. **서버 환경 확인**: 선임 팀원이 보고한 `prd-a-py312` (Python 3.12.16, PyTorch 2.10.0, CUDA 13.0) 동작 및 GPU 가용 메모리 확인.
-2. **B와 분할기 공동 채택**: `ko_atomic_suffix_v3`를 A/B 공동 분할기로 최종 합의.
-3. **M0 기준선(Baseline) 측정**: dev split 및 독립 서비스 시험셋에서 M0 기본 설정 및 dev 탐색 설정의 기준 성능 측정.
-4. **학습 표본 5,000건 추출**: 변환 성공 train 201,274건 중 분야·유형 분포를 고려하여 시드 42로 5,000건 표본 선정 및 해시 기록.
-5. **M1 추가 학습 및 dev 임계값 선정**: batch 1부터 메모리 측정하며 1~3 epoch, LR 1e-5~5e-5 탐색.
-6. **최종 공정 비교 및 B 인계**: M0 vs M1 교체 판정 게이트(`compare.py`) 실행 및 모델 패키지 전달.
+1. [x] **서버 환경 확인 (5단계)**: NVIDIA L4 24GB (Driver 580.159, CUDA 13.0, py312), VRAM 21.6GB 여유 확인 및 SSH 키 인증 구성 완료.
+2. [x] **M0 기준선(Baseline) 실측 (5단계)**: 독립 서비스 시험셋 300건 및 Dev 28,147건 전수 GPU 실측 완료 (`m0-baseline-record.json` 생성).
+3. [ ] **B와 분할기 공동 채택**: `ko_atomic_suffix_v3`를 A/B 공동 분할기로 최종 합의.
+4. [ ] **학습 표본 5,000건 추출 (6단계)**: 변환 성공 train 233,724건 중 분야·유형 분포를 고려하여 시드 42로 5,000건 표본 선정 및 해시 기록.
+5. [ ] **M1 추가 학습 및 dev 임계값 선정 (6단계)**: batch 4~8, LR 1e-5~3e-5, 2~3 epoch GPU 파인튜닝 및 dev 임계값 탐색.
+6. [ ] **최종 공정 비교 및 교체 판정 게이트 (7단계)**: M0 vs M1 교체 판정 게이트(`compare.py`) 실행.
+7. [ ] **모델 패키지 구성 및 B 인계 (8단계)**: 모델 아티팩트 번들링 및 최종 핸드오프.

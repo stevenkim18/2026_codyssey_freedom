@@ -1,0 +1,249 @@
+{
+  "experiment_id": "m0-baseline-kpii-dev-v1",
+  "parent_experiment_id": null,
+  "common_baseline_experiment_id": "m0-baseline-kpii-dev-v1",
+  "changed_factors": [],
+  "comparison_mode": "dev_selected_pipeline",
+  "comparison_condition_id": "m0-baseline",
+  "model_repo_revision_or_checkpoint_sha256": "1fcf13e85f4eef5394e1fcd406cf2ca9ea82351d",
+  "dataset_revision": "844f92f7beba98fa964f957ba324017e82451701",
+  "split_and_service_test_version": "kpii-dev-v1",
+  "sample_manifest_sha256": null,
+  "seed": 42,
+  "inference_configuration": {
+    "batch_size": 1,
+    "device": "cuda:0",
+    "windowing": "b-gliner-planner-v1"
+  },
+  "label_mapping_version": "gliner029-m0-18labels-v1",
+  "threshold_version": "engineering-0.5-v1",
+  "rules_version": "none",
+  "policy_version": "b-gateway-policy-v1",
+  "chunking_and_overlap_version": "gliner029-word-window-v1",
+  "span_postprocessing_version": "raw_whitespace_split_m0",
+  "started_at_utc": "2026-10-31T11:40:41.574792+00:00",
+  "finished_at_utc": "2026-10-31T11:51:04.122289+00:00",
+  "delta_vs_parent": null,
+  "delta_vs_common_baseline": null,
+  "report_mode": "model_only",
+  "metrics_protocol_version": "char_span_exact_v1+policy-metrics-v1",
+  "record_schema_version": "1.0",
+  "status": "executed",
+  "overall_precision_recall_f1": {
+    "tp": 24146,
+    "fp": 98559,
+    "fn": 99373,
+    "precision": 0.1967808972739497,
+    "recall": 0.19548409556424517,
+    "f1": 0.19613035284943792
+  },
+  "per_type_precision_recall_f1_and_denominators": {
+    "CREDIT_CARD": {
+      "tp": 1177,
+      "fp": 2264,
+      "fn": 1739,
+      "gold": 2916,
+      "predicted": 3441,
+      "precision": 0.34205172914850335,
+      "recall": 0.40363511659807955,
+      "f1": 0.3703004561900267
+    },
+    "DATE_OF_BIRTH": {
+      "tp": 501,
+      "fp": 649,
+      "fn": 2372,
+      "gold": 2873,
+      "predicted": 1150,
+      "precision": 0.4356521739130435,
+      "recall": 0.17438217890706578,
+      "f1": 0.24906785980611484
+    },
+    "EMAIL_ADDRESS": {
+      "tp": 3473,
+      "fp": 6883,
+      "fn": 6331,
+      "gold": 9804,
+      "predicted": 10356,
+      "precision": 0.33536114329857086,
+      "recall": 0.35424316605467154,
+      "f1": 0.3445436507936508
+    },
+    "IP_ADDRESS": {
+      "tp": 1270,
+      "fp": 4090,
+      "fn": 5043,
+      "gold": 6313,
+      "predicted": 5360,
+      "precision": 0.23694029850746268,
+      "recall": 0.20117218438143514,
+      "f1": 0.21759616208344043
+    },
+    "KR_BANK_ACCOUNT": {
+      "tp": 795,
+      "fp": 4351,
+      "fn": 5498,
+      "gold": 6293,
+      "predicted": 5146,
+      "precision": 0.1544889234356782,
+      "recall": 0.1263308437946925,
+      "f1": 0.13899816417519015
+    },
+    "KR_DRIVER_LICENSE": {
+      "tp": 584,
+      "fp": 973,
+      "fn": 1733,
+      "gold": 2317,
+      "predicted": 1557,
+      "precision": 0.37508028259473347,
+      "recall": 0.25205006473888647,
+      "f1": 0.30149716055756326
+    },
+    "KR_LOCATION": {
+      "tp": 1737,
+      "fp": 1761,
+      "fn": 2837,
+      "gold": 4574,
+      "predicted": 3498,
+      "precision": 0.49656946826758147,
+      "recall": 0.37975513773502406,
+      "f1": 0.43037661050545095
+    },
+    "KR_NHIS": {
+      "tp": 0,
+      "fp": 40,
+      "fn": 580,
+      "gold": 580,
+      "predicted": 40,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "KR_PASSPORT": {
+      "tp": 0,
+      "fp": 75,
+      "fn": 1135,
+      "gold": 1135,
+      "predicted": 75,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "KR_PHONE_NUMBER": {
+      "tp": 973,
+      "fp": 7865,
+      "fn": 7090,
+      "gold": 8063,
+      "predicted": 8838,
+      "precision": 0.11009278117221091,
+      "recall": 0.12067468684112613,
+      "f1": 0.11514111591030117
+    },
+    "KR_RRN": {
+      "tp": 1354,
+      "fp": 7754,
+      "fn": 17579,
+      "gold": 18933,
+      "predicted": 9108,
+      "precision": 0.14866051822573562,
+      "recall": 0.0715153435799926,
+      "f1": 0.09657287543240255
+    },
+    "KR_VEHICLE_PLATE": {
+      "tp": 5,
+      "fp": 22,
+      "fn": 2268,
+      "gold": 2273,
+      "predicted": 27,
+      "precision": 0.18518518518518517,
+      "recall": 0.002199736031676199,
+      "f1": 0.004347826086956522
+    },
+    "NRP": {
+      "tp": 0,
+      "fp": 617,
+      "fn": 2304,
+      "gold": 2304,
+      "predicted": 617,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "ORGANIZATION": {
+      "tp": 1231,
+      "fp": 12023,
+      "fn": 3423,
+      "gold": 4654,
+      "predicted": 13254,
+      "precision": 0.09287762185000754,
+      "recall": 0.2645036527718092,
+      "f1": 0.13748045566227385
+    },
+    "PERSON": {
+      "tp": 10659,
+      "fp": 42670,
+      "fn": 33073,
+      "gold": 43732,
+      "predicted": 53329,
+      "precision": 0.19987248963978324,
+      "recall": 0.2437345650782036,
+      "f1": 0.21963507484983671
+    },
+    "PERSONAL_ATTRIBUTE": {
+      "tp": 0,
+      "fp": 4171,
+      "fn": 0,
+      "gold": 0,
+      "predicted": 4171,
+      "precision": 0.0,
+      "recall": null,
+      "f1": 0.0
+    },
+    "URL": {
+      "tp": 0,
+      "fp": 975,
+      "fn": 5043,
+      "gold": 5043,
+      "predicted": 975,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "USERNAME": {
+      "tp": 387,
+      "fp": 1376,
+      "fn": 1325,
+      "gold": 1712,
+      "predicted": 1763,
+      "precision": 0.21951219512195122,
+      "recall": 0.22605140186915887,
+      "f1": 0.2227338129496403
+    }
+  },
+  "critical_type_false_negatives_and_gold_counts": {
+    "KR_RRN": {
+      "false_negatives": 17579,
+      "gold": 18933
+    },
+    "KR_BANK_ACCOUNT": {
+      "false_negatives": 5498,
+      "gold": 6293
+    },
+    "CREDIT_CARD": {
+      "false_negatives": 1739,
+      "gold": 2916
+    },
+    "KR_PHONE_NUMBER": {
+      "false_negatives": 7090,
+      "gold": 8063
+    },
+    "EMAIL_ADDRESS": {
+      "false_negatives": 6331,
+      "gold": 9804
+    }
+  },
+  "normal_false_block_rate_and_denominator": {
+    "false_blocks": 0,
+    "normal_documents": 0,
+    "rate": null
+  }
+}
