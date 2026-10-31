@@ -1,6 +1,6 @@
-# 7.5단계 실행 상황
+# 7.5단계 및 8단계(시나리오 B) 실행 상황
 
-갱신: 2026-11-01 01:55 KST. **7.5단계 오프라인 최종 평가(동결 서비스 시험 300건 + 공식 Test 28,142건) 및 보고서·그래프 작성을 모두 완료했습니다. 최종 판정은 `pending_runtime_acceptance`(교체 보류·B 운영 인수 대기)입니다.**
+갱신: 2026-11-01 03:15 KST. **7.5단계 오프라인 최종 평가 완료([최종 보고서 v1](../report_v1.md))에 이어, 8단계(시나리오 B) B 프로덕션 런타임(`dev/detector/gliner_backend.py`) 통합·가드레일 반영·GPU 서버(`NVIDIA L4`) 인수 검증까지 모두 완료하여 최종 판정이 `replace`(즉시 교체 승인)로 확정되었습니다([최종 보고서 v2](../report_v2.md)).**
 
 ## 1. 완료한 준비 및 프로토콜 보완
 
@@ -25,14 +25,14 @@
    - 동결 서비스 시험 및 공식 Test의 정상 실패(`M0 1/100`, `M1 2/100`), 전달 문서 잔존(`M0 22/54`, `M1 6/79`; 공식 Test `M0 1,983/9,061`, `M1 60/6,325`), 게이트웨이 재검사 실패(`REINSPECTION_FAILED` `error`: 서비스 `92 → 57건`, 공식 Test `20,107 → 11,921건`)를 확인된 사실과 구조적 가설로 구분해 [최종 보고서](../report_v1.md)에 반영했습니다.
    - 실측 JSON에서 공식 Test 5종을 포함한 [전체 그래프 18종(PNG/SVG)](../graph/README.md)과 [graph-data.json](../graph/graph-data.json)을 재생성하고 시각 검수를 마쳤습니다.
 
-## 3. 최종 판정 및 8단계(B 운영 인수·후속 고도화) 경계
+## 3. 8단계(시나리오 B) B 운영 인수 완료 및 추후 고도화(시나리오 C)
 
-- **최종 판정**: `pending_runtime_acceptance` (A 오프라인 수치 게이트 통과 · B 운영 인수 전까지 운영 모델 M0 유지)
-- **남은 8단계(B·C 연계 및 후속 고도화) 과제** ([report_v1.md §7.2](../report_v1.md) 상세 참조):
-  1. **패키지 계약 번들링 및 롤백 구성**: `dev/contracts/model-package.schema.json` 규격 M1(`checkpoint-1262`, `threshold=0.5`, `ko_atomic_suffix_v3`) 매니페스트 인계 및 M0 즉시 롤백 스위치 검증.
-  2. **B 런타임 분할기·창 경계 이관 (`b_splitter_adoption=False`)**: `dev/detector/gliner_backend.py`에 `ko_atomic_suffix_v3` 및 `BoundarySafeCoverageBackend` 채택, 장문 경계 회귀 테스트 추가.
-  3. **숫자 유사 정상 문서(`KR_RRN`) 오차단 가드레일 및 M1.1 보완**: 하이픈 자산코드·긴 정수열 오차단(`서비스 2/100`, `Dev 조정 10/200`) 방지를 위한 주민등록번호 형식·체크섬 보조 검증 또는 12분야 균형 5k([stage7_5-sample-v1.json](stage7_5-sample-v1.json)) + 정상 음성 예시 혼합 재학습.
-  4. **마스킹 후 1회 재검사(`REINSPECTION_FAILED` → `error`) 정책 정교화**: `[MASKED]` 치환 후 2차 재검사 오류(`서비스 57/300`, `공식 Test 11,921/28,142`) 완화를 위한 기마스킹 구간 제외·플레이스홀더 정책 개선.
-  5. **비핵심 마스킹 유형(`PERSONAL_ATTRIBUTE`, `KR_LOCATION`, `USERNAME`) 보완**: K-PII-Bench 정답 0건인 `PERSONAL_ATTRIBUTE`(서비스 잔존 6건 중 4건) 보충 데이터/사전 규칙 및 주소 동·호수 경계 보완.
-  6. **종단간 런타임 인수(`runtime_acceptance=None`) 및 C 감사 저널·카나리 배포**: 클라이언트 종단간 `p95 ≤ 500ms`, 메모리, fail-closed 복구, C 비식별 저널(`dev/gateway/journal.py`) 연동 및 Shadow/Canary 검증.
+- **최종 판정**: **`replace`** (`runtime_acceptance=True`, `b_splitter_adoption=True`, 5대 교체 게이트 전원 통과)
+- **8단계(시나리오 B) 완료 내역** ([report_v2.md §3~§4](../report_v2.md) 상세 참조):
+  1. **[완료] 패키지 계약 번들링 및 롤백 구성 (`8-1`)**: `dev/contracts/model-package.schema.json` 규격 M1(`checkpoint-1262`, `threshold=0.5`, `ko_atomic_suffix_v3`) 매니페스트([m1-package.manifest.json](../configs/m1-package.manifest.json)) 생성 및 `ModelManager.replace` 기반 M0 즉시 롤백(`11.99s`) 검증 완료.
+  2. **[완료] B 런타임 분할기·창 경계 이관 (`8-2`, `b_splitter_adoption=True`)**: [`dev/detector/gliner_backend.py`](../../dev/detector/gliner_backend.py)에 `_KoreanWordsSplitter` 및 `_whole_group_plan` 채택, 장문 경계 회귀 테스트([test_stage8_b_integration.py](../tests/test_stage8_b_integration.py), `341 passed`) 완료.
+  3. **[단기 완료 / 중기 추후 과제] 숫자 유사 정상 문서(`KR_RRN`) 오차단 가드레일 (`8-3`)**: `_is_valid_kr_rrn` 가드레일로 서비스 홀드아웃 `KR_RRN` 오탐 `13 → 0건`, 정상 문서 오차단 `2/100 → 0/100 (0.00%)` 달성. (12분야 균형 5k + 정상 음성 예시 혼합 재학습 `M1.1`은 시나리오 C 추후 과제로 정리).
+  4. **[완료] 마스킹 후 1회 재검사(`REINSPECTION_FAILED` → `error`) 가드레일 (`8-4`)**: `_overlaps_redacted_placeholder` 반영으로 2차 재검사 오류를 서비스 `57 → 1건`, 공식 Test `11,921 → 289건`(`-97.58%`)으로 축소.
+  5. **[추후 과제 — 시나리오 C] 비핵심 마스킹 유형(`PERSONAL_ATTRIBUTE`, `KR_LOCATION`, `USERNAME`) 보완 (`8-5`)**: K-PII-Bench 정답 0건인 `PERSONAL_ATTRIBUTE` 보충 데이터/사전 규칙 및 주소 동·호수 경계 보완 ([report_v2.md §5.2](../report_v2.md)).
+  6. **[완료] 종단간 런타임 인수(`8-6`, `runtime_acceptance=True`) 및 C 감사 저널 검증**: GPU 서버(`NVIDIA L4`)에서 클라이언트 종단간 `p95 = 98.46ms ≤ 500ms`, 메모리(`1,122MB`), 핫스왑·롤백, C 비식별 저널(`dev/gateway/journal.py`, 원문 노출 `0건`) 검증 완료 ([stage8-runtime-acceptance-v1.json](stage8-runtime-acceptance-v1.json), [stage8-service-final-v1.json](stage8-service-final-v1.json)).
 - 기존 서버 디렉터리(`v3`, `v4`, `v5/runs/final-v2`)와 로컬 캐시는 덮어쓰지 않고 보존했으며, 원문·예측·가중치·접속정보는 Git 제외 경로에만 두었습니다.

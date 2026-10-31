@@ -1,6 +1,6 @@
 # M1 초기 학습·평가 기록 — 7.5단계 보완 전 잠정 결과
 
-> **7.5단계 완료 안내(2026-11-01):** 아래 본문은 7.5단계 보완 전 초기 실행 기록입니다. 7.5단계에서 서버 저장본(`checkpoint-1262`)과 학습 로그를 회수하고([stage7_5-recovery-v2.json](stage7_5-recovery-v2.json)), 공통 분할기(`ko_atomic_suffix_v3`)와 Dev 선택 임계값(`0.5`)으로 완주한 동결 서비스 시험(300건 F1 `89.38%`, 중요 5종 재현율 `94.76%`, 정상 실패 `2/100`) 및 공식 Test(28,142건 F1 `98.70%`, 중요 5종 재현율 `99.99%`) 최종 결과는 [최종 보고서 v1](../report_v1.md), [서비스 최종 집계](stage7_5-service-final-v1.json), [공식 Test 최종 집계](stage7_5-official-final-v1.json)를 확인하세요. 현재 최종 판정은 `pending_runtime_acceptance`(B 운영 인수 대기)입니다.
+> **7.5단계 및 8단계 완료 안내(2026-11-01):** 아래 본문은 7.5단계 보완 전 초기 실행 기록입니다. 7.5단계에서 서버 저장본(`checkpoint-1262`)과 학습 로그를 회수하고([stage7_5-recovery-v2.json](stage7_5-recovery-v2.json)), 이어진 **8단계(시나리오 B)**에서 B 프로덕션 런타임(`dev/detector/gliner_backend.py`)에 `ko_atomic_suffix_v3`와 `KR_RRN`·`[REDACTED]` 가드레일을 통합하고 GPU 서버(`NVIDIA L4`) 인수 검증(`p95=98.46ms <= 500ms`)을 마친 결과, 동결 서비스 시험(300건 F1 **`90.76%`**, 중요 5종 재현율 **`94.76%`**, 정상 문서 오차단 **`0/100`**) 및 공식 Test(28,142건 F1 **`98.70%`**, 중요 5종 재현율 **`99.99%`**, 2차 재검사 오류 `-97.58%` 감소)로 **최종 판정 `replace`(즉시 교체 승인)**가 확정되었습니다. 최신 결과는 **[최종 보고서 v2 (`report_v2.md`)](../report_v2.md)**(7.5단계 보존본 [보고서 v1](../report_v1.md)), [Stage 8 서비스 최종 집계](stage8-service-final-v1.json), [Stage 8 공식 Test 최종 집계](stage8-official-final-v1.json)를 확인하세요.
 
 문서 버전: v1.1 (서술·집계 정정) · 갱신일: 2026-10-31
 

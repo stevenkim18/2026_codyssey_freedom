@@ -1,6 +1,6 @@
 # 3단계: 정답 위치를 GLiNER 학습 형식으로 바꾸기
 
-**이 문서는 3단계 기본 분할 진단의 실행 안내입니다.** 기본 분할에서는 고유 train 2,615건만 정답을 모두 표현할 수 있어 학습 준비가 차단됐습니다. 이후 한국어 후보로 변환 가능량은 늘었지만 실제 GLiNER 예측 연동과 B 공동 채택은 미완료입니다. [3단계 이력](../reports/conversion-summary.md), [공통 분할 제안](../segmentation/README.md), [현재 7.5단계](../stage7_5.md)를 구분해 읽으세요.
+**이 문서는 3단계 기본 분할 진단의 실행 안내입니다.** 기본 분할에서는 고유 train 2,615건만 정답을 모두 표현할 수 있어 학습 준비가 차단됐습니다. 이후 한국어 후보(`ko_atomic_suffix_v3`)가 설계되어 7.5단계 오프라인 평가와 **8단계 B 프로덕션 런타임(`dev/detector/gliner_backend.py`)에 최종 통합(`b_splitter_adoption=True`, `verdict="replace"`)**되었습니다. [3단계 이력](../reports/conversion-summary.md), [공통 분할 제안](../segmentation/README.md), [최종 보고서 v2](../report_v2.md)를 함께 참고하세요.
 
 아래 기본 변환 명령은 후보 분할을 실제 예측에 채택하는 명령이 아닙니다. 학습 예시의 분할·backend 창 계획·모델의 `data_processor.words_splitter`·문자 위치 복원을 함께 맞추고 재로딩 검증을 해야 합니다. 진단 부분집합을 정식 5k 또는 공식 시험셋으로 대체하지 않습니다.
 

@@ -3,7 +3,7 @@
 작성일: 2026-10-31 · 상태: **검증 완료, 공식 학습 데이터 채택 보류 (`candidate_not_adopted`)**  
 근거 데이터: [candidate-townboy-v1.json](candidate-townboy-v1.json) · 잠금 명세: [candidate-townboy-lock.json](../configs/candidate-townboy-lock.json)
 
-현재 K-PII-Bench를 유지하며 이 후보는 미채택입니다. [7.5단계](../stage7_5.md)의 우선순위는 실제 분할·평가기·표본·시험 절차 보완입니다. 후보 도입은 별도 근거·라벨 합의가 있을 때만 검토하고 기존 M1 실행에 포함됐다고 표시하지 않습니다.
+현재 K-PII-Bench를 유지하며 이 후보는 미채택입니다. 7.5단계 및 8단계를 통해 K-PII-Bench 기반 M1이 프로덕션 교체 승인(`verdict: "replace"`)을 완료했으며, `PERSONAL_ATTRIBUTE` 등 희소 유형 보강은 차기 마일스톤(시나리오 C, [report_v2.md §5.2](../report_v2.md)) 추후 개발 과제로 관리합니다.
 
 ---
 

@@ -1,6 +1,6 @@
 # 최초 Antigravity 인계서 — 3단계 직후 기록 보관
 
-> **7.5단계 완료 안내(2026-11-01):** [2차 인수인계서](to_agy_2nd.md)에 따라 7.5단계 오프라인 최종 평가(동결 서비스 300건·공식 Test 28,142건) 및 [최종 보고서 v1](report_v1.md)·[그래프 18종](graph/README.md) 작성을 모두 마쳤습니다. 현재 최종 판정은 `pending_runtime_acceptance`(B 운영 인수 대기)입니다. 최신 상태는 [stage7_5-progress.md](reports/stage7_5-progress.md)를 확인하세요.
+> **7.5단계 및 8단계(시나리오 B) 최종 완료 안내(2026-11-01):** [2차 인수인계서](to_agy_2nd.md)에 따른 7.5단계 오프라인 평가 완료([보고서 v1](report_v1.md))에 이어, **8단계에서 B 프로덕션 런타임(`dev/detector/gliner_backend.py`) 통합, 가드레일 내장, GPU 서버(`NVIDIA L4`) 인수 검증(`p95=98.46ms <= 500ms`)을 모두 마쳐 최종 판정 `replace`(즉시 교체 승인)**가 확정되었습니다. 최신 상태는 **[최종 보고서 v2 (`report_v2.md`)](report_v2.md)**, **[통합 문서실 (`model/docs/`)](docs/README.md)**, **[그래프 21종 (`model/graph/`)](graph/README.md)**를 확인하세요.
 
 작성일: 2026-10-31 · 기준 브랜치: `model` · 기준 커밋: `ff92e508bfb86aa05d9bf6b4a42abeb5ff767c98`
 

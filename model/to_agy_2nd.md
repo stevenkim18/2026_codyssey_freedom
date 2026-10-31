@@ -1,6 +1,6 @@
 # Gemini4 Argon 인수인계 — 7.5단계 남은 평가와 문서 마무리
 
-> **이행 완료 안내(2026-11-01 01:58 KST):** 본 2차 인수인계서의 모든 남은 작업(공식 Test `test_track_a` 28,142건 M0·M1 완주 및 로컬 회수, [`stage7_5-official-final-v1.json`](reports/stage7_5-official-final-v1.json) 산출, 서비스·공식 Test 오류/잔존/정상 실패 원인 전수 분류, [`model/graph/`](graph/README.md) 18종 재생성, [`model/report_v1.md`](report_v1.md) 및 `model/` 내 문서 동기화, `pytest` 통과 검증)을 완료했습니다. 아래 본문은 인수인계 시점의 명세로 보존하며, 완료된 최종 결과는 [`report_v1.md`](report_v1.md)와 [`stage7_5-progress.md`](reports/stage7_5-progress.md)를 확인하세요.
+> **7.5단계 및 8단계(시나리오 B) 최종 완료 안내(2026-11-01 03:20 KST):** 본 2차 인수인계서의 모든 남은 작업(공식 Test `test_track_a` 28,142건 M0·M1 완주, [`stage7_5-official-final-v1.json`](reports/stage7_5-official-final-v1.json) 산출, [`model/report_v1.md`](report_v1.md) 작성)에 더해, **8단계(시나리오 B: B 프로덕션 런타임 통합, `ko_atomic_suffix_v3`·`KR_RRN`·`[REDACTED]` 가드레일 내장, `NVIDIA L4` GPU 런타임 인수 검증 `p95=98.46ms <= 500ms`, 최종 판정 `verdict="replace"` 확정, [`model/report_v2.md`](report_v2.md) 및 [`model/graph/`](graph/README.md) 21종 재생성, [`model/docs/`](docs/README.md) 통합 문서실 구축)**까지 모두 완료했습니다. 아래 본문은 인수인계 시점의 명세로 보존하며, 완료된 최종 결과는 **[`report_v2.md`](report_v2.md)**와 **[`model/docs/README.md`](docs/README.md)**를 확인하세요.
 
 작성일: 2026-11-01 KST · 작업 브랜치: `model` · 다음 작업자: Gemini4 Argon (이행 완료)
 

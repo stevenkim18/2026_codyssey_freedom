@@ -1,8 +1,8 @@
 # 한국어 분할 호환성 제안서 (Segmentation Proposal for A/B Alignment)
 
-작성일: 2026-10-31 · 갱신일: 2026-11-01 · 상태: **A 오프라인 평가(`ko_atomic_suffix_v3` + `BoundarySafeCoverageBackend`) 연동 및 최종 시험 검증 완료 · 8단계 B 운영 런타임 채택(`b_splitter_adoption`) 별도 대기**
+작성일: 2026-10-31 · 갱신일: 2026-11-01 · 상태: **A 오프라인 평가 및 8단계 B 운영 런타임(`dev/detector/gliner_backend.py`) 공동 채택(`b_splitter_adoption=True`) 완료**
 
-7.5단계에서 [`runtime.py`](runtime.py)와 [`coverage_backend.py`](coverage_backend.py)를 통해 GLiNER 런타임(`data_processor.words_splitter`)과 창 계획 모두에 `ko_atomic_suffix_v3`를 연결하고, 새 프로세스 재로딩 및 Dev(28,347건)·동결 서비스(300건)·공식 Test(28,142건) 전수 완주(`incomplete=0`)를 검증했습니다([창 계획 감사](../reports/stage7_5-coverage-audit-v1.json), [최종 보고서](../report_v1.md)). B의 실제 운영 코드(`dev/`) 채택은 8단계 인수 항목으로 남아 있습니다.
+7.5단계에서 [`runtime.py`](runtime.py)와 [`coverage_backend.py`](coverage_backend.py)를 통해 GLiNER 런타임(`data_processor.words_splitter`)과 창 계획 모두에 `ko_atomic_suffix_v3`를 연결한 데 이어, **8단계에서 B의 실제 운영 코드([`dev/detector/gliner_backend.py`](../../dev/detector/gliner_backend.py))에 `_KoreanWordsSplitter`(`ko_atomic_suffix_v3`)와 경계 안전 윈도우 폴백(`_whole_group_plan`)을 직접 이식(`b_splitter_adoption=True`)하고 GPU 서버(`NVIDIA L4`) 런타임 인수 검증(`p95=98.46ms <= 500ms`, `incomplete=0`)을 완료**했습니다([최종 보고서 v2](../report_v2.md), [Stage 8 런타임 인수](../reports/stage8-runtime-acceptance-v1.json)).
 
 ---
 
@@ -85,9 +85,9 @@ B 파트의 `GLiNERBackend`([gliner_backend.py](../../dev/detector/gliner_backen
 
 [진단 v2](../reports/segmentation-diagnosis-v2.json)의 권장 후보는 train 243,711건 중 236,900문서(97.21%) 변환, 고유 문장 233,724개입니다. 18종 모두 정답이 남아 있으나 일부 정답·문서는 거절됐습니다. 진단의 `a_b_adopted=false`, `training_ready=false`를 후보 코드 존재만으로 참으로 바꾸지 않습니다.
 
-- [ ] B와 공통 분할·위치 복원·패키지 버전을 합의합니다. *(8단계 B 운영 런타임 채택 `b_splitter_adoption` 대기; A 오프라인 연동 규격은 `runtime.py`·`coverage_backend.py`로 검증 완료)*
+- [x] B와 공통 분할·위치 복원·패키지 버전을 합의합니다. *(8단계에서 [`dev/detector/gliner_backend.py`](../../dev/detector/gliner_backend.py) 및 [`m1-package.manifest.json`](../configs/m1-package.manifest.json)에 `preprocessing.version="ko_atomic_suffix_v3"`로 통합 완료, `b_splitter_adoption=True`)*
 - [x] 학습/실제 예측의 분할 일치를 실제 GLiNER 로딩 및 재로딩 후 확인합니다. ([stage7_5-gpu-smoke-v1.json](../reports/stage7_5-gpu-smoke-v1.json))
 - [x] 384단어·12단어 span·512서브토큰, 비공백 원문 커버리지·겹침 창을 검사합니다. ([stage7_5-coverage-audit-v1.json](../reports/stage7_5-coverage-audit-v1.json))
-- [x] 창 계획 실패를 `incomplete`로 보존하고 평가기가 빈 탐지로 처리하지 않는지 검증합니다. (`test_evaluation_runner.py`, `test_coverage_backend.py`)
-- [x] 동일 채택 분할을 사용하는 M0/M1 비교와 기존 M0 역사적 결과를 구분합니다. ([report_v1.md](../report_v1.md), [stage7_5-service-final-v1.json](../reports/stage7_5-service-final-v1.json), [stage7_5-official-final-v1.json](../reports/stage7_5-official-final-v1.json))
-- [ ] 토큰·창 수 증가 및 B 운영 지연/메모리 영향을 실제로 측정합니다. *(A 오프라인 추론+정책+재검사 지연은 실측 완료; 8단계 B 클라이언트 종단간 p95·메모리 운영 인수 `runtime_acceptance` 대기)*
+- [x] 창 계획 실패를 `incomplete`로 보존하고 평가기가 빈 탐지로 처리하지 않는지 검증합니다. (`test_evaluation_runner.py`, `test_coverage_backend.py`, `test_stage8_b_integration.py`)
+- [x] 동일 채택 분할을 사용하는 M0/M1 비교와 기존 M0 역사적 결과를 구분합니다. ([report_v2.md](../report_v2.md), [stage8-service-final-v1.json](../reports/stage8-service-final-v1.json), [stage8-official-final-v1.json](../reports/stage8-official-final-v1.json))
+- [x] 토큰·창 수 증가 및 B 운영 지연/메모리 영향을 실제로 측정합니다. *([stage8-runtime-acceptance-v1.json](../reports/stage8-runtime-acceptance-v1.json): `NVIDIA L4` 종단간 `p95=98.46ms <= 500ms`, 상시 GPU 메모리 `1,122MB`, `runtime_acceptance=True`)*

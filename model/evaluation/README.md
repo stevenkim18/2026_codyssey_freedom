@@ -4,12 +4,12 @@
 
 > **원칙**: 평가 체계는 모델을 실제로 호출하거나 학습하지 않고도 합성 정답·예측 자료를 통해 오프라인에서 검증할 수 있도록 설계되었습니다. 실제 모델 가중치 측정치나 임의의 점수를 꾸며내지 않으며, 실측 대기 항목은 명확히 `not_executed` 및 `pending` 상태로 구분합니다.
 
-## 현재 상태와 7.5단계 보완 완료 (2026-11-01)
+## 현재 상태: 7.5단계 및 8단계(시나리오 B) 최종 완료 (2026-11-01)
 
-7.5단계에서 평가 실행기의 미완료(`incomplete`) fail-closed 검증, 공통 분할기(`ko_atomic_suffix_v3`) 및 경계 안전 창 처리(`BoundarySafeCoverageBackend`), B 실제 게이트웨이 1회 재검사(`B-gateway-one-reinspection-v1`), 사람 전수 재검토 후 동결한 서비스 holdout(`service-holdout-v2-r2`, 300건) 및 공식 Test(`test_track_a`, 28,142건) 최종 평가를 모두 완료했습니다.
+7.5단계 오프라인 평가 보완에 이어, **8단계(시나리오 B)**에서 B 프로덕션 백엔드([`dev/detector/gliner_backend.py`](../../dev/detector/gliner_backend.py))에 `ko_atomic_suffix_v3`, 경계 안전 윈도우 폴백(`_whole_group_plan`), `KR_RRN` 포맷·생년월일·경계 가드레일(`_is_valid_kr_rrn`), 2차 재검사 `[REDACTED]` 플레이스홀더 중첩 가드레일(`_overlaps_redacted_placeholder`)을 통합하고 GPU 서버(`NVIDIA L4`) 런타임 인수 검증([`run_stage8_acceptance.py`](run_stage8_acceptance.py))을 완료했습니다.
 
-- **최종 판정**: `pending_runtime_acceptance` (A 오프라인 수치 게이트 통과 · 8단계 B 런타임·분할기·재검사 정책 운영 인수 전까지 운영 기본 모델 M0 유지)
-- 최신 결과와 근거는 [최종 보고서](../report_v1.md), [서비스 최종 집계](../reports/stage7_5-service-final-v1.json), [공식 Test 최종 집계](../reports/stage7_5-official-final-v1.json), [7.5단계 진척도](../reports/stage7_5-progress.md)를 확인하세요. (초기 서비스 v1 미동결본은 탐색·회귀 자료로만 보존합니다.)
+- **최종 판정**: **`replace`** (`runtime_acceptance=True`, `b_splitter_adoption=True`, 5대 교체 게이트 전원 통과)
+- 최신 결과와 근거는 **[최종 보고서 v2 (`report_v2.md`)](../report_v2.md)**(7.5단계 보존본 [보고서 v1](../report_v1.md)), [Stage 8 서비스 최종 집계](../reports/stage8-service-final-v1.json), [Stage 8 공식 Test 최종 집계](../reports/stage8-official-final-v1.json), [Stage 8 런타임 인수](../reports/stage8-runtime-acceptance-v1.json)를 확인하세요. (초기 서비스 v1 미동결본은 탐색·회귀 자료로만 보존합니다.)
 
 ---
 

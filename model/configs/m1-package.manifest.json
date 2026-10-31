@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0",
+  "model_version": "M1-gliner_multi_pii-ko-v1-ckpt1262",
+  "threshold_version": "m1-uniform-0.5-v1",
+  "model": {
+    "repo_id": "urchade/gliner_multi_pii-v1",
+    "revision": "ed2546b8b6a721be18a6a9e644fe6fd423016c7a"
+  },
+  "label_mapping": {
+    "KR_RRN": "Korean resident registration number",
+    "CREDIT_CARD": "credit card number",
+    "PERSON": "person",
+    "EMAIL_ADDRESS": "email address",
+    "KR_PHONE_NUMBER": "phone number",
+    "KR_BANK_ACCOUNT": "bank account number",
+    "KR_LOCATION": "address",
+    "DATE_OF_BIRTH": "date of birth",
+    "KR_DRIVER_LICENSE": "driver's license number",
+    "KR_PASSPORT": "passport number",
+    "KR_NHIS": "national health insurance number",
+    "KR_VEHICLE_PLATE": "license plate number",
+    "USERNAME": "username",
+    "PERSONAL_ATTRIBUTE": "personal attribute",
+    "ORGANIZATION": "organization",
+    "URL": "URL",
+    "IP_ADDRESS": "IP address",
+    "NRP": "nationality religious or political group"
+  },
+  "thresholds": {
+    "CREDIT_CARD": 0.5,
+    "DATE_OF_BIRTH": 0.5,
+    "EMAIL_ADDRESS": 0.5,
+    "IP_ADDRESS": 0.5,
+    "KR_BANK_ACCOUNT": 0.5,
+    "KR_DRIVER_LICENSE": 0.5,
+    "KR_LOCATION": 0.5,
+    "KR_NHIS": 0.5,
+    "KR_PASSPORT": 0.5,
+    "KR_PHONE_NUMBER": 0.5,
+    "KR_RRN": 0.5,
+    "KR_VEHICLE_PLATE": 0.5,
+    "NRP": 0.5,
+    "ORGANIZATION": 0.5,
+    "PERSON": 0.5,
+    "PERSONAL_ATTRIBUTE": 0.5,
+    "URL": 0.5,
+    "USERNAME": 0.5
+  },
+  "preprocessing": {
+    "version": "ko_atomic_suffix_v3",
+    "normalization": "none",
+    "offset_unit": "unicode_codepoint",
+    "max_input_codepoints": 16000,
+    "overflow": "reject"
+  },
+  "license_id": "Apache-2.0",
+  "artifacts": {
+    "weights": [
+      "model.safetensors"
+    ],
+    "config": "gliner_config.json",
+    "tokenizer": [
+      "spm.model",
+      "tokenizer_config.json",
+      "config.json"
+    ],
+    "license": "LICENSE",
+    "evaluation": "evaluation.json"
+  },
+  "files": {
+    "BACKBONE_LICENSE": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383",
+    "BACKBONE_MODEL_CARD.md": "90d5e535e04fc9ac4f39336ed33c1adc7d0136b8ce3bbe211c18a0d47b72342f",
+    "LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "MODEL_CARD.md": "5922e242558f1608f734dd23bb4a26fd2986254202131aa1d86153692181953e",
+    "config.json": "42094146a357cc745e45abccf408c0ed9dc2400ea18582a5c68ad2df1a54709f",
+    "evaluation.json": "9fc29831884fb56354bae065f7e6aaa1b3518e944f286edf0584585f5c0ffea3",
+    "gliner_config.json": "3e0babe662b6ee71e1bd4ec7fa072a03ecf9c266ab71d6edb1b098b5f16c5b70",
+    "model.safetensors": "ed2546b8b6a721be18a6a9e644fe6fd423016c7a457b5e30521d85c3d86228a2",
+    "provenance.json": "6b556dd13a3343172610daf017b61ffaf53d5f30c1bf92157a35b141cf7ef17a",
+    "spm.model": "13c8d666d62a7bc4ac8f040aab68e942c861f93303156cc28f5c7e885d86d6e3",
+    "tokenizer_config.json": "9d3a9e5b184d44b2cb2f14af3e7cf57b788e674ce17768b688c4473a1c2e71f5"
+  }
+}

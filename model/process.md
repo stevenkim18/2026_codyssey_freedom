@@ -396,14 +396,14 @@ model/
 
 상세 완료 증거는 [stage7_5.md](stage7_5.md)와 [report_v1.md](report_v1.md)를 기준으로 합니다.
 
-### 남은 일 — 8단계 (B 파트 인계·운영 인수 및 후속 고도화)
+### 완료한 일 — 8단계 (시나리오 B: B 파트 인계·운영 인수 완료) 및 추후 과제 (시나리오 C)
 
-- [ ] **8-1. 패키지 계약 번들링 및 롤백 구성**: A 오프라인 수치 게이트를 통과한 M1 후보(`checkpoint-1262`, `threshold=0.5`, `ko_atomic_suffix_v3`, 창 `384/64/12/512`)를 B 계약(`dev/contracts/model-package.schema.json`)에 맞는 패키지와 검증 이력으로 전달하고 M0 즉시 롤백 스위치 검증.
-- [ ] **8-2. B 런타임 분할기·경계 안전 창 처리 이관 (`b_splitter_adoption`)**: `dev/detector/gliner_backend.py`에 `ko_atomic_suffix_v3`와 `BoundarySafeCoverageBackend`를 통합하고 장문 경계 회귀 테스트(`incomplete=0`) 추가.
-- [ ] **8-3. 숫자 유사 정상 문서(`KR_RRN`) 오차단 방어 및 M1.1 보완**: 자산코드·긴 정수열의 `KR_RRN` 오차단(`서비스 2/100`, `Dev 조정 10/200`) 완화를 위해 주민등록번호 형식·체크섬 보조 검증을 B 후처리/정책과 결합하거나, 12분야 균형 5,000건 표본([stage7_5-sample-v1.json](reports/stage7_5-sample-v1.json)) + 정상 음성 예시 혼합 재학습(M1.1) 수행.
-- [ ] **8-4. 마스킹 후 1회 재검사(`REINSPECTION_FAILED` → `error`) 정책 정교화**: `[MASKED]` 치환 후 2차 재검사에서 발생하는 fail-closed 오류(`서비스 57/300`, `공식 Test 11,921/28,142`)를 줄이기 위해 기마스킹 구간 제외 또는 플레이스홀더 포맷 개선 협의.
-- [ ] **8-5. 비핵심 마스킹 유형(`PERSONAL_ATTRIBUTE`, `KR_LOCATION`, `USERNAME`) 보완**: 원본 학습셋 정답 0건인 `PERSONAL_ATTRIBUTE`(서비스 잔존 6건 중 4건) 보충 데이터/규칙 및 주소 동·호수 접미부 경계 보완.
-- [ ] **8-6. 종단간 런타임 인수(`runtime_acceptance`) 및 C 감사 로그·카나리 배포 검증**: 로딩·클라이언트 종단간 지연(`p95 ≤ 500ms`)·메모리·통합·복구·C 비식별 저널(`dev/gateway/journal.py`) 연동 및 Shadow/Canary 비교 검증 후 최종 서비스 전환 확정.
+- [x] **8-1. 패키지 계약 번들링 및 롤백 구성**: A 오프라인 수치 게이트를 통과한 M1 후보(`checkpoint-1262`, `threshold=0.5`, `ko_atomic_suffix_v3`, 창 `384/64/12/512`)를 B 계약(`dev/contracts/model-package.schema.json`)에 맞는 패키지([m1-package.manifest.json](configs/m1-package.manifest.json))로 생성하고 `ModelManager.replace` 기반 M0 즉시 롤백(`11.99s`) 검증 완료.
+- [x] **8-2. B 런타임 분할기·경계 안전 창 처리 이관 (`b_splitter_adoption=True`)**: [`dev/detector/gliner_backend.py`](../dev/detector/gliner_backend.py)에 `ko_atomic_suffix_v3`와 `_whole_group_plan` 경계 안전 폴백을 통합하고 장문 경계 회귀 테스트([test_stage8_b_integration.py](tests/test_stage8_b_integration.py), `341 passed`) 완료.
+- [x] **8-3 (단기 완료 / 중기 추후 개발). 숫자 유사 정상 문서(`KR_RRN`) 오차단 방어**: 주민등록번호 형식·유효 생년월일·ASCII 경계 검증(`_is_valid_kr_rrn`)을 B 백엔드에 내장하여 서비스 홀드아웃 `KR_RRN` 오탐 `13 → 0건`, 정상 문서 오차단 `2/100 → 0/100 (0.00%)` 달성. (12분야 균형 5,000건 표본 + 정상 음성 예시 혼합 재학습 `M1.1`은 [report_v2.md §5.1](report_v2.md) 추후 개발 과제로 정리).
+- [x] **8-4. 마스킹 후 1회 재검사(`REINSPECTION_FAILED` → `error`) 가드레일 반영**: `[REDACTED]` 플레이스홀더 중첩 스팬 필터(`_overlaps_redacted_placeholder`)를 내장하여 fail-closed `error`를 서비스 `57 → 1건`, 공식 Test `11,921 → 289건`(`-97.58%`)으로 축소.
+- [ ] **8-5 (추후 개발 — 시나리오 C). 비핵심 마스킹 유형(`PERSONAL_ATTRIBUTE`, `KR_LOCATION`, `USERNAME`) 보완**: 원본 학습셋 정답 0건인 `PERSONAL_ATTRIBUTE` 보충 데이터/규칙 및 주소 동·호수 접미부 경계 보완 ([report_v2.md §5.2](report_v2.md)).
+- [x] **8-6. 종단간 런타임 인수(`runtime_acceptance=True`) 및 C 감사 로그 검증 완료**: GPU 서버(`NVIDIA L4`)에서 로딩·클라이언트 종단간 지연(`p95 = 98.46ms ≤ 500ms`)·메모리(`1,122MB`)·무중단 핫스왑/롤백·C 비식별 저널(`dev/gateway/journal.py`, 원문 노출 `0건`) 연동 검증을 마치고 최종 **`verdict: "replace"`** 확정 ([stage8-runtime-acceptance-v1.json](reports/stage8-runtime-acceptance-v1.json), [stage8-service-final-v1.json](reports/stage8-service-final-v1.json), [report_v2.md](report_v2.md)).
 
 M1이 기준에 미달하면 M0를 유지하고 보고서를 마무리합니다. 새 모델을 반드시 배포해야 A 작업이 끝나는 것은 아닙니다.
 

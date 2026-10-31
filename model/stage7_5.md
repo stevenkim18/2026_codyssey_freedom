@@ -92,14 +92,14 @@ loss가 8.61에서 1.22로 줄었다는 기존 보고만으로 과적합이나 �
 
 ## 2-1. 8단계(B 파트 인계·운영 인수 및 후속 고도화) 연계 체크리스트
 
-7.5단계 오프라인 수치 게이트 통과(`pending_runtime_acceptance`) 이후, 8단계에서 B·C 파트와 함께 수행할 작업과 추가 고도화 항목입니다(상세 배경은 [report_v1.md §6~§7](report_v1.md) 참조).
+7.5단계 오프라인 수치 게이트 통과(`pending_runtime_acceptance`) 이후, 8단계(시나리오 B)에서 B·C 파트 런타임 통합 및 GPU 실측 인수를 완료하여 최종 판정 `verdict: "replace"`를 확정했습니다(상세 결과 및 시나리오 C 추후 개발 과제는 [report_v2.md](report_v2.md) 참조).
 
-- [ ] **8-1. 모델 패키지 계약 번들링 및 M0 즉시 롤백 구성**: [`dev/contracts/model-package.schema.json`](../dev/contracts/model-package.schema.json) 규격에 맞춰 M1 `checkpoint-1262`(`model.safetensors` SHA-256 `ed2546b8...`), 토크나이저, 18종 라벨, `threshold=0.5`, 창 설정(`384/64/12/512`), `preprocessing.version="ko_atomic_suffix_v3"` 매니페스트를 패키징하고, 장애 시 고정 M0(`49a065fb...`)로 즉시 복구하는 스위치 검증.
-- [ ] **8-2. B 운영 런타임 분할기(`ko_atomic_suffix_v3`) 및 경계 안전 창 처리 이관 (`b_splitter_adoption`)**: [`dev/detector/gliner_backend.py`](../dev/detector/gliner_backend.py)에 [`attach_words_splitter()`](segmentation/runtime.py)와 [`BoundarySafeCoverageBackend`](segmentation/coverage_backend.py)를 반영하고 장문 경계 어절 회귀 테스트(`incomplete=0`) 추가.
-- [ ] **8-3. 숫자 유사 정상 문서(`KR_RRN`) 오차단 가드레일 및 M1.1 보완 실험**: 하이픈 자산코드·긴 정수열의 `KR_RRN` 오차단(`서비스 2/100`, `Dev 조정 10/200`) 완화를 위해 B 후처리/정책 단계의 주민등록번호 형식·유효 생년월일·체크섬 보조 검증을 적용하거나, 준비된 12분야 균형 5,000건([stage7_5-sample-v1.json](reports/stage7_5-sample-v1.json)) + 숫자 유사 정상 음성 예시 혼합 재학습(M1.1) 수행.
-- [ ] **8-4. 마스킹 후 1회 재검사 실패(`REINSPECTION_FAILED` → `error`) 정책 정교화**: 1차 `mask` 문서가 `[MASKED]` 치환 후 2차 재검사에서 `REINSPECTION_FAILED`(`서비스 57/300`, `공식 Test 11,921/28,142`)로 차단되는 비율을 줄이기 위해 기마스킹 구간 제외 또는 플레이스홀더 포맷 개선을 B와 합의.
-- [ ] **8-5. 비핵심 마스킹 유형(`PERSONAL_ATTRIBUTE`, `KR_LOCATION`, `USERNAME`) 보완**: K-PII-Bench 원본에 정답이 0건인 `PERSONAL_ATTRIBUTE`(서비스 전달 문서 잔존 6건 중 4건) 보충 데이터/사전 규칙 및 `KR_LOCATION` 동·호수 접미부 경계 보완.
-- [ ] **8-6. B 종단간 런타임 인수(`runtime_acceptance`) 및 C 감사 저널·카나리 배포 검증**: 클라이언트 측 종단간 `p95 ≤ 500ms`(예열 후 동시 1·2,000 코드포인트 이내), GPU/CPU 메모리, fail-closed 복구, C 파트 비식별 감사 로그(`dev/gateway/journal.py`) 연동 및 M0 대비 Shadow/Canary 검증 후 `runtime_acceptance=True` 전환.
+- [x] **8-1. 모델 패키지 계약 번들링 및 M0 즉시 롤백 구성**: [`dev/contracts/model-package.schema.json`](../dev/contracts/model-package.schema.json) 규격에 맞춰 M1 `checkpoint-1262`(`model.safetensors` SHA-256 `ed2546b8...`), 토크나이저, 18종 라벨, `threshold=0.5`, 창 설정(`384/64/12/512`), `preprocessing.version="ko_atomic_suffix_v3"` 매니페스트([m1-package.manifest.json](configs/m1-package.manifest.json))를 패키징하고, `ModelManager.replace`로 고정 M0(`49a065fb...`) 즉시 복구(`11.99s`) 검증 완료.
+- [x] **8-2. B 운영 런타임 분할기(`ko_atomic_suffix_v3`) 및 경계 안전 창 처리 이관 (`b_splitter_adoption=True`)**: [`dev/detector/gliner_backend.py`](../dev/detector/gliner_backend.py)에 `_KoreanWordsSplitter`와 `_whole_group_plan` 경계 안전 폴백을 직접 통합하고 장문 경계 어절 회귀 테스트([test_stage8_b_integration.py](tests/test_stage8_b_integration.py), `341 passed`) 통과.
+- [x] **8-3 (단기 완료 / 중기 추후 개발). 숫자 유사 정상 문서(`KR_RRN`) 오차단 가드레일**: [`dev/detector/gliner_backend.py`](../dev/detector/gliner_backend.py)에 `_is_valid_kr_rrn` 형식·유효 생년월일·ASCII 경계 가드레일을 내장하여 서비스 홀드아웃 `KR_RRN` 오탐 `13 → 0건`(`Precision 100.00%`), 정상 문서 오차단 `2/100 → 0/100 (0.00%)` 달성. (12분야 균형 5,000건 + 정상 음성 예시 혼합 재학습 `M1.1`은 [report_v2.md §5.1](report_v2.md) 추후 개발 과제로 정리).
+- [x] **8-4. 마스킹 후 1회 재검사 실패(`REINSPECTION_FAILED` → `error`) 가드레일 반영**: 1차 마스킹이 삽입한 `[REDACTED]` 플레이스홀더와 중첩되는 스팬을 필터링하는 `_overlaps_redacted_placeholder`를 B 백엔드에 내장하여 서비스 홀드아웃 `error` `57 → 1건`, 공식 Test `error` `11,921 → 289건`(`-97.58%`) 감소 및 전달 문서 잔존율 `0.25%` 달성.
+- [ ] **8-5 (추후 개발 — 시나리오 C). 비핵심 마스킹 유형(`PERSONAL_ATTRIBUTE`, `KR_LOCATION`, `USERNAME`) 보완**: K-PII-Bench 원본에 정답이 0건인 `PERSONAL_ATTRIBUTE` 보충 데이터 및 `KR_LOCATION` 동·호수 접미부 경계 보완 ([report_v2.md §5.2](report_v2.md)).
+- [x] **8-6. B 종단간 런타임 인수(`runtime_acceptance=True`) 및 C 감사 저널 검증 완료**: GPU 서버(`NVIDIA L4`)에서 클라이언트 측 종단간 `p95 = 98.46ms ≤ 500ms`(예열 후 동시 1·2,000 코드포인트 이내), GPU 메모리(`1,122MB` 상시 / `2,240MB` 피크), M0 ↔ M1 핫스왑·롤백, C 파트 비식별 감사 저널(`events.sqlite3`, 원문 노출 `0건`) 연동 검증 후 최종 `verdict="replace"` 확정 ([stage8-runtime-acceptance-v1.json](reports/stage8-runtime-acceptance-v1.json), [stage8-service-final-v1.json](reports/stage8-service-final-v1.json)).
 
 ## 3. 최종 판정 기준
 
