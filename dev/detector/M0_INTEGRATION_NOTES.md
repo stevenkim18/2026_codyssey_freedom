@@ -74,3 +74,39 @@ Span processor는 단어 수가 `max_len`을 넘으면 경고 후 잘라내며 t
 단일 실행에서 로딩 17.352초·예열 8.999초를 관찰했다. 이는 초기화·CPU 조건의 한 번 측정이며 p50/p95, GPU 성능, PRD의 L4 검사 지연 목표 판정이나 한국어 정확도 평가가 아니다. 폰트 캐시를 처음 생성한 별도 cold-load에서는 총 30.609초가 관찰되어 초기화 환경 차이도 있다. 실제 tokenizer의 byte-fallback 및 regex 경고가 남아 있으므로 Unicode·장문 전체 범위와 품질 평가는 별도로 수행해야 한다.
 
 Builder TDD는 미구현 import 실패에서 시작해 **17개 합성 테스트**를 통과했으며 라인·분기 커버리지 100%를 기록했다. 실제 로딩 signature 오류, 동적 attention 옵션, 과도한 모델 치수는 각각 실패 회귀를 확인하고 수정했다. 실제 CPU 결과가 있어도 L4/GPU·TLS·서버 배포·실제 CLI·16,000자 모델 추론·A의 최종 라벨/임계값 인수는 계속 미완료다.
+
+
+## 2026-10-31 UTC 추가 검증: 실제 tokenizer·processor의 Unicode/장문 계획
+
+`integration/verify_m0_tokenizer.py`는 실제 GLiNER 0.2.29의 `UniEncoderSpanProcessor`와 transformers 4.57.3의 `DebertaV2TokenizerFast`를 package-engineering-02에서 독립 생성한다. 가중치를 로드하지 않고 공개 `GLiNERBackend.warmup/inspect` 경로를 사용하되 예측 함수만 기록용 가짜 함수로 대체한다. **아래 complete는 창 계획 커버리지이며 개인정보 없음·모델 추론·예열·한국어 품질·GPU 검증을 뜻하지 않는다.** 모델의 특수 토큰은 설치된 BaseGLiNER와 같은 순서로 추가한다.
+
+새 py312 프로세스·새 빈 HF_HOME·HF_HUB_OFFLINE/TRANSFORMERS_OFFLINE·socket 연결 거절 조건에서 네트워크 시도 0회를 확인했다. 실제 설치 경로는 `/Users/oliverjoo/Dev/Anaconda/anaconda3/envs/py312/lib/python3.12/site-packages/`다. 모든 complete 사례에서 원문 비공백 코드포인트가 창에 포함되고, splitter 기준 최대 12개 연속 단어 스팬이 적어도 한 창에 통째로 포함됨을 별도 oracle로 확인했다. 원문을 정규화하거나 변경하지 않는다.
+
+| 입력 | 코드포인트 | 계획 상태 | 창/가짜 예측 호출 | 적합성 검사 |
+|---|---:|---|---:|---:|
+| 한국어 조사 | 21 | complete | 1 | 1 |
+| 이모지·ZWJ | 16 | complete | 1 | 1 |
+| 결합 부호 | 15 | complete | 1 | 1 |
+| 분해된 한글 자모 | 14 | complete | 1 | 1 |
+| 긴 단일 한국어 단어 | 14,000 | incomplete | 0 | 1 |
+| 한국어·숫자·이모지 장문 | 16,000 | complete | 18 | 154 |
+| 두 segment 합계 | 16,000 | complete | 22 | 138 |
+| 900개 단어 경계 | 7,089 | complete | 5 | 37 |
+| 입력 한도 초과 | 16,001 | rejected_input_limit | 0 | 0 |
+
+모든 사례의 적합성 검사는 2,048회 이하였다. incomplete와 입력 거절에서 가짜 예측도 0회다. 경계 oracle 추가 후 실제 실행은 총 25.21초·최대 RSS 1,287,094,272 bytes(macOS ru_maxrss)를 관찰했다. 개별 계획 사례는 최대 0.195초였으나 실제 신경망 추론이나 서비스 지연 측정값이 아니다.
+
+byte-fallback 경고는 실제 차이로 확인했다. 분해 한글 입력은 fast tokenizer에서 UNK 2개, 동일 자산의 실제 slow `DebertaV2Tokenizer`에서 UNK 0개였다. 다른 위 사례는 둘 다 UNK 0개다. 창/word ID 커버리지는 토큰의 표현 품질을 보장하지 않는다. tokenizer 교체나 정규화는 수행하지 않았고, A와의 한국어 품질 검증 게이트는 계속 미완료다.
+
+regex 경고는 설치된 transformers `tokenization_utils_base.py`의 `_patch_mistral_regex` 경로를 확인했다. 어휘 100,000 초과인 local fast tokenizer에 config.json이 있고 transformers_version이 없으면 model_type이 deberta-v2여도 `mistral_config_detected=True`가 된다. 따라서 이 경고 자체는 실제 Mistral regex 결함의 증거가 아니다. fix_mistral_regex 옵션이나 tokenizer 설정은 변경하지 않았다. 장문 길이 경고는 truncation=False로 한도를 조사한 결과이며 해당 긴 단일 단어는 생산 어댑터가 모델 호출 전에 incomplete 처리했다.
+
+재현(작업 디렉터리 dev, --output은 새 파일이어야 함):
+
+```sh
+rtk proxy /Users/oliverjoo/Dev/Anaconda/anaconda3/envs/py312/bin/python -m integration.verify_m0_tokenizer .cache/m0-assets/1fcf13e85f4eef5394e1fcd406cf2ca9ea82351d/package-engineering-02 --output .cache/m0-tokenizer-evidence.json
+rtk proxy /Users/oliverjoo/Dev/Anaconda/anaconda3/envs/py312/bin/python -m pytest integration/tests/test_m0_tokenizer_probe.py -q
+```
+
+oracle TDD는 미구현 import RED 후 최초 4개 GREEN이었다. 독립 검토에서 Python 최적화 옵션으로 검사가 사라지고 실패 시 socket·환경변수가 복원되지 않는 결함을 재현했다. 명시적 검사·finally 복원·사례별 기대 상태를 추가하여 RED 17개에서 **22개 GREEN**으로 검증했고, 독립 리뷰어도 같은 22개를 통과했다. 비공백 누락·공백 간격·불완전 검사 중 예측 호출·계획 예산 초과와 전체 사례가 incomplete로 퇴행하는 경우를 검출한다.
+
+수정 후 새 프로세스의 실제 자산 검증은 9개 기대 상태를 모두 통과했다. 네트워크 시도 0회·24.3096초·최대 RSS 1,288,257,536 bytes를 관찰했다. 실제 자산 probe는 별도의 수동 통합 검증이며 합성 unit test의 커버리지 수치로 대체하지 않는다. native dependency가 stdout에도 메시지를 출력할 수 있어 기계 판독 증거는 --output JSON 파일을 사용한다. 모든 기존 캐시와 자산을 보존했다.
