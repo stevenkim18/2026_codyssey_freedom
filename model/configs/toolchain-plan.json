@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0",
+  "plan_id": "a-training-tools-v1",
+  "status": "direct_version_targets_selected_not_installed_or_runtime_verified",
+  "full_environment_lock": false,
+  "remote_environment": "prd-a-py312",
+  "target": {
+    "python": "3.12.16",
+    "platform": "Linux x86_64",
+    "gpu": "NVIDIA L4",
+    "cuda_runtime": "13.0",
+    "cudnn_reported": "9.18"
+  },
+  "prior_report": {
+    "source": "Senior teammate screenshot supplied by user on 2026-10-31",
+    "python": "3.12.16",
+    "torch": "2.10.0",
+    "cuda_runtime": "13.0",
+    "cudnn": "9.18",
+    "verified_by_this_chat": false
+  },
+  "direct_package_targets": {
+    "accelerate": "1.11.0",
+    "gliner": "0.2.29",
+    "huggingface-hub": "0.36.0",
+    "numpy": "1.26.4",
+    "packaging": "24.2",
+    "pytest": "8.4.1",
+    "safetensors": "0.7.0",
+    "sentencepiece": "0.2.1",
+    "torch": "2.10.0+cu130",
+    "tqdm": "4.67.1",
+    "transformers": "4.57.3"
+  },
+  "selection_rationale": {
+    "gliner": "Match B serving pin 0.2.29",
+    "transformers_hub_and_core_libraries": "Prefer versions already recorded in B dependency verification; this does not prove Linux/CUDA compatibility",
+    "accelerate": "Pin the available 1.11.0 training helper release; its declared Python/torch/hub minima fit the targets",
+    "torch": "Preserve the reported CUDA 13.0 setup; official cu130 CPython 3.12 Linux wheel located",
+    "pytest": "Match B test version; offline test dependency only"
+  },
+  "data_reader_plan": "Read pinned JSONL directly; datasets/evaluate libraries are not required for the initial data audit and metric implementation",
+  "package_metadata_evidence": "metadata/python-package-metadata.json",
+  "torch_distribution": {
+    "version": "2.10.0+cu130",
+    "filename": "torch-2.10.0+cu130-cp312-cp312-manylinux_2_28_x86_64.whl",
+    "url": "https://download-r2.pytorch.org/whl/cu130/torch-2.10.0%2Bcu130-cp312-cp312-manylinux_2_28_x86_64.whl",
+    "sha256": "858f0cbcc78d726fea9499eb3464faa98392fa093845a3262209bd226b7844d6",
+    "source_url": "https://download.pytorch.org/whl/cu130/torch/",
+    "source_response_sha256": "36893620346e68d72983df0538da0df95f6b0cd7fc805989f28681c66f1a8c12",
+    "platform": "CPython 3.12, Linux x86_64, glibc >= 2.28",
+    "downloaded": false
+  },
+  "constraints_file": "configs/constraints-candidate.txt",
+  "installation_policy": [
+    "Inspect and preserve the existing environment first",
+    "Do not reinstall torch, CUDA, cuDNN or system drivers from this plan",
+    "Inspect actual environment dependencies and resolver changes before installing missing packages",
+    "Export full exact package/build/source inventory after import and GPU smoke verification"
+  ],
+  "unverified": [
+    "Remote package inventory",
+    "cu130 wheel dependencies and compatibility with existing environment",
+    "Transitive dependency resolution and native ABI",
+    "GLiNER loading and training",
+    "GPU performance and quality"
+  ]
+}

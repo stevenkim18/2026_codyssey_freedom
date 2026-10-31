@@ -1,0 +1,68 @@
+{
+  "benchmark": "K-PII-Bench",
+  "version": "v4-corrected",
+  "skeleton_key": "template_text",
+  "total_docs": 300000,
+  "total_skeletons": 492,
+  "splits": {
+    "train": {
+      "doc_count": 243711,
+      "skeleton_count": 394,
+      "domains": {
+        "chat": 19937,
+        "document": 19955,
+        "education": 20082,
+        "email_thread": 19990,
+        "employment": 20102,
+        "financial": 20091,
+        "government": 19786,
+        "insurance": 19967,
+        "legal": 23429,
+        "medical": 20108,
+        "support_ticket": 20082,
+        "telecommunications": 20182
+      }
+    },
+    "dev": {
+      "doc_count": 28147,
+      "skeleton_count": 49,
+      "domains": {
+        "chat": 2292,
+        "document": 2271,
+        "education": 2293,
+        "email_thread": 2307,
+        "employment": 2306,
+        "financial": 2315,
+        "government": 2268,
+        "insurance": 2275,
+        "legal": 2893,
+        "medical": 2299,
+        "support_ticket": 2315,
+        "telecommunications": 2313
+      }
+    },
+    "test_track_a": {
+      "doc_count": 28142,
+      "skeleton_count": 49,
+      "domains": {
+        "chat": 2294,
+        "document": 2282,
+        "education": 2289,
+        "email_thread": 2303,
+        "employment": 2297,
+        "financial": 2316,
+        "government": 2272,
+        "insurance": 2279,
+        "legal": 2881,
+        "medical": 2292,
+        "support_ticket": 2324,
+        "telecommunications": 2313
+      }
+    }
+  },
+  "skeleton_overlap": {
+    "train_dev": 0,
+    "train_test": 0,
+    "dev_test": 0
+  }
+}

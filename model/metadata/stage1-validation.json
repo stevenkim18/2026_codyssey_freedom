@@ -1,0 +1,554 @@
+{
+  "validated_at_utc": "2026-10-31T08:23:45+00:00",
+  "stage": "1_source_and_direct_version_selection",
+  "status": "passed",
+  "checks_passed": 129,
+  "checks": [
+    {
+      "check": "All authored JSON files parse",
+      "passed": true
+    },
+    {
+      "check": "Snapshot SHA-256: metadata/m0-hf-api.json",
+      "passed": true
+    },
+    {
+      "check": "Snapshot SHA-256: metadata/dataset-hf-api.json",
+      "passed": true
+    },
+    {
+      "check": "Snapshot SHA-256: metadata/backbone-hf-api.json",
+      "passed": true
+    },
+    {
+      "check": "Snapshot SHA-256: metadata/m0-MODEL_CARD.md",
+      "passed": true
+    },
+    {
+      "check": "Snapshot SHA-256: metadata/m0-gliner_config.json",
+      "passed": true
+    },
+    {
+      "check": "Snapshot SHA-256: metadata/dataset-CARD.md",
+      "passed": true
+    },
+    {
+      "check": "Snapshot SHA-256: metadata/dataset-DATA_README.md",
+      "passed": true
+    },
+    {
+      "check": "Snapshot SHA-256: metadata/dataset-label_map_global.json",
+      "passed": true
+    },
+    {
+      "check": "Snapshot SHA-256: metadata/dataset-split_statistics.json",
+      "passed": true
+    },
+    {
+      "check": "Snapshot SHA-256: metadata/backbone-MODEL_CARD.md",
+      "passed": true
+    },
+    {
+      "check": "Snapshot SHA-256: metadata/backbone-config.json",
+      "passed": true
+    },
+    {
+      "check": "Snapshot SHA-256: metadata/backbone-tokenizer_config.json",
+      "passed": true
+    },
+    {
+      "check": "Snapshot SHA-256: metadata/gliner-tag.json",
+      "passed": true
+    },
+    {
+      "check": "Snapshot SHA-256: metadata/gliner-pyproject.toml",
+      "passed": true
+    },
+    {
+      "check": "Snapshot SHA-256: licenses/CC-BY-4.0-DATA.txt",
+      "passed": true
+    },
+    {
+      "check": "Snapshot SHA-256: licenses/Apache-2.0-GLiNER.txt",
+      "passed": true
+    },
+    {
+      "check": "Snapshot SHA-256: licenses/MIT-DeBERTa.txt",
+      "passed": true
+    },
+    {
+      "check": "Package metadata projection SHA-256",
+      "passed": true
+    },
+    {
+      "check": "B source unchanged: dev/detector/gliner_backend.py",
+      "passed": true
+    },
+    {
+      "check": "B source unchanged: dev/detector/prepare_m0.py",
+      "passed": true
+    },
+    {
+      "check": "B source unchanged: dev/detector/DEPENDENCIES.md",
+      "passed": true
+    },
+    {
+      "check": "B source unchanged: dev/contracts/model-package.schema.json",
+      "passed": true
+    },
+    {
+      "check": "Pinned HF git blob: README.md (m0-hf-api.json)",
+      "passed": true
+    },
+    {
+      "check": "Pinned HF git blob: gliner_config.json (m0-hf-api.json)",
+      "passed": true
+    },
+    {
+      "check": "Pinned HF git blob: README.md (dataset-hf-api.json)",
+      "passed": true
+    },
+    {
+      "check": "Pinned HF git blob: data/README.md (dataset-hf-api.json)",
+      "passed": true
+    },
+    {
+      "check": "Pinned HF git blob: data/label_map_global.json (dataset-hf-api.json)",
+      "passed": true
+    },
+    {
+      "check": "Pinned HF git blob: data/split_statistics.json (dataset-hf-api.json)",
+      "passed": true
+    },
+    {
+      "check": "Pinned HF git blob: LICENSE-DATA (dataset-hf-api.json)",
+      "passed": true
+    },
+    {
+      "check": "Pinned HF git blob: README.md (backbone-hf-api.json)",
+      "passed": true
+    },
+    {
+      "check": "Pinned HF git blob: config.json (backbone-hf-api.json)",
+      "passed": true
+    },
+    {
+      "check": "Pinned HF git blob: tokenizer_config.json (backbone-hf-api.json)",
+      "passed": true
+    },
+    {
+      "check": "m0 full revision matches snapshot",
+      "passed": true
+    },
+    {
+      "check": "m0 download URL is revision-pinned: pytorch_model.bin",
+      "passed": true
+    },
+    {
+      "check": "m0 download URL is revision-pinned: gliner_config.json",
+      "passed": true
+    },
+    {
+      "check": "m0 download URL is revision-pinned: README.md",
+      "passed": true
+    },
+    {
+      "check": "dataset full revision matches snapshot",
+      "passed": true
+    },
+    {
+      "check": "dataset download URL is revision-pinned: data/train.jsonl",
+      "passed": true
+    },
+    {
+      "check": "dataset download URL is revision-pinned: data/dev.jsonl",
+      "passed": true
+    },
+    {
+      "check": "dataset download URL is revision-pinned: data/test_track_a.jsonl",
+      "passed": true
+    },
+    {
+      "check": "backbone full revision matches snapshot",
+      "passed": true
+    },
+    {
+      "check": "backbone download URL is revision-pinned: config.json",
+      "passed": true
+    },
+    {
+      "check": "backbone download URL is revision-pinned: tokenizer_config.json",
+      "passed": true
+    },
+    {
+      "check": "backbone download URL is revision-pinned: spm.model",
+      "passed": true
+    },
+    {
+      "check": "backbone download URL is revision-pinned: README.md",
+      "passed": true
+    },
+    {
+      "check": "B fixed artifact: m0/pytorch_model.bin",
+      "passed": true
+    },
+    {
+      "check": "B fixed artifact: m0/gliner_config.json",
+      "passed": true
+    },
+    {
+      "check": "B fixed artifact: m0/README.md",
+      "passed": true
+    },
+    {
+      "check": "B fixed artifact: backbone/config.json",
+      "passed": true
+    },
+    {
+      "check": "B fixed artifact: backbone/tokenizer_config.json",
+      "passed": true
+    },
+    {
+      "check": "B fixed artifact: backbone/spm.model",
+      "passed": true
+    },
+    {
+      "check": "B fixed artifact: backbone/README.md",
+      "passed": true
+    },
+    {
+      "check": "PRD split count total is 300000",
+      "passed": true
+    },
+    {
+      "check": "Upstream statistics sums are internally consistent",
+      "passed": true
+    },
+    {
+      "check": "Dataset has exactly 18 unique canonical labels",
+      "passed": true
+    },
+    {
+      "check": "Secret-key rules are excluded from model labels",
+      "passed": true
+    },
+    {
+      "check": "Critical labels exist in dataset",
+      "passed": true
+    },
+    {
+      "check": "Constraint file equals toolchain targets",
+      "passed": true
+    },
+    {
+      "check": "Python target accepted by metadata: accelerate",
+      "passed": true
+    },
+    {
+      "check": "Selected direct version relationship: accelerate -> numpy>=1.17",
+      "passed": true
+    },
+    {
+      "check": "Selected direct version relationship: accelerate -> packaging>=20.0",
+      "passed": true
+    },
+    {
+      "check": "Selected direct version relationship: accelerate -> torch>=2.0.0",
+      "passed": true
+    },
+    {
+      "check": "Selected direct version relationship: accelerate -> huggingface_hub>=0.21.0",
+      "passed": true
+    },
+    {
+      "check": "Selected direct version relationship: accelerate -> safetensors>=0.4.3",
+      "passed": true
+    },
+    {
+      "check": "Python target accepted by metadata: gliner",
+      "passed": true
+    },
+    {
+      "check": "Selected direct version relationship: gliner -> torch>=2.0.0",
+      "passed": true
+    },
+    {
+      "check": "Selected direct version relationship: gliner -> transformers<5.17.0,>=4.51.3",
+      "passed": true
+    },
+    {
+      "check": "Selected direct version relationship: gliner -> huggingface_hub>=0.21.4",
+      "passed": true
+    },
+    {
+      "check": "Selected direct version relationship: gliner -> numpy",
+      "passed": true
+    },
+    {
+      "check": "Selected direct version relationship: gliner -> packaging",
+      "passed": true
+    },
+    {
+      "check": "Selected direct version relationship: gliner -> safetensors",
+      "passed": true
+    },
+    {
+      "check": "Selected direct version relationship: gliner -> tqdm",
+      "passed": true
+    },
+    {
+      "check": "Selected direct version relationship: gliner -> sentencepiece",
+      "passed": true
+    },
+    {
+      "check": "Python target accepted by metadata: huggingface-hub",
+      "passed": true
+    },
+    {
+      "check": "Selected direct version relationship: huggingface-hub -> packaging>=20.9",
+      "passed": true
+    },
+    {
+      "check": "Selected direct version relationship: huggingface-hub -> tqdm>=4.42.1",
+      "passed": true
+    },
+    {
+      "check": "Python target accepted by metadata: numpy",
+      "passed": true
+    },
+    {
+      "check": "Python target accepted by metadata: packaging",
+      "passed": true
+    },
+    {
+      "check": "Python target accepted by metadata: pytest",
+      "passed": true
+    },
+    {
+      "check": "Selected direct version relationship: pytest -> packaging>=20",
+      "passed": true
+    },
+    {
+      "check": "Python target accepted by metadata: safetensors",
+      "passed": true
+    },
+    {
+      "check": "Python target accepted by metadata: sentencepiece",
+      "passed": true
+    },
+    {
+      "check": "Python target accepted by metadata: torch",
+      "passed": true
+    },
+    {
+      "check": "Python target accepted by metadata: tqdm",
+      "passed": true
+    },
+    {
+      "check": "Python target accepted by metadata: transformers",
+      "passed": true
+    },
+    {
+      "check": "Selected direct version relationship: transformers -> huggingface-hub<1.0,>=0.34.0",
+      "passed": true
+    },
+    {
+      "check": "Selected direct version relationship: transformers -> numpy>=1.17",
+      "passed": true
+    },
+    {
+      "check": "Selected direct version relationship: transformers -> packaging>=20.0",
+      "passed": true
+    },
+    {
+      "check": "Selected direct version relationship: transformers -> safetensors>=0.4.3",
+      "passed": true
+    },
+    {
+      "check": "Selected direct version relationship: transformers -> tqdm>=4.27",
+      "passed": true
+    },
+    {
+      "check": "Official cu130 wheel SHA-256 has expected format",
+      "passed": true
+    },
+    {
+      "check": "Full environment verification is not claimed",
+      "passed": true
+    },
+    {
+      "check": "Actual data quality verification is not claimed",
+      "passed": true
+    },
+    {
+      "check": "Model/data downloads are not claimed",
+      "passed": true
+    },
+    {
+      "check": "Local link: README.md -> process.md",
+      "passed": true
+    },
+    {
+      "check": "Local link: README.md -> configs/toolchain-plan.json",
+      "passed": true
+    },
+    {
+      "check": "Local link: README.md -> configs/constraints-candidate.txt",
+      "passed": true
+    },
+    {
+      "check": "Local link: README.md -> configs/experiment-plan.json",
+      "passed": true
+    },
+    {
+      "check": "Local link: README.md -> configs/assets.lock.json",
+      "passed": true
+    },
+    {
+      "check": "Local link: README.md -> configs/toolchain-plan.json",
+      "passed": true
+    },
+    {
+      "check": "Local link: README.md -> configs/constraints-candidate.txt",
+      "passed": true
+    },
+    {
+      "check": "Local link: README.md -> configs/experiment-plan.json",
+      "passed": true
+    },
+    {
+      "check": "Local link: README.md -> metadata/sources.json",
+      "passed": true
+    },
+    {
+      "check": "Local link: README.md -> metadata/python-package-metadata.json",
+      "passed": true
+    },
+    {
+      "check": "Local link: README.md -> metadata/stage1-validation.json",
+      "passed": true
+    },
+    {
+      "check": "Local link: README.md -> licenses/NOTICE.md",
+      "passed": true
+    },
+    {
+      "check": "Balanced Markdown fences: README.md",
+      "passed": true
+    },
+    {
+      "check": "Local link: process.md -> ../docs/AI_PII_Gateway_PRD_v1.md",
+      "passed": true
+    },
+    {
+      "check": "Local link: process.md -> configs/assets.lock.json",
+      "passed": true
+    },
+    {
+      "check": "Local link: process.md -> configs/toolchain-plan.json",
+      "passed": true
+    },
+    {
+      "check": "Local link: process.md -> configs/experiment-plan.json",
+      "passed": true
+    },
+    {
+      "check": "Local link: process.md -> licenses/NOTICE.md",
+      "passed": true
+    },
+    {
+      "check": "Local link: process.md -> README.md",
+      "passed": true
+    },
+    {
+      "check": "Local link: process.md -> ../docs/AI_PII_Gateway_PRD_v1.md",
+      "passed": true
+    },
+    {
+      "check": "Local link: process.md -> ../dev/detector/M0_INTEGRATION_NOTES.md",
+      "passed": true
+    },
+    {
+      "check": "Local link: process.md -> ../dev/contracts/README.md",
+      "passed": true
+    },
+    {
+      "check": "Local link: process.md -> ../dev/contracts/model-package.schema.json",
+      "passed": true
+    },
+    {
+      "check": "Balanced Markdown fences: process.md",
+      "passed": true
+    },
+    {
+      "check": "Local link: licenses/NOTICE.md -> ../metadata/m0-MODEL_CARD.md",
+      "passed": true
+    },
+    {
+      "check": "Local link: licenses/NOTICE.md -> Apache-2.0-GLiNER.txt",
+      "passed": true
+    },
+    {
+      "check": "Local link: licenses/NOTICE.md -> ../metadata/backbone-MODEL_CARD.md",
+      "passed": true
+    },
+    {
+      "check": "Local link: licenses/NOTICE.md -> MIT-DeBERTa.txt",
+      "passed": true
+    },
+    {
+      "check": "Local link: licenses/NOTICE.md -> CC-BY-4.0-DATA.txt",
+      "passed": true
+    },
+    {
+      "check": "Local link: licenses/NOTICE.md -> CC-BY-4.0-DATA.txt",
+      "passed": true
+    },
+    {
+      "check": "Local link: licenses/NOTICE.md -> ../metadata/sources.json",
+      "passed": true
+    },
+    {
+      "check": "Balanced Markdown fences: licenses/NOTICE.md",
+      "passed": true
+    },
+    {
+      "check": "Secrets and planned large artifact paths are ignored",
+      "passed": true
+    },
+    {
+      "check": "Secrets file is not tracked",
+      "passed": true
+    }
+  ],
+  "selected_direct_version_relationships_checked": [
+    "accelerate -> numpy>=1.17",
+    "accelerate -> packaging>=20.0",
+    "accelerate -> torch>=2.0.0",
+    "accelerate -> huggingface_hub>=0.21.0",
+    "accelerate -> safetensors>=0.4.3",
+    "gliner -> torch>=2.0.0",
+    "gliner -> transformers<5.17.0,>=4.51.3",
+    "gliner -> huggingface_hub>=0.21.4",
+    "gliner -> numpy",
+    "gliner -> packaging",
+    "gliner -> safetensors",
+    "gliner -> tqdm",
+    "gliner -> sentencepiece",
+    "huggingface-hub -> packaging>=20.9",
+    "huggingface-hub -> tqdm>=4.42.1",
+    "pytest -> packaging>=20",
+    "transformers -> huggingface-hub<1.0,>=0.34.0",
+    "transformers -> numpy>=1.17",
+    "transformers -> packaging>=20.0",
+    "transformers -> safetensors>=0.4.3",
+    "transformers -> tqdm>=4.27"
+  ],
+  "scope": "Offline JSON, retained source digests, upstream git blobs, B fixed identities, metadata-declared direct version relationships, documentation links and Git exclusions only.",
+  "not_verified": [
+    "Downloaded weights or actual train/dev/test records",
+    "GPU or remote environment",
+    "Transitive dependency solve, cu130 dependency metadata, package installation/import",
+    "Tokenizer/model loading, training, model quality, latency or M1 deployment"
+  ]
+}
