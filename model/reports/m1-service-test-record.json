@@ -1,0 +1,252 @@
+{
+  "experiment_id": "m1-service-test-v1",
+  "parent_experiment_id": "m0-baseline-service-test-v1",
+  "common_baseline_experiment_id": "m0-baseline-service-test-v1",
+  "changed_factors": [
+    "model_weights",
+    "korean_segmentation_training"
+  ],
+  "comparison_mode": "dev_selected_pipeline",
+  "comparison_condition_id": "m0-baseline",
+  "model_repo_revision_or_checkpoint_sha256": "m1-ko-atomic-5k-v1",
+  "dataset_revision": "844f92f7beba98fa964f957ba324017e82451701",
+  "split_and_service_test_version": "service-test-v1",
+  "sample_manifest_sha256": "a1936a858d8cfea593792681e796f5ef50d96c8e9b376745adb732f327030506",
+  "seed": 42,
+  "inference_configuration": {
+    "batch_size": 1,
+    "device": "cuda:0",
+    "windowing": "b-gliner-planner-v1"
+  },
+  "label_mapping_version": "gliner029-m0-18labels-v1",
+  "threshold_version": "m1-calibrated-0.5-v1",
+  "rules_version": "none",
+  "policy_version": "b-gateway-policy-v1",
+  "chunking_and_overlap_version": "gliner029-word-window-v1",
+  "span_postprocessing_version": "ko_atomic_suffix_v3_trained",
+  "started_at_utc": "2026-10-31T12:43:17.744824+00:00",
+  "finished_at_utc": "2026-10-31T12:43:24.469410+00:00",
+  "delta_vs_parent": null,
+  "delta_vs_common_baseline": null,
+  "report_mode": "model_only",
+  "metrics_protocol_version": "char_span_exact_v1+policy-metrics-v1",
+  "record_schema_version": "1.0",
+  "status": "executed",
+  "overall_precision_recall_f1": {
+    "tp": 384,
+    "fp": 302,
+    "fn": 247,
+    "precision": 0.5597667638483965,
+    "recall": 0.6085578446909667,
+    "f1": 0.5831435079726651
+  },
+  "per_type_precision_recall_f1_and_denominators": {
+    "CREDIT_CARD": {
+      "tp": 21,
+      "fp": 14,
+      "fn": 20,
+      "gold": 41,
+      "predicted": 35,
+      "precision": 0.6,
+      "recall": 0.5121951219512195,
+      "f1": 0.5526315789473685
+    },
+    "DATE_OF_BIRTH": {
+      "tp": 11,
+      "fp": 7,
+      "fn": 7,
+      "gold": 18,
+      "predicted": 18,
+      "precision": 0.6111111111111112,
+      "recall": 0.6111111111111112,
+      "f1": 0.6111111111111112
+    },
+    "EMAIL_ADDRESS": {
+      "tp": 55,
+      "fp": 48,
+      "fn": 22,
+      "gold": 77,
+      "predicted": 103,
+      "precision": 0.5339805825242718,
+      "recall": 0.7142857142857143,
+      "f1": 0.6111111111111112
+    },
+    "IP_ADDRESS": {
+      "tp": 24,
+      "fp": 8,
+      "fn": 7,
+      "gold": 31,
+      "predicted": 32,
+      "precision": 0.75,
+      "recall": 0.7741935483870968,
+      "f1": 0.7619047619047619
+    },
+    "KR_BANK_ACCOUNT": {
+      "tp": 17,
+      "fp": 25,
+      "fn": 36,
+      "gold": 53,
+      "predicted": 42,
+      "precision": 0.40476190476190477,
+      "recall": 0.32075471698113206,
+      "f1": 0.35789473684210527
+    },
+    "KR_DRIVER_LICENSE": {
+      "tp": 8,
+      "fp": 0,
+      "fn": 0,
+      "gold": 8,
+      "predicted": 8,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "KR_LOCATION": {
+      "tp": 13,
+      "fp": 10,
+      "fn": 4,
+      "gold": 17,
+      "predicted": 23,
+      "precision": 0.5652173913043478,
+      "recall": 0.7647058823529411,
+      "f1": 0.65
+    },
+    "KR_NHIS": {
+      "tp": 4,
+      "fp": 3,
+      "fn": 3,
+      "gold": 7,
+      "predicted": 7,
+      "precision": 0.5714285714285714,
+      "recall": 0.5714285714285714,
+      "f1": 0.5714285714285714
+    },
+    "KR_PASSPORT": {
+      "tp": 8,
+      "fp": 0,
+      "fn": 0,
+      "gold": 8,
+      "predicted": 8,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "KR_PHONE_NUMBER": {
+      "tp": 58,
+      "fp": 22,
+      "fn": 22,
+      "gold": 80,
+      "predicted": 80,
+      "precision": 0.725,
+      "recall": 0.725,
+      "f1": 0.725
+    },
+    "KR_RRN": {
+      "tp": 29,
+      "fp": 38,
+      "fn": 13,
+      "gold": 42,
+      "predicted": 67,
+      "precision": 0.43283582089552236,
+      "recall": 0.6904761904761905,
+      "f1": 0.5321100917431193
+    },
+    "KR_VEHICLE_PLATE": {
+      "tp": 0,
+      "fp": 21,
+      "fn": 11,
+      "gold": 11,
+      "predicted": 21,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "NRP": {
+      "tp": 0,
+      "fp": 9,
+      "fn": 9,
+      "gold": 9,
+      "predicted": 9,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "ORGANIZATION": {
+      "tp": 9,
+      "fp": 25,
+      "fn": 16,
+      "gold": 25,
+      "predicted": 34,
+      "precision": 0.2647058823529412,
+      "recall": 0.36,
+      "f1": 0.3050847457627119
+    },
+    "PERSON": {
+      "tp": 113,
+      "fp": 38,
+      "fn": 42,
+      "gold": 155,
+      "predicted": 151,
+      "precision": 0.7483443708609272,
+      "recall": 0.7290322580645161,
+      "f1": 0.738562091503268
+    },
+    "PERSONAL_ATTRIBUTE": {
+      "tp": 0,
+      "fp": 1,
+      "fn": 10,
+      "gold": 10,
+      "predicted": 1,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "URL": {
+      "tp": 0,
+      "fp": 12,
+      "fn": 15,
+      "gold": 15,
+      "predicted": 12,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "USERNAME": {
+      "tp": 14,
+      "fp": 21,
+      "fn": 10,
+      "gold": 24,
+      "predicted": 35,
+      "precision": 0.4,
+      "recall": 0.5833333333333334,
+      "f1": 0.4745762711864407
+    }
+  },
+  "critical_type_false_negatives_and_gold_counts": {
+    "KR_RRN": {
+      "false_negatives": 13,
+      "gold": 42
+    },
+    "KR_BANK_ACCOUNT": {
+      "false_negatives": 36,
+      "gold": 53
+    },
+    "CREDIT_CARD": {
+      "false_negatives": 20,
+      "gold": 41
+    },
+    "KR_PHONE_NUMBER": {
+      "false_negatives": 22,
+      "gold": 80
+    },
+    "EMAIL_ADDRESS": {
+      "false_negatives": 22,
+      "gold": 77
+    }
+  },
+  "normal_false_block_rate_and_denominator": {
+    "false_blocks": 8,
+    "normal_documents": 100,
+    "rate": 0.08
+  }
+}

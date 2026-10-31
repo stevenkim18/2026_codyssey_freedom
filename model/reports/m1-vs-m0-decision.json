@@ -1,0 +1,11 @@
+{
+  "verdict": "reject",
+  "reasons": [
+    "normal_false_block_increase_within_limit"
+  ],
+  "gates": {
+    "critical_micro_recall_not_below_baseline": true,
+    "overall_f1_not_below_baseline": true,
+    "normal_false_block_increase_within_limit": false
+  }
+}
