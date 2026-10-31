@@ -125,6 +125,20 @@ ready 및 프로세스·포트 소유권을 검사하고, 실패하면 기존 re
 [배포 HTTPS 검증 스크립트](../integration/DEPLOYED_VERIFICATION.md)를 사용한다.
 서버 내부 loopback 검증 통과만으로 사용자 PC와의 TLS 연결을 완료 처리하지 않는다.
 
+## 연결·중단 상태의 읽기 전용 진단
+
+`python -m deployment.ssh_diagnose --role all --output .cache/ssh-stage-new.json`은
+서버 비밀번호 인증·원격 명령·호스트 키 자동 등록 없이 SSH 실패 단계와 현재
+로컬 경로를 확인한다. 증거에는 원문 stderr·주소·자격증명을 저장하지 않는다.
+종료 코드 0은 TCP 연결 도달 관찰이며 로그인 성공이 아니다. 1은 연결 미도달,
+2는 진단 자체 실패다. socket 상태는 한 시점의 같은 목적지 표본이며 PID에
+결합되지 않는다. 빈 표본·timeout만으로 VPN/ACG/서버 중 원인을 확정하지 않는다.
+
+중단된 배포 디렉터리는 [읽기 전용 복구 진단](RECOVERY.md)으로 먼저 확인한다.
+상태 기록·링크 전환 사이 중단과 첫 release 부분 기록은 현재 재배포/rollback을
+막을 수 있으며 자동 복구는 구현하지 않았다. 기존 파일을 삭제하거나 상태를
+추측해 바꾸지 않는다. 관련 미해결 항목은 `dev/BACKLOG.md`의 S04다.
+
 C 계약의 SQLite·업로드·기타 영속 데이터 경로는 반드시 release 트리 밖의
 고정된 절대 경로를 사용해야 한다. WorkingDirectory는 release마다 달라지므로
 상대 DB 경로의 연속성을 이 실행기가 보장하지 않는다.

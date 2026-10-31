@@ -43,6 +43,7 @@ rtk proxy python integration/probe_cli.py
 - `gateway/`: 요청·응답 텍스트 어댑터, 정책·마스킹, HTTP 통제, 원문 없는 저널
 - `detector/`: 인증 검사 API, 검사 계약 검증, 모델 패키지 인수·교체 기반
 - `launcher/`: 보호 전용 CLI 프로필·백업·복구와 검증된 설정을 고정하는 실행 인자
+- `deployment/`: 서버별 배포·검증·롤백과 읽기 전용 SSH/복구 진단
 - `integration/`: 실제 CLI 조사·통합 검증
 - `contracts/`: B 소유 검사·모델 패키지 계약. 사건 서버 계약은 C 소유다.
 
@@ -97,9 +98,15 @@ ASGI 인증·readiness·짧은 검사 요청 2회를 확인했다. [실제 CPU �
 현재 저널 DTO는 PRD를 바탕으로 한 로컬 allowlist다. C의 사건 API와 합의·연동한
 계약으로 간주하지 않는다. `LocalEventShipper`는 최대 100건·1MiB의 커밋된 사건을
 주입된 전송 어댑터로 보내고, 검증된 receipt의 ID만 삭제한다. 취소·시간초과 뒤 늦은
-ack는 버리며 미확인 사건을 유지한다. C HTTP 어댑터·자동 작업자·보관 운영은 별도다.
+ack는 버리며 미확인 사건을 유지한다. 자동 재전송은 명시적 어댑터 주입 시에만
+동작하며, C의 확정 codec·실제 중앙 연동·보관 운영은 별도다.
 HTTP `delivered`는 ASGI 서버가 안전한 전체 응답을 수락한 상태다. TCP 수신이나
 CLI 화면 표시를 별도 승인받았다는 뜻은 아니다. 전달 전 `unknown` 기록을 보존한다.
+
+상시 재전송과 인증 HTTP 전송 구성은 [R08 재전송](gateway/REPLAY.md)을 따른다.
+서버 수명주기에 명시적 어댑터를 주입할 수 있으며 기본 실행에서는 비활성이다.
+합성 codec/중앙 저장 fixture로 부분 ACK·장애·재시작을 검증했지만 C의 실제
+durable ACK 계약을 채택한 운영 연동은 남아 있다.
 
 ## 보안 위험에 따른 커버리지
 
@@ -194,6 +201,10 @@ GPU는 검사 서버, 일반 서버는 명시한 C 서비스 계약에만 적용
 로컬 실제 모델 검증은 `python -m integration.verify_m0_runtime`, 가중치 없이
 Unicode·장문 구간 계획만 확인하려면 `python -m integration.verify_m0_tokenizer`를
 사용한다. 각 도구는 검증 범위를 구분하여 증거 파일을 새로 생성한다.
+
+GPU 성능 측정의 기본 계획과 명시적 실행은
+[검사 프로파일러](integration/DETECTOR_PROFILING.md)를 따른다. 실제 L4 측정은 미완료다.
+개발·안정성 작업의 수락 기준과 미해결 제약은 [BACKLOG.md](BACKLOG.md)에 기록한다.
 
 공식 프로토콜 참고: [Responses 게이트웨이 요구사항](https://learn.chatgpt.com/docs/enterprise/gateway-compatibility),
 [SSE 이벤트](https://developers.openai.com/api/reference/resources/responses/streaming-events).
