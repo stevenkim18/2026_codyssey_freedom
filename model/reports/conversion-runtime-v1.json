@@ -1,0 +1,142 @@
+{
+  "status": "passed",
+  "scope": "Actual pinned tokenizer, B planning and GLiNER CPU collator only; no neural model/training/quality/GPU.",
+  "planner": {
+    "scope": "Actual tokenizer/processor and B window planning only; no model weights, predictions, GPU or quality validation.",
+    "gliner_version": "0.2.29",
+    "transformers_version": "4.57.3",
+    "torch_version": "2.10.0",
+    "tokenizers_version": "0.22.2",
+    "sentencepiece_version": "0.2.1",
+    "tokenizer_type": "DebertaV2TokenizerFast",
+    "processor_type": "UniEncoderSpanProcessor",
+    "config_type": "GLiNERConfig",
+    "b_helper_module": "dev.detector.gliner_backend",
+    "b_helper_source_sha256": "48619e8444815f9b8caa2a03e53941fee37b1ba50d3fdb496f30ecc97082099f",
+    "config_sha256": "2088bee85f50849dea2ab4cf411ab5cf3aaaf7c8a45c23412035978b2bc02801",
+    "tokenizer_source_files_sha256": {
+      "config.json": "bcffcd343dc5efa5ef2d5a58d2b405eed108f01cc45b48d0a907b333ec41801f",
+      "tokenizer_config.json": "3f3978e0c036f2c2588cac34a6047cbb0af0b0dc1814254e291028529805496d",
+      "spm.model": "13c8d666d62a7bc4ac8f040aab68e942c861f93303156cc28f5c7e885d86d6e3"
+    },
+    "backbone_revision": "a0484667b22365f84929a935b5e50a51f71f159d",
+    "configuration_overrides": {
+      "encoder_config_inlined": true,
+      "model_max_length": 512
+    },
+    "tokenizer_load_options": {
+      "local_files_only": true,
+      "trust_remote_code": false
+    },
+    "added_special_tokens": [
+      "[FLERT]",
+      "<<ENT>>",
+      "<<SEP>>"
+    ],
+    "label_order": [
+      "KR_RRN",
+      "CREDIT_CARD",
+      "PERSON",
+      "EMAIL_ADDRESS",
+      "KR_PHONE_NUMBER",
+      "KR_BANK_ACCOUNT",
+      "KR_LOCATION",
+      "DATE_OF_BIRTH",
+      "KR_DRIVER_LICENSE",
+      "KR_PASSPORT",
+      "KR_NHIS",
+      "KR_VEHICLE_PLATE",
+      "USERNAME",
+      "PERSONAL_ATTRIBUTE",
+      "ORGANIZATION",
+      "URL",
+      "IP_ADDRESS",
+      "NRP"
+    ],
+    "model_label_order": [
+      "Korean resident registration number",
+      "credit card number",
+      "person",
+      "email address",
+      "phone number",
+      "bank account number",
+      "address",
+      "date of birth",
+      "driver's license number",
+      "passport number",
+      "national health insurance number",
+      "license plate number",
+      "username",
+      "personal attribute",
+      "organization",
+      "URL",
+      "IP address",
+      "nationality religious or political group"
+    ],
+    "max_words": 384,
+    "max_span": 12,
+    "max_subtokens": 512,
+    "max_windows": 4096,
+    "max_plan_checks": 2048,
+    "max_input_codepoints": 16000,
+    "normalization": "none",
+    "offset_unit": "unicode_codepoint",
+    "model_weights_loaded": false,
+    "prediction_available": false
+  },
+  "cases": [
+    {
+      "case": "single",
+      "expected": "converted",
+      "actual": "converted",
+      "passed": true
+    },
+    {
+      "case": "particle",
+      "expected": "unaligned_entity_boundary",
+      "actual": "unaligned_entity_boundary",
+      "passed": true
+    },
+    {
+      "case": "repeat",
+      "expected": "converted",
+      "actual": "converted",
+      "passed": true
+    },
+    {
+      "case": "non_bmp",
+      "expected": "converted",
+      "actual": "converted",
+      "passed": true
+    },
+    {
+      "case": "combining",
+      "expected": "converted",
+      "actual": "converted",
+      "passed": true
+    },
+    {
+      "case": "zwj",
+      "expected": "converted",
+      "actual": "converted",
+      "passed": true
+    }
+  ],
+  "collator": {
+    "label_shape": [
+      1,
+      36,
+      18
+    ],
+    "positive_cells": 19,
+    "fixed_label_order_verified": true,
+    "multi_label_and_inclusive_end_verified": true,
+    "negative_labels_zero": true,
+    "truncation_warnings": false
+  },
+  "network_connection_attempts": 0,
+  "initialization_warning_count": 3,
+  "model_weights_loaded": false,
+  "training_performed": false,
+  "implementation_sha256": "827bacb64ad14da20c09dc43b5ac2dca3411a2747868c755b0159d746fc297cf"
+}

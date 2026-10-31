@@ -1,0 +1,166 @@
+{
+  "schema_version": "1.0",
+  "retrieved_at_utc": "2026-10-31T08:21:01+00:00",
+  "scope": "Small upstream metadata, configuration and license snapshots only. No model weights or dataset records.",
+  "snapshots": [
+    {
+      "path": "metadata/m0-hf-api.json",
+      "sha256": "d34bd11107ae5fdaf0fd0f3f1cfa93eddbc7c80a0d407c6bbce0eb5eaad8bb8f",
+      "size_bytes": 2109,
+      "source_url": "https://huggingface.co/api/models/urchade/gliner_multi_pii-v1?blobs=true",
+      "retrieved_at_utc": "2026-10-31T08:21:01+00:00",
+      "modified": false
+    },
+    {
+      "path": "metadata/dataset-hf-api.json",
+      "sha256": "cf8b563503ec30ac4fa360087cfef1886d58d65c679b2e4b0c9e866485d25f75",
+      "size_bytes": 4510,
+      "source_url": "https://huggingface.co/api/datasets/woohyun212/k-pii-bench?blobs=true",
+      "retrieved_at_utc": "2026-10-31T08:21:01+00:00",
+      "modified": false
+    },
+    {
+      "path": "metadata/backbone-hf-api.json",
+      "sha256": "6d12475ac736cbcbfe06a2930dd33cdb114f742b09effe1b18d02c8863512c2e",
+      "size_bytes": 3730,
+      "source_url": "https://huggingface.co/api/models/microsoft/mdeberta-v3-base/revision/a0484667b22365f84929a935b5e50a51f71f159d?blobs=true",
+      "retrieved_at_utc": "2026-10-31T08:21:01+00:00",
+      "modified": false
+    },
+    {
+      "path": "metadata/m0-MODEL_CARD.md",
+      "sha256": "5922e242558f1608f734dd23bb4a26fd2986254202131aa1d86153692181953e",
+      "size_bytes": 3040,
+      "source_url": "https://huggingface.co/urchade/gliner_multi_pii-v1/raw/1fcf13e85f4eef5394e1fcd406cf2ca9ea82351d/README.md",
+      "retrieved_at_utc": "2026-10-31T08:21:01+00:00",
+      "modified": false
+    },
+    {
+      "path": "metadata/m0-gliner_config.json",
+      "sha256": "2088bee85f50849dea2ab4cf411ab5cf3aaaf7c8a45c23412035978b2bc02801",
+      "size_bytes": 478,
+      "source_url": "https://huggingface.co/urchade/gliner_multi_pii-v1/raw/1fcf13e85f4eef5394e1fcd406cf2ca9ea82351d/gliner_config.json",
+      "retrieved_at_utc": "2026-10-31T08:21:01+00:00",
+      "modified": false
+    },
+    {
+      "path": "metadata/dataset-CARD.md",
+      "sha256": "980cc23d7ddb6b31ab01f8d66ff3218d654fd30d3ed4692c1b8505bc12574221",
+      "size_bytes": 2214,
+      "source_url": "https://huggingface.co/datasets/woohyun212/k-pii-bench/raw/844f92f7beba98fa964f957ba324017e82451701/README.md",
+      "retrieved_at_utc": "2026-10-31T08:21:01+00:00",
+      "modified": false
+    },
+    {
+      "path": "metadata/dataset-DATA_README.md",
+      "sha256": "81bd3202007aca68ab672f4118de399ecae1d79425c17ed4ca5bf91f8cbbe3c1",
+      "size_bytes": 3484,
+      "source_url": "https://huggingface.co/datasets/woohyun212/k-pii-bench/raw/844f92f7beba98fa964f957ba324017e82451701/data/README.md",
+      "retrieved_at_utc": "2026-10-31T08:21:01+00:00",
+      "modified": false
+    },
+    {
+      "path": "metadata/dataset-label_map_global.json",
+      "sha256": "fd021525000395e79e5cdd199a8f5727a7dd99dd5a4ca7dedb86b8397141c091",
+      "size_bytes": 825,
+      "source_url": "https://huggingface.co/datasets/woohyun212/k-pii-bench/raw/844f92f7beba98fa964f957ba324017e82451701/data/label_map_global.json",
+      "retrieved_at_utc": "2026-10-31T08:21:01+00:00",
+      "modified": false
+    },
+    {
+      "path": "metadata/dataset-split_statistics.json",
+      "sha256": "19f659d4ac8f0d459169e2f4bd301e2a59260670c40468a436039cfd06b763f0",
+      "size_bytes": 1570,
+      "source_url": "https://huggingface.co/datasets/woohyun212/k-pii-bench/raw/844f92f7beba98fa964f957ba324017e82451701/data/split_statistics.json",
+      "retrieved_at_utc": "2026-10-31T08:21:01+00:00",
+      "modified": false
+    },
+    {
+      "path": "metadata/backbone-MODEL_CARD.md",
+      "sha256": "90d5e535e04fc9ac4f39336ed33c1adc7d0136b8ce3bbe211c18a0d47b72342f",
+      "size_bytes": 3667,
+      "source_url": "https://huggingface.co/microsoft/mdeberta-v3-base/raw/a0484667b22365f84929a935b5e50a51f71f159d/README.md",
+      "retrieved_at_utc": "2026-10-31T08:21:01+00:00",
+      "modified": false
+    },
+    {
+      "path": "metadata/backbone-config.json",
+      "sha256": "bcffcd343dc5efa5ef2d5a58d2b405eed108f01cc45b48d0a907b333ec41801f",
+      "size_bytes": 579,
+      "source_url": "https://huggingface.co/microsoft/mdeberta-v3-base/raw/a0484667b22365f84929a935b5e50a51f71f159d/config.json",
+      "retrieved_at_utc": "2026-10-31T08:21:01+00:00",
+      "modified": false
+    },
+    {
+      "path": "metadata/backbone-tokenizer_config.json",
+      "sha256": "3f3978e0c036f2c2588cac34a6047cbb0af0b0dc1814254e291028529805496d",
+      "size_bytes": 52,
+      "source_url": "https://huggingface.co/microsoft/mdeberta-v3-base/raw/a0484667b22365f84929a935b5e50a51f71f159d/tokenizer_config.json",
+      "retrieved_at_utc": "2026-10-31T08:21:01+00:00",
+      "modified": false
+    },
+    {
+      "path": "metadata/gliner-tag.json",
+      "sha256": "bf542b7695c8e49ee3e392d7dc694c07d57ccfdadd4555216d60915d58a8a75b",
+      "size_bytes": 372,
+      "source_url": "https://api.github.com/repos/urchade/GLiNER/git/ref/tags/v0.2.29",
+      "retrieved_at_utc": "2026-10-31T08:21:01+00:00",
+      "modified": false
+    },
+    {
+      "path": "metadata/gliner-pyproject.toml",
+      "sha256": "294416326e920921befa0c51306e42f2d49caefaa09a02cb44edc728acc9ee4d",
+      "size_bytes": 5545,
+      "source_url": "https://raw.githubusercontent.com/urchade/GLiNER/3e1723b49539d518f76d4d8282f1e05d8b6e74f0/pyproject.toml",
+      "retrieved_at_utc": "2026-10-31T08:21:01+00:00",
+      "modified": false
+    },
+    {
+      "path": "licenses/CC-BY-4.0-DATA.txt",
+      "sha256": "647f6095494891720cd24ea12318eacf843de9c632d6b53735ebc9a399061455",
+      "size_bytes": 18958,
+      "source_url": "https://huggingface.co/datasets/woohyun212/k-pii-bench/raw/844f92f7beba98fa964f957ba324017e82451701/LICENSE-DATA",
+      "retrieved_at_utc": "2026-10-31T08:21:01+00:00",
+      "modified": false
+    },
+    {
+      "path": "licenses/Apache-2.0-GLiNER.txt",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "size_bytes": 11357,
+      "source_url": "https://raw.githubusercontent.com/urchade/GLiNER/3e1723b49539d518f76d4d8282f1e05d8b6e74f0/LICENSE",
+      "retrieved_at_utc": "2026-10-31T08:21:01+00:00",
+      "modified": false
+    },
+    {
+      "path": "licenses/MIT-DeBERTa.txt",
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383",
+      "size_bytes": 1141,
+      "source_url": "https://raw.githubusercontent.com/microsoft/DeBERTa/4d7fe0bd4fb3c7d4f4005a7cafabde9800372098/LICENSE",
+      "retrieved_at_utc": "2026-10-31T08:21:01+00:00",
+      "modified": false
+    }
+  ],
+  "package_metadata_projection": {
+    "path": "metadata/python-package-metadata.json",
+    "sha256": "7c0f5b72532e575f69ff00d304a4bccf3c92263525f3f25da3be3cc7831edb5a",
+    "note": "Selected fields; original response digests and source URLs are inside this projection."
+  },
+  "b_source_references": [
+    {
+      "path": "dev/detector/gliner_backend.py",
+      "sha256": "48619e8444815f9b8caa2a03e53941fee37b1ba50d3fdb496f30ecc97082099f"
+    },
+    {
+      "path": "dev/detector/prepare_m0.py",
+      "sha256": "6ff0380d7ff87143951250f57d94e1b831594d348948ba8dbaae323beaacee8b"
+    },
+    {
+      "path": "dev/detector/DEPENDENCIES.md",
+      "sha256": "85bd6d60b862288f00587216bd851721ffd56aa4fd089dde4ad8da3d61984a68"
+    },
+    {
+      "path": "dev/contracts/model-package.schema.json",
+      "sha256": "d581b2cea8aa9b4fd84e01dad768265f92d9c11b101eb6c3652b730e405719d3"
+    }
+  ]
+}

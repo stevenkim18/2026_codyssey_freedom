@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "status": "candidate_not_adopted",
+  "repo_id": "townboy/korean-pii-dataset",
+  "revision": "076419f07f7073b6b28cdfdb6fbd8b75e1278053",
+  "revision_source": "https://huggingface.co/api/datasets/townboy/korean-pii-dataset (fetched 2026-10-31, lastModified 2026-08-09T04:25:07Z)",
+  "license": {
+    "id": "CC-BY-4.0",
+    "source": "dataset card metadata, LICENSE file and README",
+    "attribution": "townboy/korean-pii-dataset, Korean Synthetic PII Dataset.",
+    "legalcode": "https://creativecommons.org/licenses/by/4.0/legalcode"
+  },
+  "upstream_card_counts": {
+    "documents": 11732,
+    "train": 9227,
+    "validation": 1510,
+    "test": 995,
+    "pii_spans": 55627,
+    "labels": 33
+  },
+  "repository_files_not_downloaded": [
+    ".gitattributes",
+    "bio/*.jsonl (another model's BIO tokenization; not used)",
+    "corpus_all.jsonl",
+    "corpus_all_bio.jsonl"
+  ],
+  "files": [
+    {
+      "path": "LICENSE",
+      "size_bytes": 534,
+      "sha256": "2882560a7a1c8201b1a7a9e0b6c282b7c54ba45ce4a645a673ee19d7bc2320cf",
+      "url": "https://huggingface.co/datasets/townboy/korean-pii-dataset/resolve/076419f07f7073b6b28cdfdb6fbd8b75e1278053/LICENSE"
+    },
+    {
+      "path": "README.md",
+      "size_bytes": 6166,
+      "sha256": "26e4dc45c514b71e05ee4b03e101ecd90b7bcc98b759f320852606e112b1e0d0",
+      "url": "https://huggingface.co/datasets/townboy/korean-pii-dataset/resolve/076419f07f7073b6b28cdfdb6fbd8b75e1278053/README.md"
+    },
+    {
+      "path": "dataset_stats.json",
+      "size_bytes": 4152,
+      "sha256": "2d3d362f379a741ed4f4f9067c77076a95c657bdbf39a01ece1e0eae0c71247a",
+      "url": "https://huggingface.co/datasets/townboy/korean-pii-dataset/resolve/076419f07f7073b6b28cdfdb6fbd8b75e1278053/dataset_stats.json"
+    },
+    {
+      "path": "label_map.json",
+      "size_bytes": 3251,
+      "sha256": "bddd3357bd7dea35ab9ef68330caef9c25c5b00723d0247e428c24c19556909a",
+      "url": "https://huggingface.co/datasets/townboy/korean-pii-dataset/resolve/076419f07f7073b6b28cdfdb6fbd8b75e1278053/label_map.json"
+    },
+    {
+      "path": "data/train.jsonl",
+      "size_bytes": 8831858,
+      "sha256": "2b87eaa15bf55f5d2b7735cff0781472be320a0dcc7e54d44b8eb8273cbbdab2",
+      "url": "https://huggingface.co/datasets/townboy/korean-pii-dataset/resolve/076419f07f7073b6b28cdfdb6fbd8b75e1278053/data/train.jsonl"
+    },
+    {
+      "path": "data/validation.jsonl",
+      "size_bytes": 926460,
+      "sha256": "9ba3b1efd377c78329a25031e98cc300eb8eb4d67f101708aec0d352f0d5b4b1",
+      "url": "https://huggingface.co/datasets/townboy/korean-pii-dataset/resolve/076419f07f7073b6b28cdfdb6fbd8b75e1278053/data/validation.jsonl"
+    },
+    {
+      "path": "data/test.jsonl",
+      "size_bytes": 474854,
+      "sha256": "53c96d407d0067a2be6e186e912f9ef46ae31b95a70961306ef1cc6a21f2e7ec",
+      "url": "https://huggingface.co/datasets/townboy/korean-pii-dataset/resolve/076419f07f7073b6b28cdfdb6fbd8b75e1278053/data/test.jsonl"
+    }
+  ]
+}

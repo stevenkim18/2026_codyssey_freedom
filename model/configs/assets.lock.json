@@ -1,0 +1,198 @@
+{
+  "schema_version": "1.0",
+  "selection_id": "a-stage1-v1",
+  "selected_at_utc": "2026-10-31T08:21:01+00:00",
+  "scope": "Pinned source identities and upstream file digests. This is not a B model-package manifest or a complete Python environment lock.",
+  "m0": {
+    "repo_id": "urchade/gliner_multi_pii-v1",
+    "revision": "1fcf13e85f4eef5394e1fcd406cf2ca9ea82351d",
+    "license_id": "Apache-2.0",
+    "license_evidence": "metadata/m0-MODEL_CARD.md",
+    "standalone_model_license_in_upstream_repo": false,
+    "artifacts": [
+      {
+        "path": "pytorch_model.bin",
+        "size_bytes": 1155900362,
+        "digest": {
+          "algorithm": "sha256",
+          "value": "3003753fba99e40645cf088c7367a2c6211fc174897dc64f1f9c147c29d18d2d"
+        },
+        "url": "https://huggingface.co/urchade/gliner_multi_pii-v1/resolve/1fcf13e85f4eef5394e1fcd406cf2ca9ea82351d/pytorch_model.bin"
+      },
+      {
+        "path": "gliner_config.json",
+        "size_bytes": 478,
+        "digest": {
+          "algorithm": "git-blob-sha1",
+          "value": "17fd7dcfe79421099b83c49ea325dbb9d2148791"
+        },
+        "url": "https://huggingface.co/urchade/gliner_multi_pii-v1/resolve/1fcf13e85f4eef5394e1fcd406cf2ca9ea82351d/gliner_config.json"
+      },
+      {
+        "path": "README.md",
+        "size_bytes": 3040,
+        "digest": {
+          "algorithm": "git-blob-sha1",
+          "value": "167f44c6a24bc89ef4fb0492c2e612544df6d661"
+        },
+        "url": "https://huggingface.co/urchade/gliner_multi_pii-v1/resolve/1fcf13e85f4eef5394e1fcd406cf2ca9ea82351d/README.md"
+      }
+    ],
+    "weights_downloaded": false
+  },
+  "backbone": {
+    "repo_id": "microsoft/mdeberta-v3-base",
+    "revision": "a0484667b22365f84929a935b5e50a51f71f159d",
+    "license_id": "MIT",
+    "artifacts": [
+      {
+        "path": "config.json",
+        "size_bytes": 579,
+        "digest": {
+          "algorithm": "git-blob-sha1",
+          "value": "27b905d788d20826414d27ce9fa9765623e38ea7"
+        },
+        "url": "https://huggingface.co/microsoft/mdeberta-v3-base/resolve/a0484667b22365f84929a935b5e50a51f71f159d/config.json"
+      },
+      {
+        "path": "tokenizer_config.json",
+        "size_bytes": 52,
+        "digest": {
+          "algorithm": "git-blob-sha1",
+          "value": "acfd94e399c5659e4bed75f91b4ee24b111fc7a6"
+        },
+        "url": "https://huggingface.co/microsoft/mdeberta-v3-base/resolve/a0484667b22365f84929a935b5e50a51f71f159d/tokenizer_config.json"
+      },
+      {
+        "path": "spm.model",
+        "size_bytes": 4305025,
+        "digest": {
+          "algorithm": "sha256",
+          "value": "13c8d666d62a7bc4ac8f040aab68e942c861f93303156cc28f5c7e885d86d6e3"
+        },
+        "url": "https://huggingface.co/microsoft/mdeberta-v3-base/resolve/a0484667b22365f84929a935b5e50a51f71f159d/spm.model"
+      },
+      {
+        "path": "README.md",
+        "size_bytes": 3667,
+        "digest": {
+          "algorithm": "git-blob-sha1",
+          "value": "779d99e0b02b1f278e35c2ad228417192dec4eba"
+        },
+        "url": "https://huggingface.co/microsoft/mdeberta-v3-base/resolve/a0484667b22365f84929a935b5e50a51f71f159d/README.md"
+      }
+    ],
+    "backbone_weights_required_by_this_plan": false,
+    "note": "Use the complete M0 checkpoint with the pinned backbone config/tokenizer, consistent with B. Verify the actual training load path before execution; do not silently fall back to downloading backbone weights.",
+    "tokenizer_downloaded": false
+  },
+  "dataset": {
+    "repo_id": "woohyun212/k-pii-bench",
+    "revision": "844f92f7beba98fa964f957ba324017e82451701",
+    "release_name_from_statistics": "v4-corrected",
+    "license_id": "CC-BY-4.0",
+    "license_copy": "licenses/CC-BY-4.0-DATA.txt",
+    "splits": {
+      "train": {
+        "path": "data/train.jsonl",
+        "expected_documents_from_upstream_metadata": 243711
+      },
+      "dev": {
+        "path": "data/dev.jsonl",
+        "expected_documents_from_upstream_metadata": 28147
+      },
+      "test_track_a": {
+        "path": "data/test_track_a.jsonl",
+        "expected_documents_from_upstream_metadata": 28142
+      }
+    },
+    "artifacts": [
+      {
+        "path": "data/train.jsonl",
+        "size_bytes": 1268092270,
+        "digest": {
+          "algorithm": "sha256",
+          "value": "c484cff4823c8a8f291d08520aee4b6955d7e0dd34f96db62a4e75d0b91429a5"
+        },
+        "url": "https://huggingface.co/datasets/woohyun212/k-pii-bench/resolve/844f92f7beba98fa964f957ba324017e82451701/data/train.jsonl"
+      },
+      {
+        "path": "data/dev.jsonl",
+        "size_bytes": 147128906,
+        "digest": {
+          "algorithm": "sha256",
+          "value": "2f056ea7eb4a55054aeeb278416b088b02a7fc0254a8afbfd5c9ede4deffa493"
+        },
+        "url": "https://huggingface.co/datasets/woohyun212/k-pii-bench/resolve/844f92f7beba98fa964f957ba324017e82451701/data/dev.jsonl"
+      },
+      {
+        "path": "data/test_track_a.jsonl",
+        "size_bytes": 143005610,
+        "digest": {
+          "algorithm": "sha256",
+          "value": "219c023f69832f9089d59df00368320fc76be81e05ee602cf0909289cd456add"
+        },
+        "url": "https://huggingface.co/datasets/woohyun212/k-pii-bench/resolve/844f92f7beba98fa964f957ba324017e82451701/data/test_track_a.jsonl"
+      }
+    ],
+    "total_expected_documents_from_upstream_metadata": 300000,
+    "canonical_labels": [
+      "CREDIT_CARD",
+      "DATE_OF_BIRTH",
+      "EMAIL_ADDRESS",
+      "IP_ADDRESS",
+      "KR_BANK_ACCOUNT",
+      "KR_DRIVER_LICENSE",
+      "KR_LOCATION",
+      "KR_NHIS",
+      "KR_PASSPORT",
+      "KR_PHONE_NUMBER",
+      "KR_RRN",
+      "KR_VEHICLE_PLATE",
+      "NRP",
+      "ORGANIZATION",
+      "PERSON",
+      "PERSONAL_ATTRIBUTE",
+      "URL",
+      "USERNAME"
+    ],
+    "label_count": 18,
+    "source_offset_unit": "unicode_codepoint",
+    "end_offset": "exclusive",
+    "model_input_field": "text",
+    "gold_field": "entities",
+    "excluded_model_input_fields": [
+      "template_text",
+      "meta",
+      "entities",
+      "tokens",
+      "bio_tags",
+      "token_offsets"
+    ],
+    "excluded_input_note": "entities supplies supervised targets; it is not concatenated into model input. Derived tokens/spans come from the pinned GLiNER tokenizer, not the supplied BIO fields.",
+    "train_dev_test_files_downloaded": false,
+    "local_quality_validation": "not_started",
+    "upstream_claims_are_not_local_validation": true
+  },
+  "gliner": {
+    "version": "0.2.29",
+    "source_repo": "https://github.com/urchade/GLiNER",
+    "tag": "v0.2.29",
+    "source_revision": "3e1723b49539d518f76d4d8282f1e05d8b6e74f0",
+    "license_id": "Apache-2.0",
+    "license_copy": "licenses/Apache-2.0-GLiNER.txt",
+    "wheel": {
+      "filename": "gliner-0.2.29-py3-none-any.whl",
+      "sha256": "0c8cfb9f5c2daf7aff329ebb5ab1609052d7ad0aca0ef26049b9476b018b3fde",
+      "size_bytes": 261988,
+      "url": "https://files.pythonhosted.org/packages/78/76/74ec5493e2167350c53a51c0f1db8e6a096c1b99f7110e2d9fc7daaf5cdc/gliner-0.2.29-py3-none-any.whl"
+    }
+  },
+  "evidence_index": "metadata/sources.json",
+  "pending_before_training": [
+    "Verify actual prd-a-py312 inventory and CUDA build on the GPU server",
+    "Resolve and test complete environment, then export transitive/build lock",
+    "Adopt A/B label mapping, thresholds and M1 package acceptance contract",
+    "Download and validate all required data and model files"
+  ]
+}

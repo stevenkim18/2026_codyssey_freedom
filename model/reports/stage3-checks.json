@@ -1,0 +1,62 @@
+{
+  "recorded_at_utc": "2026-10-31T09:05:59+00:00",
+  "tests": {
+    "command": "model/.cache/conversion-venv/bin/python -m pytest model/tests -q",
+    "passed": 104,
+    "observed_seconds": 0.18,
+    "network_or_gpu_used_by_unit_tests": false
+  },
+  "actual_tokenizer_runtime": {
+    "cases": 6,
+    "status": "passed",
+    "network_connection_attempts": 0,
+    "collator_label_shape": [
+      1,
+      36,
+      18
+    ],
+    "model_weights_loaded": false
+  },
+  "conversion_status": "blocked_compatibility",
+  "training_ready": false,
+  "code_sha256": {
+    "data/__init__.py": "9ce76838f8fd8c75d363ad3bcd8ab3436138c8d2e1d0e5da6eeefb3d2e0f81dc",
+    "data/audit.py": "f483ac93969d262c1a1e02fd69c22a773f044d6e42bf0f96cc1b346fd54a0380",
+    "data/conversion.py": "26274f7e55a6aea611de32e16d95f423b9d20957acb6fa525a2ef35326e5df05",
+    "data/convert_dataset.py": "a04e1b19289558282057b14790977ffa0394415833dfbadf83b17f11e0ac1dca",
+    "data/download.py": "f3cfffcf62cabb457e5353576521ec369d6558c2db4c63a880e0c3348d2ed183",
+    "data/gliner_planner.py": "41e7e53eae2edf3f16b97c9c72c0d6c25f65a32d3cac943eb8f23dfa0ffa3434",
+    "data/manifest.py": "810783be6b3b858bea221758a9560fa2ea1ee10e51042e2eeb5e8fd4a4eeb72f",
+    "data/prepare_tokenizer.py": "c8cc0da9a2d78070d56d9345b68d8ca0346c77d4a47a2abbf0f4b0171502829b",
+    "data/verify_conversion_runtime.py": "827bacb64ad14da20c09dc43b5ac2dca3411a2747868c755b0159d746fc297cf",
+    "tests/__init__.py": "b7d34454c663153808d5e8000c974c516d35380d9c736f13ad17c1400f6efcf7",
+    "tests/helpers.py": "dd6a37169c55caca53cd61a5d04b5da25ebcf7ea14e9d06ef937bf3e5fbf0d1a",
+    "tests/test_audit.py": "f9510af4a15a257ae4f8da34a9a1d429173406b5822418d88b73942f1eac0678",
+    "tests/test_conversion.py": "9f69de647eef52f1bf8e0ee252c01ca451f14e29cfe875ba3d07f99e5e25abd5",
+    "tests/test_conversion_pipeline.py": "1598df768b740edab71a00ed22566c3bcd8e5215cede6ddf4935714ab7cdd384",
+    "tests/test_download.py": "36886adec5da26ed672b61065c18decb30a18ad5175cc6d37f211179060ba714",
+    "tests/test_prepare_tokenizer.py": "4033d727d718fcc43a8e53131f3c31b42518ee06b77e7e268275522c320cdf8d"
+  },
+  "artifact_sha256": {
+    "reports/conversion-v1.json": "be6be818c46891ea25d7072f1042ff224cbc84a7cff12933508f7dcab89c7f04",
+    "reports/conversion-runtime-v1.json": "d1d6af0cc4ab69a278f506bdf9b099326bf387c94765380d695d568e2bf5b55c",
+    "configs/conversion-plan.json": "5e6734aa24877d4ba6403723c841c23451efdee73fc489fc6f45fd55ea797eb0",
+    "configs/conversion-macos.lock.txt": "e63ea52a9003fffe13e2c81c6935d3e362361b19558aadafe84a8208aeb6797d",
+    "configs/experiment-plan.json": "58a38e24fecd502939460410e44170d6886609a73b69cc99d80ee7023704352c",
+    "metadata/conversion-local-environment.json": "20ed02d21f69eaa5fd19a95c42ffd761a8b8142354976f9a6d854fbd2a0359d8"
+  },
+  "limits": [
+    "Shared Korean segmentation/offset protocol and label mapping need A/B adoption",
+    "Eligible unique train texts are below PRD 5000 and omit seven gold types",
+    "No model quality, training, performance, CUDA or server environment validation"
+  ],
+  "independent_actual_export_roundtrip": {
+    "status": "passed",
+    "source_documents": 300000,
+    "converted_documents": 3332,
+    "exported_examples": 3332,
+    "converted_source_gold_entities": 14042,
+    "all_export_and_ledger_file_digests_match": true,
+    "raw_values_exported_to_report": false
+  }
+}
