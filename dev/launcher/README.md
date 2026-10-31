@@ -1,5 +1,8 @@
 # 보호 프로필 설치·실행·복구 CLI
 
+평소 Codex에서 쓰는 플러그인 훅은 `plugin/hook_runtime/`에 있다.
+범위와 설치는 [플러그인 훅 가이드](../../docs/PLUGIN_HOOK_GUIDE.md)를 따른다.
+
 `dev`에서 Anaconda `py312`의 `python -m launcher`로 기존 공개 프로필 API를
 실행한다. 패키지 설치나 Codex 업데이트, 서버 기동은 수행하지 않는다.
 run은 준비된 로컬 게이트웨이를 통해 사용자 요청을 전달한다.
