@@ -1,8 +1,9 @@
 # Inspection service: synthetic development gate
 
 This implements the B-owned API skeleton for R03/R06/R10/R11 with explicit
-injected asynchronous backends. There is no fake production fallback, automatic
-weight download, or concrete M0 loader. Factory usage:
+injected backends and a verified local M0 loading adapter. There is no fake
+production fallback or automatic weight download. Actual M0/GPU validation is
+still pending. Factory usage:
 
 ```python
 from detector.app import create_app
@@ -70,8 +71,38 @@ Backend mutation of supplied segment text or IDs is rejected.
 Cancellation cannot stop a native inference thread. Repeated cancellation keeps
 the request/prepare drain occupied until that worker actually exits; readiness
 does not return early. Synthetic runtime and API tests cover this behavior,
-warmup and version rollback. A concrete M0 driver and actual GPU behavior remain
-unverified; the manager never downloads weights itself.
+warmup and version rollback. The local M0 adapter described below is implemented;
+actual weights and GPU behavior remain unverified. The manager never downloads
+weights itself.
+
+## Local M0 driver and process entrypoint
+
+`gliner_backend.load_gliner()` requires a fully hashed local M0 package at the
+locked revision and `gliner==0.2.29`. It rejects remote-code configuration, requires
+bundled tokenizer metadata and uses local-only loading. Real cold-cache loading,
+backbone/tokenizer dependencies, label quality and GPU resource use are separate
+gates; fake model tests do not establish them.
+
+The driver inspects original-codepoint windows with model-span overlap and checks
+label-prompt subtoken coverage before inference. It plans the whole request first.
+Prefix-fit search is bounded by a shared 2,048-check budget; exceeding that budget
+returns `incomplete` with zero model calls. An accepted window is individually
+validated, so nonmonotonic tokenizer behavior can conservatively reject input but
+cannot authorize silently truncated text. This is coverage within the model's
+span width, not a guarantee that all PII is detected.
+
+From `dev`, set the three variables shown in `detector/.env.example` and run:
+
+```sh
+rtk proxy python -m detector
+```
+
+The entrypoint binds only `127.0.0.1` and disables access logs. Configuration
+errors exit safely; package/load/warmup failure leaves liveness available and
+readiness at 503. There is no model download, dotenv auto-load, or fake fallback.
+Remote TLS termination and Ubuntu GPU deployment are not configured by this
+local entrypoint. See `M0_INTEGRATION_NOTES.md` for pinned primary sources and
+the remaining real-model gates.
 
 Run from `dev`:
 
