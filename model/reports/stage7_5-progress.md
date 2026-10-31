@@ -25,8 +25,14 @@
    - 동결 서비스 시험 및 공식 Test의 정상 실패(`M0 1/100`, `M1 2/100`), 전달 문서 잔존(`M0 22/54`, `M1 6/79`; 공식 Test `M0 1,983/9,061`, `M1 60/6,325`), 게이트웨이 재검사 실패(`REINSPECTION_FAILED` `error`: 서비스 `92 → 57건`, 공식 Test `20,107 → 11,921건`)를 확인된 사실과 구조적 가설로 구분해 [최종 보고서](../report_v1.md)에 반영했습니다.
    - 실측 JSON에서 공식 Test 5종을 포함한 [전체 그래프 18종(PNG/SVG)](../graph/README.md)과 [graph-data.json](../graph/graph-data.json)을 재생성하고 시각 검수를 마쳤습니다.
 
-## 3. 최종 판정 및 8단계(B 운영 인수) 경계
+## 3. 최종 판정 및 8단계(B 운영 인수·후속 고도화) 경계
 
 - **최종 판정**: `pending_runtime_acceptance` (A 오프라인 수치 게이트 통과 · B 운영 인수 전까지 운영 모델 M0 유지)
-- **남은 8단계(B 영역) 과제**: B 런타임에 `ko_atomic_suffix_v3` 분할기 및 경계 안전 창 처리 채택(`b_splitter_adoption=False`), `checkpoint-1262` 로딩·메모리·클라이언트 종단간 p95(`≤ 500ms`)·마스킹 후 재검사(`REINSPECTION_FAILED`) 운영 정책 인수(`runtime_acceptance=None`).
+- **남은 8단계(B·C 연계 및 후속 고도화) 과제** ([report_v1.md §7.2](../report_v1.md) 상세 참조):
+  1. **패키지 계약 번들링 및 롤백 구성**: `dev/contracts/model-package.schema.json` 규격 M1(`checkpoint-1262`, `threshold=0.5`, `ko_atomic_suffix_v3`) 매니페스트 인계 및 M0 즉시 롤백 스위치 검증.
+  2. **B 런타임 분할기·창 경계 이관 (`b_splitter_adoption=False`)**: `dev/detector/gliner_backend.py`에 `ko_atomic_suffix_v3` 및 `BoundarySafeCoverageBackend` 채택, 장문 경계 회귀 테스트 추가.
+  3. **숫자 유사 정상 문서(`KR_RRN`) 오차단 가드레일 및 M1.1 보완**: 하이픈 자산코드·긴 정수열 오차단(`서비스 2/100`, `Dev 조정 10/200`) 방지를 위한 주민등록번호 형식·체크섬 보조 검증 또는 12분야 균형 5k([stage7_5-sample-v1.json](stage7_5-sample-v1.json)) + 정상 음성 예시 혼합 재학습.
+  4. **마스킹 후 1회 재검사(`REINSPECTION_FAILED` → `error`) 정책 정교화**: `[MASKED]` 치환 후 2차 재검사 오류(`서비스 57/300`, `공식 Test 11,921/28,142`) 완화를 위한 기마스킹 구간 제외·플레이스홀더 정책 개선.
+  5. **비핵심 마스킹 유형(`PERSONAL_ATTRIBUTE`, `KR_LOCATION`, `USERNAME`) 보완**: K-PII-Bench 정답 0건인 `PERSONAL_ATTRIBUTE`(서비스 잔존 6건 중 4건) 보충 데이터/사전 규칙 및 주소 동·호수 경계 보완.
+  6. **종단간 런타임 인수(`runtime_acceptance=None`) 및 C 감사 저널·카나리 배포**: 클라이언트 종단간 `p95 ≤ 500ms`, 메모리, fail-closed 복구, C 비식별 저널(`dev/gateway/journal.py`) 연동 및 Shadow/Canary 검증.
 - 기존 서버 디렉터리(`v3`, `v4`, `v5/runs/final-v2`)와 로컬 캐시는 덮어쓰지 않고 보존했으며, 원문·예측·가중치·접속정보는 Git 제외 경로에만 두었습니다.

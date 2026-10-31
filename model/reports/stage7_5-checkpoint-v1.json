@@ -12,9 +12,13 @@
   "remote_evaluation_workspace": "/home1/ncloud/stage7_5_20261031_codex_v5/runs/official-handoff-v1",
   "final_verdict": "pending_runtime_acceptance (offline numeric gates passed on frozen service holdout and official test_track_a; keep M0 in production until B runtime/splitter/reinspection acceptance completes)",
   "remaining_stage8_b_acceptance": [
-    "B adoption of ko_atomic_suffix_v3 and boundary-safe window coverage in production runtime (b_splitter_adoption=False currently).",
-    "B end-to-end client p95 latency (<= 500ms), memory footprint, and REINSPECTION_FAILED operational policy acceptance (runtime_acceptance=None currently)."
+    "8-1: Package M1 checkpoint-1262 (threshold=0.5, ko_atomic_suffix_v3, windows 384/64/12/512) per dev/contracts/model-package.schema.json with instant rollback to M0.",
+    "8-2: B adoption of ko_atomic_suffix_v3 and BoundarySafeCoverageBackend in dev/detector/gliner_backend.py (b_splitter_adoption=False currently).",
+    "8-3: Numeric lookalike (KR_RRN) false-block guardrail (format/date/checksum validation in B policy/postprocessing or M1.1 balanced 5k + negative lookalike retraining).",
+    "8-4: Gateway one-reinspection (REINSPECTION_FAILED -> error) placeholder policy refinement with B.",
+    "8-5: Non-critical entity supplementation for PERSONAL_ATTRIBUTE (0 gold in K-PII-Bench) and KR_LOCATION unit suffix boundary alignment.",
+    "8-6: B end-to-end client p95 latency (<= 500ms), memory footprint, fail-closed recovery, C redacted audit journal integration, and shadow/canary acceptance (runtime_acceptance=None currently)."
   ],
   "model_weights_and_B_processes_unchanged": true,
-  "git_commit_push_performed": false
+  "git_commit_push_performed": true
 }

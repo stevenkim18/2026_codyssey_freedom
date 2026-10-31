@@ -212,15 +212,46 @@
 
 ---
 
-## 6. 실행 중 해결한 경계 문제와 남은 한계·B 인수 조건
+## 6. 단계별 핵심 트러블슈팅 이력 및 해결 아키텍처
 
-1. **긴 문장 창 경계 조사 분리 보완 (`BoundarySafeCoverageBackend`)**:
-   - 첫 서비스 실행 당시 40번째 문서에서 384단어 창 경계에 걸친 한국어 어절의 조사 분할이 전체 문장 분할과 달라져 `status="incomplete"`로 안전 중단되었습니다.
-   - 이를 점수로 숨기지 않고 `failed.json`으로 보존한 뒤, A 평가 경로에서 전체 단어 묶음 경계로 창을 잡는 [`BoundarySafeCoverageBackend`](segmentation/coverage_backend.py)를 구현해 동결 서비스 300건(`complete=300`)과 공식 Test 28,142건(`complete=28,142`)을 무결하게 완주했습니다. B의 운영 코드(`dev/`)는 직접 수정하지 않았습니다.
-2. **남아 있는 한계**:
-   - 기존 학습 표본(`train_5k.jsonl`)은 앞 5,000건 순차 추출 표본(고유 4,996건)이며, 새로 준비한 12분야 균형 5,000건 표본([stage7_5-sample-v1.json](reports/stage7_5-sample-v1.json))과 정상 음성 예시를 반영한 추가 학습은 아직 수행하지 않았습니다.
-   - 동결 서비스 시험에서 중요 5종은 퇴행이 없으나, `DATE_OF_BIRTH`·`KR_LOCATION`·`PERSONAL_ATTRIBUTE`·`USERNAME` 등 일부 비핵심 유형의 재현율 저하와 정상 숫자 유사 문서 오차단(`2/100`)이 남아 있습니다.
-   - 오프라인 지연 시간(공식 Test `p95 49.67ms`, 서비스 시험 `p95 94.54ms`)은 서버 내부 추론+정책+1회 재검사 시간이며, 네트워크 왕복과 B 클라이언트 종단간 p95(`500ms` 목표) 인수 증거를 대체하지 않습니다.
-3. **8단계(B 운영 인수) 진행 조건 (`pending_runtime_acceptance`)**:
-   - B가 `ko_atomic_suffix_v3` 분할기와 경계 안전 창 처리, M1 체크포인트(`checkpoint-1262`, `model.safetensors` SHA-256 `ed2546b8b6a721be18a6a9e644fe6fd423016c7a457b5e30521d85c3d86228a2`) 및 공통 임계값 `0.5`를 런타임에 통합하고 메모리·p95 지연·재검사 오류(`REINSPECTION_FAILED`) 운영 정책을 인수 확인해야 최종 교체가 확정됩니다.
-   - 로컬 회귀 테스트는 `model/.cache/conversion-venv/bin/python -m pytest model/tests -q`로 검증합니다. 원문 데이터·문서별 예측·가중치·접속정보는 Git 제외 캐시(`model/.cache/`, `model/.secrets/`)에만 보관합니다.
+단순히 학습을 돌려 점수를 낸 것이 아니라, 1~7.5단계 전 과정에서 발생한 **데이터 손실·추론 분할 불일치·미완료 검사 은폐·창 경계 파편화·가설 기각** 등 5대 핵심 문제를 코드와 실측으로 규명·해결했습니다.
+
+| 단계 · 문제 구간 | 발생 현상 및 최초 원인 | 해결 방법 및 검증 결과 | 상세 근거 문서 |
+|---|---|---|---|
+| **① 3단계: 한국어 조사 결합으로 인한 학습 데이터 `98.9%` 거절** | B 기본 공백/알파벳 분할기(`default_gliner_words_splitter`)가 `김가상에게`를 한 단어로 묶어, 어절 내부의 `김가상` 스팬을 단어 경계로 표현할 수 없어 `train` 243,711건 중 **2,615건(`1.07%`)만 변환**됨 | 원문만 보고 결정론적으로 분리하는 순수 분할기 `v1 → v2(201,274건, URL 손실) → ko_atomic_suffix_v3`를 설계해 **`236,900/243,711건(97.21%)` 변환 및 18개 전 유형 보존** 달성 | [segmentation/README.md](segmentation/README.md), [conversion-summary.md](reports/conversion-summary.md), [segmentation-diagnosis-v2.json](reports/segmentation-diagnosis-v2.json) |
+| **② 7→7.5단계: 학습·추론 분할기 불일치로 인한 초기 M1 `reject`** | 6단계 학습 데이터는 `ko_atomic_suffix_v3`로 변환했으나, 7단계 추론 시 GLiNER 내부 `data_processor.words_splitter`에는 기본 분할기가 그대로 남아 **서비스 F1 `58.31%`, 계좌(`-1.89%p`)·카드(`-12.20%p`) 역전 및 정상 오차단 `8/100`(`reject`)** 발생 | [`attach_words_splitter()`](segmentation/runtime.py)로 GLiNER 런타임 내부 `words_splitter`와 창 계획에 `ko_atomic_suffix_v3`를 동일 주입하고 새 프로세스 재로딩 검증 통과 → **동결 서비스 F1 `89.38%`, 공식 Test F1 `98.70%`, 중요 5종 퇴행 `0건`**으로 해결 | [stage7-review-v1.md](reports/stage7-review-v1.md), [stage7_5-gpu-smoke-v1.json](reports/stage7_5-gpu-smoke-v1.json), [m1-training-summary.md](reports/m1-training-summary.md) |
+| **③ 7.5단계: 미완료(`incomplete`) 조용한 통과 결함 및 40번째 장문 창 경계 불일치** | 기존 실행기가 `result.status != "complete"`인 문서를 에러 없이 빈 탐지(`findings=[]`)로 채점하던 버그 발견. 수정 후 첫 서비스 실행(`v4`) 시 **40번째 장문 문서에서 384단어 창 경계에 걸친 한국어 어절의 조사 분할이 전체 문장 분할과 달라져 `incomplete`로 안전 중단**됨 | 미완료 문서를 즉시 `failed.json`으로 격리하도록 수정하고, 전체 문장 원자 단어 경계를 보존해 창을 자르는 [`BoundarySafeCoverageBackend`](segmentation/coverage_backend.py)를 구현 → **서비스 `300/300건`, 공식 Test `28,142/28,142건` 전량 `complete`(`incomplete=0`)** 완주 | [stage7_5-coverage-audit-v1.json](reports/stage7_5-coverage-audit-v1.json), [coverage_backend.py](segmentation/coverage_backend.py), [runner.py](evaluation/runner.py) |
+| **④ 7.5단계: 서비스 시험셋(`v1 → v2 → v2-r2`) 오염 방지 및 라벨 전수 교정** | 초기 `service-test-v1`(300건)은 사람 검토·동결 전에 모델 점수를 먼저 확인해 최종 시험 자격을 상실했고, 새로 만든 `v2` 초안에서도 인접 조사 포함·부분 스팬·자연스럽지 않은 템플릿 문제가 발견됨 | `v1`은 회귀용으로 격리하고, 사용자 피드백을 전수 반영해 `service-holdout-v2-r2`(300건)의 오프셋·경계·정상 문서를 교정한 뒤 **최종 평가 전에 해시 동결** | [holdout-v2-review-response.md](reports/holdout-v2-review-response.md), [service-holdout-v2-r2.frozen.manifest.json](evaluation/service-holdout-v2-r2.frozen.manifest.json) |
+| **⑤ 7.5단계: “임계값 상향으로 오차단 해결” 가설 기각 및 `REINSPECTION_FAILED` 원인 규명** | 초기 보고서에서 “임계값을 `0.65~0.7`로 올리면 정상 오차단이 `1%` 이하로 해결된다”고 가정했으나 검증되지 않았고, 게이트웨이 `error` 다수 발생 원인이 불명확했음 | Dev 28,347건 그리드 탐색(`0.35~0.8`)으로 **자산코드·13~16자리 정수열이 `KR_RRN` 점수 `>0.8~1.0`을 받아 임계값 상향만으로 해결되지 않음(`10/200`)**을 실측 입증하고, 게이트웨이 `error`가 런타임 크래시가 아닌 **마스킹 후 2차 재검사(`REINSPECTION_FAILED`) 정책 차단**임을 전수 추적으로 규명 | [stage7_5-selection-v1.json](reports/stage7_5-selection-v1.json), [stage7_5-service-final-v1.json](reports/stage7_5-service-final-v1.json), [stage7_5-official-final-v1.json](reports/stage7_5-official-final-v1.json) |
+
+---
+
+## 7. 남아 있는 한계와 8단계(B 파트 인계·운영 인수 및 후속 고도화) 체크리스트
+
+### 7.1 현재 남아 있는 한계
+- 기존 학습 표본(`train_5k.jsonl`)은 앞 5,000건 순차 추출 표본(고유 4,996건)이며, 새로 준비한 12분야 균형 5,000건 표본([stage7_5-sample-v1.json](reports/stage7_5-sample-v1.json))과 정상 음성 예시를 반영한 추가 학습은 아직 수행하지 않았습니다.
+- 동결 서비스 시험에서 중요 5종은 퇴행이 없으나, `DATE_OF_BIRTH`·`KR_LOCATION`·`PERSONAL_ATTRIBUTE`·`USERNAME` 등 일부 비핵심 유형의 재현율 저하와 정상 숫자 유사 문서 오차단(`2/100`, 허용 상한 경계)이 남아 있습니다.
+- 오프라인 지연 시간(공식 Test `p95 49.67ms`, 서비스 시험 `p95 94.54ms`)은 서버 내부 추론+정책+1회 재검사 시간이며, 네트워크 왕복과 B 클라이언트 종단간 p95(`500ms` 목표) 인수 증거를 대체하지 않습니다.
+
+### 7.2 8단계 상세 체크리스트 (B 인계·운영 인수 및 추가 포함 권장 과제)
+
+8단계에서는 단순 가중치 전달을 넘어, 7.5단계에서 규명한 운영 리스크를 안전하게 제어하기 위해 아래 6개 트랙을 수행합니다.
+
+- [ ] **8-1. 모델 패키지 계약(`model-package.schema.json`) 번들링 및 즉시 롤백(M0) 구성**
+  - M1 최종 선택본(`checkpoint-1262`, `model.safetensors` SHA-256 `ed2546b8b6a721be18a6a9e644fe6fd423016c7a457b5e30521d85c3d86228a2`), 토크나이저, 18종 라벨 매핑, 공통 임계값(`0.5`), 창 설정(`max_words=384, overlap=64, max_span=12, max_subtokens=512`), 전처리 버전(`preprocessing.version = "ko_atomic_suffix_v3"`), 라이선스·평가 레코드를 [`dev/contracts/model-package.schema.json`](../dev/contracts/model-package.schema.json) 규격의 매니페스트로 패키징합니다.
+  - 운영 중 이상 징후 발생 시 환경 변수 또는 설정 스위치 하나로 즉시 고정 M0 패키지(`49a065fb...`)로 복구(Rollback)하는 절차를 B와 함께 검증합니다.
+- [ ] **8-2. B 운영 런타임 분할기(`ko_atomic_suffix_v3`) 및 경계 안전 창 처리(`BoundarySafeCoverageBackend`) 이관 (`b_splitter_adoption`)**
+  - B의 [`dev/detector/gliner_backend.py`](../dev/detector/gliner_backend.py)가 추론 시 [`attach_words_splitter()`](segmentation/runtime.py)와 [`BoundarySafeCoverageBackend`](segmentation/coverage_backend.py)의 원자 어절 경계 창 분할을 동일하게 사용하도록 통합합니다.
+  - 40번째 서비스 장문 문서 등 384단어 경계 어절 회귀 테스트를 B 런타임 테스트 스위트에 추가하여 `incomplete=0`을 보장합니다.
+- [ ] **8-3. 숫자 유사 정상 문서(`numeric_lookalikes` → `KR_RRN`) 오차단 방어 가드레일 및 M1.1 보완 실험**
+  - **단기(B 정책/후처리 가드레일)**: 장비 자산코드(`EQ-2026-314159` 등 영문 접두·하이픈 결합 코드)나 13~16자리 일반 정수열이 `KR_RRN`으로 오탐되어 즉시 `block`되는 현상(`서비스 2/100`, `Dev 조정 10/200`)을 줄이기 위해, `KR_RRN` 판정 시 6+7자리(생년월일 유효 월/일 + 성별코드 `1~8`) 형식·체크섬 보조 검증 또는 문맥 화이트리스트를 B 후처리/정책 단계에 적용하는 방안을 검증합니다.
+  - **중기(M1.1 재학습 트랙)**: 이미 구축해 둔 12개 분야 균형 5,000건 표본([stage7_5-sample-v1.json](reports/stage7_5-sample-v1.json))에 숫자 유사 정상 문서(음성 예시)를 혼합하여 재학습한 뒤 동일 동결 기준으로 비교합니다.
+- [ ] **8-4. 마스킹 후 1회 재검사 실패(`REINSPECTION_FAILED` → `error`) 운영 정책 정교화**
+  - 1차 `mask` 판정 문서가 `[MASKED]` 치환 후 2차 재검사에서 플레이스홀더 주변 문맥 재탐지 등으로 인해 `REINSPECTION_FAILED`(`error`)로 다수 전환되는 현상(`서비스 57/300`, `공식 Test 11,921/28,142`)을 완화하기 위해, B와 함께 ① 이미 마스킹된 플레이스홀더 구간(`decision.segments`)을 2차 오탐 판정에서 제외하거나, ② 치환 문자열 형식을 모델 친화적으로 조정하는 정책 개선을 검토합니다.
+- [ ] **8-5. 비핵심 마스킹 유형(`PERSONAL_ATTRIBUTE`, `KR_LOCATION`, `USERNAME`) 보완 로드맵**
+  - K-PII-Bench 원본에 정답이 0건이어서 서비스 시험 전달 문서 잔존(`6건` 중 `4건`)의 주원인이 된 `PERSONAL_ATTRIBUTE`(직함·부서·개인속성)에 대해 소규모 보충 학습 데이터 또는 사전/규칙 보조 탐지를 설계하고, 도로명 주소 뒤 동·호수 접미부(`KR_LOCATION`) 스팬 경계 결합 규칙을 보완합니다.
+- [ ] **8-6. B 종단간 런타임 인수 시험(`runtime_acceptance`) 및 C 감사 로그·카나리 배포 검증**
+  - 실제 서빙 환경에서 예열 후 동시성 1·2,000 코드포인트 이내 클라이언트 측 종단간 **p95 ≤ 500ms/회** 지연 시간, GPU/CPU 메모리 상한, 장애 시 fail-closed 복구, C 파트의 비식별 감사 저널(`dev/gateway/journal.py` — 원문 미저장·해시/유형/위치만 기록) 연동을 통합 검증합니다.
+  - 초기 배포 시 M0를 기본 차단/허용 기준으로 두고 M1을 Shadow/Canary 모드로 병행 비교한 뒤 이상이 없을 때 `runtime_acceptance=True`로 전환합니다.
+
+로컬 회귀 테스트는 `model/.cache/conversion-venv/bin/python -m pytest model/tests -q`로 검증합니다. 원문 데이터·문서별 예측·가중치·접속정보는 Git 제외 캐시(`model/.cache/`, `model/.secrets/`)에만 보관합니다.

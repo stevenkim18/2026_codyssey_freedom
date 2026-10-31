@@ -51,10 +51,13 @@
 - [x] 5. 새 서비스 holdout(`service-holdout-v2-r2`, 300건) 사람 검토·동결 후 공식 시험셋(`test_track_a`, 28,142건)과 함께 최종 평가 완료 ([stage7_5-service-final-v1.json](reports/stage7_5-service-final-v1.json), [stage7_5-official-final-v1.json](reports/stage7_5-official-final-v1.json))
 - [x] 6. 판정(`pending_runtime_acceptance`)·실행 이력 확정 및 [`model/report_v1.md`](report_v1.md)와 [`model/graph/`](graph/README.md) 18종 작성 완료
 
-### 8단계 남은 할 일 (B 파트 인계 및 운영 인수)
-- [ ] 1. B 런타임(`dev/detector/gliner_backend.py`)에 `ko_atomic_suffix_v3` 분할기 및 경계 안전 창 처리(`BoundarySafeCoverageBackend`) 공동 채택 합의 및 반영 (`b_splitter_adoption`)
-- [ ] 2. B 모델 패키지 계약(`dev/contracts/model-package.schema.json`)에 맞춘 M1(`checkpoint-1262`, `threshold=0.5`, 전처리 버전 `ko_atomic_suffix_v3`) 최종 패키지 매니페스트 및 해시 인계
-- [ ] 3. B 서빙 환경에서 모델 로딩·메모리·클라이언트 종단간 지연(`p95 ≤ 500ms`)·마스킹 후 1회 재검사 실패(`REINSPECTION_FAILED`) 운영 정책 및 숫자 유사 코드(`KR_RRN`) 보조 검증 인수 확인 (`runtime_acceptance`)
+### 8단계 남은 할 일 (B 파트 인계·운영 인수 및 후속 고도화)
+- [ ] 1. **패키지 계약 번들링 및 M0 즉시 롤백 구성**: B 모델 패키지 계약(`dev/contracts/model-package.schema.json`)에 맞춘 M1(`checkpoint-1262`, `threshold=0.5`, 전처리 버전 `ko_atomic_suffix_v3`, 창 `384/64/12/512`) 최종 패키지 매니페스트·해시 인계 및 M0(`49a065fb...`) 즉시 롤백 절차 검증
+- [ ] 2. **B 런타임 분할기 및 경계 안전 창 처리 이관 (`b_splitter_adoption`)**: `dev/detector/gliner_backend.py`에 `ko_atomic_suffix_v3`(`attach_words_splitter`) 및 `BoundarySafeCoverageBackend` 공동 채택 반영, 장문 경계 어절 회귀 테스트(`incomplete=0`) 추가
+- [ ] 3. **숫자 유사 정상 문서(`KR_RRN`) 오차단 가드레일 및 M1.1 보완 실험**: 자산코드·긴 정수열의 `KR_RRN` 오차단(`서비스 2/100`, `Dev 조정 10/200`) 완화를 위한 B 후처리/정책 단계 주민등록번호 형식·체크섬 보조 검증 적용, 또는 12분야 균형 5k 표본([stage7_5-sample-v1.json](reports/stage7_5-sample-v1.json)) + 숫자 유사 음성 예시 혼합 재학습(M1.1)
+- [ ] 4. **마스킹 후 1회 재검사(`REINSPECTION_FAILED` → `error`) 정책 정교화**: `[MASKED]` 치환 후 2차 재검사에서 발생하는 fail-closed 오류(`서비스 57/300`, `공식 Test 11,921/28,142`) 완화를 위해 기마스킹 구간 제외 또는 플레이스홀더 포맷 개선을 B와 합의
+- [ ] 5. **비핵심 마스킹 유형(`PERSONAL_ATTRIBUTE`, `KR_LOCATION`, `USERNAME`) 보완**: K-PII-Bench 정답 0건인 `PERSONAL_ATTRIBUTE`(서비스 잔존 6건 중 4건) 보충 데이터/규칙 및 도로명 주소 동·호수 접미부 경계 보완
+- [ ] 6. **종단간 런타임 인수 시험(`runtime_acceptance`) 및 C 저널·카나리 검증**: 서빙 환경 로딩·메모리·클라이언트 종단간 지연(`p95 ≤ 500ms`)·fail-closed 복구·C 파트 비식별 감사 로그(`dev/gateway/journal.py`) 연동 및 Shadow/Canary 검증 후 운영 전환 확정
 
 체크리스트와 완료 증거는 [stage7_5.md](stage7_5.md)와 [report_v1.md](report_v1.md)가 기준입니다. B의 운영 인수는 별도이며 확인 전에 `runtime_acceptance=True`로 표시하지 않습니다.
 

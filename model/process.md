@@ -396,10 +396,14 @@ model/
 
 상세 완료 증거는 [stage7_5.md](stage7_5.md)와 [report_v1.md](report_v1.md)를 기준으로 합니다.
 
-### 남은 일 — 8단계 (B 파트 인계 및 운영 인수)
+### 남은 일 — 8단계 (B 파트 인계·운영 인수 및 후속 고도화)
 
-- [ ] A 오프라인 수치 게이트를 통과한 M1 후보(`checkpoint-1262`, `threshold=0.5`, `ko_atomic_suffix_v3`)를 B 계약(`dev/contracts/model-package.schema.json`)에 맞는 패키지와 검증 이력으로 B에 전달.
-- [ ] B 런타임의 `ko_atomic_suffix_v3` 및 경계 안전 창 처리 채택(`b_splitter_adoption`), 로딩·클라이언트 종단간 지연(`p95 ≤ 500ms`)·메모리·통합·마스킹 재검사(`REINSPECTION_FAILED`) 복구 검증(`runtime_acceptance`) 후 최종 서비스 전환 확정.
+- [ ] **8-1. 패키지 계약 번들링 및 롤백 구성**: A 오프라인 수치 게이트를 통과한 M1 후보(`checkpoint-1262`, `threshold=0.5`, `ko_atomic_suffix_v3`, 창 `384/64/12/512`)를 B 계약(`dev/contracts/model-package.schema.json`)에 맞는 패키지와 검증 이력으로 전달하고 M0 즉시 롤백 스위치 검증.
+- [ ] **8-2. B 런타임 분할기·경계 안전 창 처리 이관 (`b_splitter_adoption`)**: `dev/detector/gliner_backend.py`에 `ko_atomic_suffix_v3`와 `BoundarySafeCoverageBackend`를 통합하고 장문 경계 회귀 테스트(`incomplete=0`) 추가.
+- [ ] **8-3. 숫자 유사 정상 문서(`KR_RRN`) 오차단 방어 및 M1.1 보완**: 자산코드·긴 정수열의 `KR_RRN` 오차단(`서비스 2/100`, `Dev 조정 10/200`) 완화를 위해 주민등록번호 형식·체크섬 보조 검증을 B 후처리/정책과 결합하거나, 12분야 균형 5,000건 표본([stage7_5-sample-v1.json](reports/stage7_5-sample-v1.json)) + 정상 음성 예시 혼합 재학습(M1.1) 수행.
+- [ ] **8-4. 마스킹 후 1회 재검사(`REINSPECTION_FAILED` → `error`) 정책 정교화**: `[MASKED]` 치환 후 2차 재검사에서 발생하는 fail-closed 오류(`서비스 57/300`, `공식 Test 11,921/28,142`)를 줄이기 위해 기마스킹 구간 제외 또는 플레이스홀더 포맷 개선 협의.
+- [ ] **8-5. 비핵심 마스킹 유형(`PERSONAL_ATTRIBUTE`, `KR_LOCATION`, `USERNAME`) 보완**: 원본 학습셋 정답 0건인 `PERSONAL_ATTRIBUTE`(서비스 잔존 6건 중 4건) 보충 데이터/규칙 및 주소 동·호수 접미부 경계 보완.
+- [ ] **8-6. 종단간 런타임 인수(`runtime_acceptance`) 및 C 감사 로그·카나리 배포 검증**: 로딩·클라이언트 종단간 지연(`p95 ≤ 500ms`)·메모리·통합·복구·C 비식별 저널(`dev/gateway/journal.py`) 연동 및 Shadow/Canary 비교 검증 후 최종 서비스 전환 확정.
 
 M1이 기준에 미달하면 M0를 유지하고 보고서를 마무리합니다. 새 모델을 반드시 배포해야 A 작업이 끝나는 것은 아닙니다.
 

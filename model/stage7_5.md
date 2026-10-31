@@ -90,6 +90,17 @@ loss가 8.61에서 1.22로 줄었다는 기존 보고만으로 과적합이나 �
 
 **M1이 탈락해도 신뢰할 수 있는 평가와 M0 유지 결론을 남기면 7.5단계를 완료할 수 있습니다.** M1 인계·서비스 적용은 교체 기준 및 B 인수 조건을 만족하는 경우에만 진행합니다.
 
+## 2-1. 8단계(B 파트 인계·운영 인수 및 후속 고도화) 연계 체크리스트
+
+7.5단계 오프라인 수치 게이트 통과(`pending_runtime_acceptance`) 이후, 8단계에서 B·C 파트와 함께 수행할 작업과 추가 고도화 항목입니다(상세 배경은 [report_v1.md §6~§7](report_v1.md) 참조).
+
+- [ ] **8-1. 모델 패키지 계약 번들링 및 M0 즉시 롤백 구성**: [`dev/contracts/model-package.schema.json`](../dev/contracts/model-package.schema.json) 규격에 맞춰 M1 `checkpoint-1262`(`model.safetensors` SHA-256 `ed2546b8...`), 토크나이저, 18종 라벨, `threshold=0.5`, 창 설정(`384/64/12/512`), `preprocessing.version="ko_atomic_suffix_v3"` 매니페스트를 패키징하고, 장애 시 고정 M0(`49a065fb...`)로 즉시 복구하는 스위치 검증.
+- [ ] **8-2. B 운영 런타임 분할기(`ko_atomic_suffix_v3`) 및 경계 안전 창 처리 이관 (`b_splitter_adoption`)**: [`dev/detector/gliner_backend.py`](../dev/detector/gliner_backend.py)에 [`attach_words_splitter()`](segmentation/runtime.py)와 [`BoundarySafeCoverageBackend`](segmentation/coverage_backend.py)를 반영하고 장문 경계 어절 회귀 테스트(`incomplete=0`) 추가.
+- [ ] **8-3. 숫자 유사 정상 문서(`KR_RRN`) 오차단 가드레일 및 M1.1 보완 실험**: 하이픈 자산코드·긴 정수열의 `KR_RRN` 오차단(`서비스 2/100`, `Dev 조정 10/200`) 완화를 위해 B 후처리/정책 단계의 주민등록번호 형식·유효 생년월일·체크섬 보조 검증을 적용하거나, 준비된 12분야 균형 5,000건([stage7_5-sample-v1.json](reports/stage7_5-sample-v1.json)) + 숫자 유사 정상 음성 예시 혼합 재학습(M1.1) 수행.
+- [ ] **8-4. 마스킹 후 1회 재검사 실패(`REINSPECTION_FAILED` → `error`) 정책 정교화**: 1차 `mask` 문서가 `[MASKED]` 치환 후 2차 재검사에서 `REINSPECTION_FAILED`(`서비스 57/300`, `공식 Test 11,921/28,142`)로 차단되는 비율을 줄이기 위해 기마스킹 구간 제외 또는 플레이스홀더 포맷 개선을 B와 합의.
+- [ ] **8-5. 비핵심 마스킹 유형(`PERSONAL_ATTRIBUTE`, `KR_LOCATION`, `USERNAME`) 보완**: K-PII-Bench 원본에 정답이 0건인 `PERSONAL_ATTRIBUTE`(서비스 전달 문서 잔존 6건 중 4건) 보충 데이터/사전 규칙 및 `KR_LOCATION` 동·호수 접미부 경계 보완.
+- [ ] **8-6. B 종단간 런타임 인수(`runtime_acceptance`) 및 C 감사 저널·카나리 배포 검증**: 클라이언트 측 종단간 `p95 ≤ 500ms`(예열 후 동시 1·2,000 코드포인트 이내), GPU/CPU 메모리, fail-closed 복구, C 파트 비식별 감사 로그(`dev/gateway/journal.py`) 연동 및 M0 대비 Shadow/Canary 검증 후 `runtime_acceptance=True` 전환.
+
 ## 3. 최종 판정 기준
 
 | 기준 | 판단 방법 |
