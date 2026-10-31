@@ -8,6 +8,8 @@ Original values never enter stdout, stderr or events.
 import json
 import os
 from pathlib import Path
+import socket
+import subprocess
 import sys
 import threading
 import time
@@ -33,6 +35,8 @@ TOOL_FAILED = "[도구 결과 차단: 검사를 완료하지 못해 LLM에 전�
 RESPONSE_RETRY = ("직전 답변에 개인정보로 보이는 값이 있었습니다. 해당 값을 [REDACTED]로 가려 같은 내용을 다시 답하세요. "
                   "실제 값을 반복하지 마세요.")
 GUARD_FAILED = "PII 검사를 완료하지 못해 전송을 멈췄습니다."
+DASHBOARD_PORT = "8787"
+DASHBOARD_HOST = "127.0.0.1"
 
 
 def write(stream, text):
@@ -57,6 +61,28 @@ def start_watchdog(mode, seconds):
     timer.start()
 
 
+def dashboard_url():
+    """Start the local dashboard if needed. Best effort: it never changes a hook decision."""
+    try:
+        port = int(os.environ.get("PII_DASHBOARD_PORT", DASHBOARD_PORT))
+        try:
+            socket.create_connection((DASHBOARD_HOST, port), 0.2).close()
+        except ConnectionError:
+            # No inherited pipe: Codex waits for hook output to close before it continues.
+            subprocess.Popen([sys.executable, "-I", "-S", "-B", str(_HERE / "dashboard.py"), "--port", str(port),
+                              "--journal", str(events.data_directory() / "events.sqlite3")],
+                             stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                             cwd="/", env={"PATH": "/usr/bin:/bin"}, start_new_session=True)
+        return f"http://{DASHBOARD_HOST}:{port}"
+    except Exception:
+        return None
+
+
+def _dashboard_note():
+    url = dashboard_url()
+    return f"\n사건 기록: {url}" if url else ""
+
+
 def _summary(findings):
     kinds = {}
     for item in findings:
@@ -66,9 +92,9 @@ def _summary(findings):
     return ", ".join(f"{label} {count}건" for label, count in kinds.items())
 
 
-def _record_failure(data, direction, started, code):
+def _record_failure(data, direction, rule, started, code):
     events.record(data, direction=direction, decision="error", delivery_status="not_sent", findings=[],
-                  rule_ids=["hook.inspection_failed"], model_version="unknown", started=started, error_code=code)
+                  rule_ids=["hook.inspection_failed", rule], model_version="unknown", started=started, error_code=code)
 
 
 def _text(value):
@@ -82,8 +108,8 @@ def on_prompt(data):
         settings = detect.load_settings()
         decision, version = detect.inspect(data["prompt"], "outbound", events._identifier(data.get("turn_id")), settings)
     except detect.InspectionError as failure:
-        _record_failure(data, "outbound", started, failure.code)
-        emit({"decision": "block", "reason": FAILURE_MESSAGES.get(failure.code, "검사 서버 응답을 확인하지 못해 전송을 멈췄습니다.")})
+        _record_failure(data, "outbound", rule, started, failure.code)
+        emit({"decision": "block", "reason": FAILURE_MESSAGES.get(failure.code, "검사 서버 응답을 확인하지 못해 전송을 멈췄습니다.") + _dashboard_note()})
         return
     common = {"direction": "outbound", "decision": decision.action, "findings": decision.findings,
               "rule_ids": decision.rule_ids + [rule], "model_version": version, "started": started}
@@ -91,10 +117,11 @@ def on_prompt(data):
         events.record(data, delivery_status="unknown", **common)
         return
     events.record(data, delivery_status="not_sent", **common)
+    note = _dashboard_note()
     if decision.action == "block":
-        emit({"decision": "block", "reason": f"전송을 막았습니다: {_summary(decision.findings)}. 해당 값을 지우고 다시 입력해 주세요."})
+        emit({"decision": "block", "reason": f"전송을 막았습니다: {_summary(decision.findings)}. 해당 값을 지우고 다시 입력해 주세요.{note}"})
     else:
-        emit({"decision": "block", "reason": f"개인정보가 있어 전송을 멈췄습니다 ({_summary(decision.findings)}). "
+        emit({"decision": "block", "reason": f"개인정보가 있어 전송을 멈췄습니다 ({_summary(decision.findings)}).{note}\n"
                                              f"아래 문장으로 다시 보내 주세요.\n\n{decision.segments[0]['text']}"})
 
 
@@ -106,7 +133,7 @@ def on_tool_result(data):
         decision, version = detect.inspect(_text(data["tool_response"]), "outbound",
                                            events._identifier(data.get("turn_id")), settings)
     except detect.InspectionError as failure:
-        _record_failure(data, "outbound", started, failure.code)
+        _record_failure(data, "outbound", rule, started, failure.code)
         emit({"decision": "block", "reason": TOOL_FAILED})
         return
     common = {"direction": "outbound", "decision": decision.action, "findings": decision.findings,
@@ -128,7 +155,7 @@ def on_stop(data):
         decision, version = detect.inspect(data.get("last_assistant_message") or "", "inbound",
                                            events._identifier(data.get("turn_id")), settings)
     except detect.InspectionError as failure:
-        _record_failure(data, "inbound", started, failure.code)
+        _record_failure(data, "inbound", "hook.response", started, failure.code)
         return
     late = decision.action in ("mask", "block")
     events.record(data, direction="inbound", decision=decision.action, delivery_status="delivered",
@@ -139,11 +166,13 @@ def on_stop(data):
 
 
 def on_session(_data):
+    url = dashboard_url()
+    suffix = f" · 대시보드 {url}" if url else ""
     try:
         mode = "모델 + 규칙 검사" if detect.load_settings() else "규칙 검사 (대표 형식만 탐지)"
-        emit({"systemMessage": f"PII 보호 켜짐: {mode}"})
+        emit({"systemMessage": f"PII 보호 켜짐: {mode}{suffix}"})
     except detect.InspectionError:
-        emit({"systemMessage": "PII 검사 설정 오류: 입력 전송이 차단됩니다."})
+        emit({"systemMessage": f"PII 검사 설정 오류: 입력 전송이 차단됩니다.{suffix}"})
 
 
 HANDLERS = {"UserPromptSubmit": ("guard", on_prompt), "PostToolUse": ("guard", on_tool_result),

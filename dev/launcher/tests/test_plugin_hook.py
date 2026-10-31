@@ -33,7 +33,7 @@ def execute(event, tmp_path, *, mode="guard", settings=None, run=RUN, data=None)
     payload = event if isinstance(event, (bytes, str)) else json.dumps(event, ensure_ascii=False)
     env = {"PATH": "/usr/bin:/bin", "HOME": str(tmp_path / "home"),
            "PLUGIN_DATA": str(data or tmp_path / "data"),
-           "PII_HOOK_SETTINGS": str(settings or tmp_path / "no-settings.json")}
+           "PII_HOOK_SETTINGS": str(settings or tmp_path / "no-settings.json"), "PII_DASHBOARD_PORT": "off"}
     return subprocess.run(["/bin/sh", str(run), mode], input=payload if isinstance(payload, bytes) else payload.encode(),
                           env=env, capture_output=True, timeout=30)
 
@@ -213,7 +213,8 @@ def test_watchdog_exits_with_guard_block_before_codex_timeout(tmp_path):
 
 def test_doctor_reports_each_check_separately(tmp_path):
     env = {"PATH": "/usr/bin:/bin", "HOME": str(tmp_path), "CODEX_HOME": str(tmp_path / "codex"),
-           "PLUGIN_DATA": str(tmp_path / "data"), "PII_HOOK_SETTINGS": str(tmp_path / "none.json")}
+           "PLUGIN_DATA": str(tmp_path / "data"), "PII_HOOK_SETTINGS": str(tmp_path / "none.json"),
+           "PII_DASHBOARD_PORT": "off"}
     (tmp_path / "codex").mkdir()
     (tmp_path / "codex/config.toml").write_text('[hooks.state."pii-gateway@codyssey-security:hooks/hooks.json:stop:0:0"]\n')
     result = subprocess.run(["/usr/bin/python3", "-I", "-S", "-B", str(PLUGIN / "hook_runtime/main.py"), "--doctor"],
