@@ -12,6 +12,27 @@ python -m launcher run -- exec "질문"
 python -m launcher uninstall
 ```
 
+`doctor`는 파일을 변경하지 않고 설치 상태, 보호 프로필 무결성 및 PATH의 실제
+Codex 버전을 개별 JSON 필드로 진단한다. 기본 동작은 네트워크를 사용하지 않는다.
+
+```sh
+python -m launcher doctor
+python -m launcher doctor --gateway-url http://127.0.0.1:8765
+```
+
+`--gateway-url`을 명시하면 검증된 설치 프로필의 주소와 정확히 일치하는 loopback
+게이트웨이만 검사한다. `/healthz` 응답과 인증 후 JSON 검증 오류를 확인하는
+의도적인 잘못된 JSON 요청으로 도달 여부와 인증 여부를 분리한다. 검사기·공급자
+호출은 발생하지 않으며 프록시·리다이렉트·원격 주소를 사용하지 않는다.
+토큰은 환경변수로만 제공한다. JSON에는 토큰·파일 경로·원본 오류를 출력하지 않는다.
+
+성공 종료 코드 `0`은 요청한 로컬 진단 통과를 뜻하고, 실패는 `2`다.
+`installed`, `profile_verified`, `cli_verified`, `local_gateway_reachable`,
+`local_gateway_authorized`는 서로 다른 증거이며 미실행 네트워크 검사는
+`unverified`다. `remote_detector_readiness`는 항상 `unverified`로 남는다.
+이 결과는 보호 경로 전체의 준비 완료, 원격 모델 readiness, 추론 품질 또는 실제
+CLI 요청의 종단 간 성공을 뜻하지 않는다.
+
 기본 전용 디렉터리는 `$CODEX_HOME/pii-gateway-home`이다. `CODEX_HOME`이 없으면
 `~/.codex/pii-gateway-home`을 사용한다. 기존 전역 `config.toml`은 수정하지 않는다.
 위치를 직접 지정하려면 각 명령에 `--codex-home /absolute/dedicated/path`를
