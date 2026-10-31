@@ -1,0 +1,141 @@
+{
+  "comparable": true,
+  "mismatches": [],
+  "delta": {
+    "unit": "percentage_points for rates; counts for denominators and misses",
+    "overall_precision_pp": 8.286661481709995,
+    "overall_recall_pp": 10.142630744849445,
+    "overall_f1_pp": 9.159204867927034,
+    "critical_micro_recall_pp": 9.55631399317407,
+    "normal_false_block_rate_pp": 7.000000000000001,
+    "normal_documents_count_difference": 0,
+    "per_type": {
+      "CREDIT_CARD": {
+        "recall_pp": -12.195121951219512,
+        "precision_pp": -16.470588235294116,
+        "f1_pp": -14.070175438596488,
+        "false_negative_count_difference": 5,
+        "gold_count_difference": 0
+      },
+      "DATE_OF_BIRTH": {
+        "recall_pp": 22.222222222222225,
+        "precision_pp": 26.111111111111118,
+        "f1_pp": 24.269005847953224,
+        "false_negative_count_difference": -4,
+        "gold_count_difference": 0
+      },
+      "EMAIL_ADDRESS": {
+        "recall_pp": 7.792207792207795,
+        "precision_pp": -26.929810600031836,
+        "f1_pp": -9.903381642512077,
+        "false_negative_count_difference": -6,
+        "gold_count_difference": 0
+      },
+      "IP_ADDRESS": {
+        "recall_pp": 22.580645161290324,
+        "precision_pp": 20.161290322580648,
+        "f1_pp": 21.351766513056837,
+        "false_negative_count_difference": -7,
+        "gold_count_difference": 0
+      },
+      "KR_BANK_ACCOUNT": {
+        "recall_pp": -1.8867924528301883,
+        "precision_pp": -9.523809523809524,
+        "f1_pp": -4.659964518036663,
+        "false_negative_count_difference": 1,
+        "gold_count_difference": 0
+      },
+      "KR_DRIVER_LICENSE": {
+        "recall_pp": 0.0,
+        "precision_pp": 46.666666666666664,
+        "f1_pp": 30.434782608695656,
+        "false_negative_count_difference": 0,
+        "gold_count_difference": 0
+      },
+      "KR_LOCATION": {
+        "recall_pp": 17.647058823529406,
+        "precision_pp": -10.144927536231885,
+        "f1_pp": 2.500000000000002,
+        "false_negative_count_difference": -3,
+        "gold_count_difference": 0
+      },
+      "KR_NHIS": {
+        "recall_pp": 0.0,
+        "precision_pp": 0.0,
+        "f1_pp": 0.0,
+        "false_negative_count_difference": 0,
+        "gold_count_difference": 0
+      },
+      "KR_PASSPORT": {
+        "recall_pp": 0.0,
+        "precision_pp": 0.0,
+        "f1_pp": 0.0,
+        "false_negative_count_difference": 0,
+        "gold_count_difference": 0
+      },
+      "KR_PHONE_NUMBER": {
+        "recall_pp": 3.749999999999998,
+        "precision_pp": -1.8243243243243223,
+        "f1_pp": 1.0714285714285676,
+        "false_negative_count_difference": -3,
+        "gold_count_difference": 0
+      },
+      "KR_RRN": {
+        "recall_pp": 59.523809523809526,
+        "precision_pp": 12.514351320321465,
+        "f1_pp": 38.665554628857386,
+        "false_negative_count_difference": -25,
+        "gold_count_difference": 0
+      },
+      "KR_VEHICLE_PLATE": {
+        "recall_pp": 0.0,
+        "precision_pp": 0.0,
+        "f1_pp": 0.0,
+        "false_negative_count_difference": 0,
+        "gold_count_difference": 0
+      },
+      "NRP": {
+        "recall_pp": 0.0,
+        "precision_pp": 0.0,
+        "f1_pp": 0.0,
+        "false_negative_count_difference": 0,
+        "gold_count_difference": 0
+      },
+      "ORGANIZATION": {
+        "recall_pp": 0.0,
+        "precision_pp": 3.9705882352941173,
+        "f1_pp": 2.8161668839634943,
+        "false_negative_count_difference": 0,
+        "gold_count_difference": 0
+      },
+      "PERSON": {
+        "recall_pp": 14.193548387096778,
+        "precision_pp": 30.226593948837817,
+        "f1_pp": 23.159830320243234,
+        "false_negative_count_difference": -22,
+        "gold_count_difference": 0
+      },
+      "PERSONAL_ATTRIBUTE": {
+        "recall_pp": 0.0,
+        "precision_pp": 0.0,
+        "f1_pp": 0.0,
+        "false_negative_count_difference": 0,
+        "gold_count_difference": 0
+      },
+      "URL": {
+        "recall_pp": 0.0,
+        "precision_pp": 0.0,
+        "f1_pp": 0.0,
+        "false_negative_count_difference": 0,
+        "gold_count_difference": 0
+      },
+      "USERNAME": {
+        "recall_pp": 0.0,
+        "precision_pp": 17.777777777777782,
+        "f1_pp": 15.273719072667058,
+        "false_negative_count_difference": 0,
+        "gold_count_difference": 0
+      }
+    }
+  }
+}

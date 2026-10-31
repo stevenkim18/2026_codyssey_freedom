@@ -3,9 +3,9 @@
 본 문서는 **Antigravity (Gemini 3.8 Flash)**에서 작업한 내용을 **Codex** 또는 후속 작업자가 언제든지 즉시 인계받아 이어서 진행할 수 있도록 정리한 인수인계서입니다.
 
 - **현재 브랜치**: `model`
-- **현재 진행 상태**: **1~5단계 완료 (100% 실측 완료)** $\rightarrow$ **6단계 (M1 5,000건 파인튜닝) 착수 대기**
+- **현재 진행 상태**: **1~7단계 완료 (GPU M1 파인튜닝, Dev 전수 평가, PRD §11 교체 판정 100% 실측 완료)** $\rightarrow$ **8단계 (모델 패키지 조립 및 B 파트 핸드오프) 착수 대기**
 - **로컬 테스트 현황**: 173개 단위/통합 테스트 전원 통과 (`173 passed in 0.23s`)
-- **참조 문서**: 메인 가이드 [`model_README.md`](model_README.md) (메인 디렉터리 README와 구분하기 위해 이름 변경됨), 전체 작업 흐름 [`process.md`](process.md)
+- **참조 문서**: 메인 가이드 [`model_README.md`](model_README.md), 전체 작업 흐름 [`process.md`](process.md), M1 종합 보고서 [`reports/m1-training-summary.md`](reports/m1-training-summary.md)
 
 ---
 
@@ -37,6 +37,26 @@
   - [`model/reports/m0-dev-record.json`](reports/m0-dev-record.json): Dev 전수 실측 레코드
   - [`model/reports/m0-baseline-summary.md`](reports/m0-baseline-summary.md): 상세 실측 분석 보고서
 
+### 1.5 작업 E (6단계): GPU M1 5k 파인튜닝 완료
+- 변환 성공한 train 문서 중 5,000건(5,048 윈도우, 시드 42)을 추출하여 L4 GPU에서 2 에포크 학습 완료 (Loss 8.61 $\rightarrow$ 1.22).
+- 모델 가중치 및 config: GPU 서버 `/home1/ncloud/m1_model` (497MB `pytorch_model.bin`, `gliner_config.json`).
+- 소요 시간: 350.8초 (5.8분).
+
+### 1.6 작업 F (7단계): M0 vs M1 공정 비교 및 PRD §11 교체 판정
+- **독립 서비스 평가셋 (300건)**:
+  - Overall F1: 49.16% $\rightarrow$ **58.31% (+9.16%p)**
+  - Critical Recall: 51.88% $\rightarrow$ **61.43% (+9.56%p)**
+  - 주민등록번호(KR_RRN) Recall: 9.52% $\rightarrow$ **69.05% (+59.52%p)** (미탐 25건 감소)
+  - 운전면허증/여권번호: 100% 정밀도 및 재현율
+  - 정상문서 오차단율: 1.00% (1/100) $\rightarrow$ **8.00% (8/100) (+7.00%p)**
+- **K-PII-Bench Dev (28,147건 전수)**:
+  - Overall F1: 19.61% $\rightarrow$ **30.02% (+10.41%p)**
+  - Critical Recall: 16.89% $\rightarrow$ **24.41% (+7.52%p)**
+  - KR_RRN TP: 1,673건 $\rightarrow$ **4,379건 (2.6배)**
+- **교체 판정 (`model/reports/m1-vs-m0-decision.json`)**:
+  - `verdict`: **`reject`** (F1 및 Critical Recall은 크게 통과했으나, 오차단율 증가(+7.0%p)가 허용 한도 +1.0%p를 초과).
+- **상세 보고서**: [`model/reports/m1-training-summary.md`](reports/m1-training-summary.md)
+
 ---
 
 ## 2. 서버 접속 및 실행 환경 안내
@@ -56,55 +76,50 @@ bash model/.cache/ssh_gpu.sh "<명령어>"
 bash model/.cache/scp_to_gpu.sh <로컬파일> ncloud@10.1.2.17:<원격경로>
 ```
 
-### 2.3 서버 내 작업 디렉터리 및 Python 환경
+### 2.3 서버 내 작업 디렉터리 및 모델 위치
 - **작업 경로**: `/home1/ncloud/work_model`
 - **Python 인터프리터**: `/home1/ncloud/miniforge3/envs/py312/bin/python`
-  - PyTorch 2.10.0 (CUDA 지원), GLiNER 0.2.29, Transformers 4.57.3, Datasets 4.4.2
-- **데이터셋 위치**: `/home1/ncloud/data/k-pii-bench/dev.jsonl` (SHA-256 검증 완료)
 - **M0 패키지 위치**: `/home1/ncloud/b-gpu-trial-3c76ce4d6f8a4525a2f4bb3072ccd671/models/49a065fb3f08ca1291b56c514ec0dd6f11d906890d2d60d1d8c79b22800775c0`
+- **M1 모델 가중치 위치**: `/home1/ncloud/m1_model`
+- **데이터셋 위치**: `/home1/ncloud/data/k-pii-bench/` (`train.jsonl`, `dev.jsonl`, `train_5k.jsonl`)
 
 ---
 
-## 3. 후속 작업: 6단계 (M1 5,000건 파인튜닝) 실행 가이드
+## 3. 후속 작업: 8단계 (모델 패키지 구성 및 B 파트 인계)
 
 ### 3.1 목표
-변환 성공한 233,724건의 한국어 훈련 데이터 중 **5,000건**을 샘플링하여 GLiNER 모델을 L4 GPU에서 1~3 epoch 추가 학습(Fine-tuning)하고, dev set을 이용해 레이블별 최적 임계값을 탐색합니다.
+B 파트의 [model-package.schema.json](../dev/contracts/model-package.schema.json) 규격에 맞추어 M1 모델 패키지를 패키징하고, 오차단율을 1% 이하로 통제하기 위한 임계값 프로파일과 함께 B 파트에 공식 인계(Hand-off)합니다.
 
-### 3.2 단계별 실행 순서
-1. **훈련 데이터 5,000건 표본 추출**:
-   - `model/data/conversion.py`와 `ko_atomic_suffix_v3`를 사용해 변환된 데이터 중, 시드 42로 5,000건을 샘플링하여 `train_5k.jsonl` 생성.
-   - 샘플 명세 SHA-256을 `sample_manifest_sha256`에 기록.
-2. **GPU 서버에서 파인튜닝 실행**:
-   - Backbone: `microsoft/mdeberta-v3-base` (가중치는 M0의 `pytorch_model.bin`에서 출발)
-   - 배치 크기: 4 ~ 8 (L4 24GB VRAM 활용)
-   - 학습률: 1e-5 ~ 3e-5
-   - 에포크: 2 ~ 3 epoch
-3. **Dev 기반 임계값 튜닝**:
-   - 각 에포크별 체크포인트에 대해 dev set 28,147건(또는 dev 대표 샘플)으로 F1 및 Critical Recall을 평가하여 유형별 최적 임계값 도출.
-4. **산출물**:
-   - `m1-weights/` (학습된 가중치 및 config)
-   - `model/reports/m1-dev-record.json`
+### 3.2 단계별 실행 계획
+1. **임계값 캘리브레이션 프로파일 생성**:
+   - 오차단율 8% $\rightarrow$ 1% 이하 억제를 위해 임계값을 상향(예: 0.65)하거나 유형별 차등 임계값(`configs/thresholds-calibrated.json`) 구성.
+   - B 게이트웨이 정규식/비밀키 룰(`model_plus_same_rules`) 결합 시 오탐 방어 효과 명시.
+2. **모델 패키지 디렉터리 번들링**:
+   - 가중치: `pytorch_model.bin`
+   - 모델 설정: `gliner_config.json`
+   - 토크나이저: `microsoft/mdeberta-v3-base` (52바이트 config, spm.model)
+   - 패키지 메타데이터: `package.json`, SHA-256 매니페스트
+3. **B 파트 로더(`load_gliner`) 확장 협의**:
+   - 현재 B의 `load_gliner`는 M0 고정 해시만 허용하도록 하드코딩되어 있으므로, M1 패키지 해시를 B의 검증기에 등록하는 PR/패치 제안.
+4. **G2 인수 검증 테스트 실행**:
+   - B 환경에서 M1 패키지 로드 및 추론 지연 시간(Latency < 30ms/doc), 메모리(VRAM < 4GB) 통합 검증.
 
 ---
 
-## 4. 후속 작업: 7단계 (M0 vs M1 공정 비교 및 교체 판정)
-
-M1 학습이 완료되면 이미 완비된 평가 CLI를 통해 즉시 판정할 수 있습니다:
+## 4. 유용한 검증 명령어 모음
 
 ```bash
-# 1. 수치 비교 (델타 및 신뢰구간)
-python -m model.evaluation compare model/reports/m1-service-test-record.json model/reports/m0-baseline-record.json
+# 1. 로컬 단위/통합 테스트 (173개) 실행
+model/.cache/conversion-venv/bin/python -m pytest model/tests -q
 
-# 2. PRD §11 교체 판정 게이트 실행
+# 2. M1 평가 레코드 무결성 검증
+python -m model.evaluation check-record model/reports/m1-service-test-record.json
+python -m model.evaluation check-record model/reports/m1-dev-record.json
+
+# 3. M0 vs M1 비교 및 PRD 판정 재현
+python -m model.evaluation compare model/reports/m1-service-test-record.json model/reports/m0-baseline-record.json
 python -m model.evaluation decide model/reports/m1-service-test-record.json model/reports/m0-baseline-record.json --runtime-accepted
 ```
-
-### 교체 판정 통과 기준 (PRD §11)
-- [ ] 핵심 5종 Micro Recall $\ge 51.88\%$ (베이스라인 이상)
-- [ ] 전체 Micro F1 $\ge 49.16\%$ (베이스라인 이상)
-- [ ] 정상문서 오탐 차단율 증가 $\le +1.0\%p$ (즉, $\le 2.00\%$)
-- [ ] 미해결 치명적 퇴행(Unresolved Critical Regression) 0건
-- [ ] B팀 런타임 메모리/지연시간 수락
 
 ---
 
