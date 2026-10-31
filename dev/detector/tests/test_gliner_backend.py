@@ -7,7 +7,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from detector.gliner_backend import GLiNERBackend, ModelBackendError, MODEL_TYPES, M0_REPO_ID, M0_REVISION, GLINER_VERSION, load_gliner
+from detector.gliner_backend import GLiNERBackend, ModelBackendError, MODEL_TYPES, M0_REPO_ID, M0_REVISION, GLINER_VERSION, PINNED_ENCODER_CONFIG, load_gliner
 from detector.schemas import Segment
 from detector.tests.test_runtime import package
 
@@ -281,8 +281,13 @@ def local_package(tmp_path, manifest):
     (root / "config.json").rename(root / "gliner_config.json")
     manifest["files"]["gliner_config.json"] = manifest["files"].pop("config.json")
     manifest["artifacts"]["config"] = "gliner_config.json"
-    (root / "tokenizer_config.json").write_bytes(b"{}")
-    manifest["files"]["tokenizer_config.json"] = hashlib.sha256(b"{}").hexdigest()
+    encoder = PINNED_ENCODER_CONFIG.copy()
+    config = {"model_name": "microsoft/mdeberta-v3-base", "span_mode": "markerV0", "encoder_config": encoder}
+    for name, value in {"gliner_config.json": config, "config.json": encoder,
+                        "tokenizer_config.json": {"tokenizer_class": "DebertaV2Tokenizer", "model_max_length": 512}}.items():
+        data = json.dumps(value).encode()
+        (root / name).write_bytes(data)
+        manifest["files"][name] = hashlib.sha256(data).hexdigest()
     manifest["artifacts"]["tokenizer"].append("tokenizer_config.json")
     manifest["model"] = {"repo_id": M0_REPO_ID, "revision": M0_REVISION}
     (root / "manifest.json").write_text(json.dumps(manifest))
@@ -377,3 +382,51 @@ def test_t06_small_subtoken_budget_uses_bounded_prefix_search(manifest):
     assert result.status in {"complete", "incomplete"}
     if result.status == "incomplete":
         assert not model.calls and not result.findings
+
+
+def test_t07_default_library_loader_does_not_receive_unsupported_remote_code_keyword(local_package, monkeypatch):
+    import detector.gliner_backend as module
+    root, manifest = local_package
+    encoder = PINNED_ENCODER_CONFIG.copy()
+    config = {"model_name": "microsoft/mdeberta-v3-base", "span_mode": "markerV0", "encoder_config": encoder}
+    for name, value in {"gliner_config.json": config, "config.json": encoder,
+                        "tokenizer_config.json": {"tokenizer_class": "DebertaV2Tokenizer", "model_max_length": 512}}.items():
+        content = json.dumps(value).encode()
+        (root / name).write_bytes(content)
+        manifest["files"][name] = hashlib.sha256(content).hexdigest()
+    (root / "manifest.json").write_text(json.dumps(manifest))
+    def real_supported_signature(model_id, *, local_files_only, strict, map_location, load_tokenizer):
+        assert local_files_only and strict and load_tokenizer and map_location == "cpu"
+        return Model()
+    monkeypatch.setattr(module.importlib, "import_module", lambda name: SimpleNamespace(
+        __version__=GLINER_VERSION, GLiNER=SimpleNamespace(from_pretrained=real_supported_signature)))
+    assert isinstance(load_gliner(root, manifest), GLiNERBackend)
+
+
+@pytest.mark.parametrize("key", ["attn_implementation", "_attn_implementation"])
+def test_t10_pinned_backbone_rejects_dynamic_hub_attention_kernels(local_package, key):
+    root, manifest = local_package
+    config = json.loads((root / "gliner_config.json").read_text())
+    encoder = json.loads((root / "config.json").read_text())
+    encoder[key] = "external-org/remote-kernel"
+    config["encoder_config"] = encoder
+    for name, document in (("config.json", encoder), ("gliner_config.json", config)):
+        content = json.dumps(document).encode()
+        (root / name).write_bytes(content)
+        manifest["files"][name] = hashlib.sha256(content).hexdigest()
+    (root / "manifest.json").write_text(json.dumps(manifest))
+    with pytest.raises(ModelBackendError):
+        load_gliner(root, manifest, loader=lambda *args, **kwargs: Model())
+
+
+@pytest.mark.parametrize("dimension", ["hidden_size", "max_width", "max_len"])
+def test_t10_m0_factory_rejects_unbounded_top_level_model_dimensions(local_package, dimension):
+    root, manifest = local_package
+    config = json.loads((root / "gliner_config.json").read_text())
+    config[dimension] = 1000000000
+    content = json.dumps(config).encode()
+    (root / "gliner_config.json").write_bytes(content)
+    manifest["files"]["gliner_config.json"] = hashlib.sha256(content).hexdigest()
+    (root / "manifest.json").write_text(json.dumps(manifest))
+    with pytest.raises(ModelBackendError):
+        load_gliner(root, manifest, loader=lambda *args, **kwargs: Model())

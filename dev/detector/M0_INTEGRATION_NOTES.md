@@ -1,6 +1,6 @@
 # M0 통합 준비 기록
 
-확인일: 2026-10-31 UTC. 이 문서는 공식 메타데이터·소스 조사와 **합성 모델을 주입한 어댑터 검증**을 기록한다. 실제 가중치 다운로드, GLiNER 설치, CPU/GPU 추론, 한국어 품질·지연 측정은 이 작업에서 수행하지 않았다.
+확인일: 2026-10-31 UTC. 초기 조사·합성 어댑터 검증과 후속 실제 자산·CPU 검증을 기록한다. 최신 상태는 마지막 추가 검증 절을 따른다. 실제 GPU·한국어 품질·서비스 지연 검증은 미완료다.
 
 ## 확인한 고정 자산과 출처
 
@@ -38,9 +38,9 @@ Span processor는 단어 수가 `max_len`을 넘으면 경고 후 잘라내며 t
 
 이 증명은 **현재 splitter 및 모델이 열거하는 최대 스팬 범위 내의 입력 커버리지**다. 모든 개인정보 탐지, `max_width`를 넘는 엔터티 검출, 창 바깥 문맥 보존이나 원래 문서와 동일한 점수를 보장하지 않는다. 단일 단어의 subtoken 수가 한도를 넘는 한국어 장문 등은 현재 불완전 검사로 차단될 수 있다.
 
-`load_gliner(package_dir, manifest)`는 전체 해시 검증과 M0 revision 일치를 먼저 확인하고 `local_files_only=True`, `trust_remote_code=False`, `strict=True`로 호출한다. root의 `tokenizer_config.json`이 없거나 config가 remote-code 매핑을 요구하면 거절한다. 기본 로더는 위 GLiNER 버전과 일치해야 하며 로딩 직후 자동 readiness를 선언하지 않는다. 예열과 ModelManager의 재검증이 뒤따라야 한다.
+`load_gliner(package_dir, manifest)`는 전체 해시 검증과 M0 revision 일치를 먼저 확인하고 `local_files_only=True`, `strict=True`로 호출한다. 실제 GLiNER가 지원하지 않는 `trust_remote_code` 옵션 대신 아래 추가 검증 절의 내장 설정 고정·경로 검증을 적용한다. root의 `tokenizer_config.json`이 없거나 config가 remote-code 매핑을 요구하면 거절한다. 기본 로더는 위 GLiNER 버전과 일치해야 하며 로딩 직후 자동 readiness를 선언하지 않는다. 예열과 ModelManager의 재검증이 뒤따라야 한다.
 
-## 검증 결과와 남은 실제 게이트
+## 초기 합성 검증 이력과 당시 남은 게이트
 
 - TDD: 미구현 모듈 import 실패를 확인한 뒤 구현했다. 최초 합성 검사 17개 통과 후 경계를 확장해 **46개 통과**했다. 재실행 명령은 `rtk proxy /Users/oliverjoo/Dev/Anaconda/anaconda3/envs/py312/bin/python -m pytest detector/tests/test_gliner_backend.py -q`다.
 - 합성 검증에는 16,000코드포인트 전체 창 계획과 마지막 위치 탐지, 이모지·한국어 원문 위치, 경계 스팬·중복, 토큰 누락·재토큰화·큰 단일 단어의 불완전 결과, 개별 임계값·오류 정제, 로컬 로더 인수·라이브러리 pin 거절이 포함된다. 커버리지는 `.cache/coverage-gliner.json`에 기록한다.
@@ -49,3 +49,28 @@ Span processor는 단어 수가 `max_len`을 넘으면 경고 후 잘라내며 t
 - tokenizer/backbone 설정·가중치 의존성을 패키지에 포함하고 각각의 revision·해시·라이선스를 잠가야 한다. 캐시를 비운 fresh-process offline cold start로 숨은 Hub/cache 의존성이 없는지 확인해야 한다. `local_files_only`만으로 전체 의존성의 패키지 내 독립성을 증명했다고 보고하지 않는다.
 - A/B 최종 라벨 설명·임계값, 독립 한국어 평가 및 교체 판정은 미합의/미검증이다. 원본 모델 카드와 라이선스 사본·추가 자산의 고지·패키징 변경 이력도 실제 배포물에 포함해야 한다.
 - 실제 CPU/GPU 모델 로딩·예열·readiness, L4 메모리·CUDA·지연, 전체 16,000자·동시 요청, 실제 CLI 및 TLS 배포는 **미검증**이다. 수치 성능이나 한국어 품질 향상을 추정하지 않는다.
+
+## 2026-10-31 UTC 추가 검증: 실제 자산과 CPU cold start
+
+아래 내용은 앞의 초기 조사 이후 실제로 수행한 범위를 추가한 기록이다. GPU·한국어 품질·서비스 성능·배포에 관한 미검증 상태는 유지한다.
+
+- 공식 HF metadata를 다시 조회하여 M0 revision `1fcf13e85f4eef5394e1fcd406cf2ca9ea82351d`, backbone `microsoft/mdeberta-v3-base` revision `a0484667b22365f84929a935b5e50a51f71f159d`를 고정했다. [M0 metadata](https://huggingface.co/api/models/urchade/gliner_multi_pii-v1?blobs=true), [backbone metadata](https://huggingface.co/api/models/microsoft/mdeberta-v3-base?blobs=true)
+- 공개 M0 가중치 **1,155,900,362 bytes**, SHA-256 `3003753fba99e40645cf088c7367a2c6211fc174897dc64f1f9c147c29d18d2d`와 backbone tokenizer `spm.model` **4,305,025 bytes**, SHA-256 `13c8d666d62a7bc4ac8f040aab68e942c861f93303156cc28f5c7e885d86d6e3`를 내려받아 HF LFS 메타데이터와 크기·해시가 모두 일치함을 확인했다. 별도 backbone 가중치는 필요하지 않아 다운로드하지 않았다. 총 다운로드는 5GiB 예산 안이다.
+- 모든 원본·partial·패키지는 `dev/.cache/m0-assets/`의 SHA별 디렉터리에 보존했다. 기존 파일 삭제나 덮어쓰기는 하지 않았다. 모델 가중치는 Git 공유 대상이 아니다.
+- `prepare_m0.build_package()`는 다운로드를 수행하지 않는 offline builder다. 고정 크기·LFS SHA-256 또는 Git blob SHA-1을 확인하고 새 출력 디렉터리만 생성한다. M0 설정에 고정 backbone `encoder_config`를 인라인하고, root `config.json`·`spm.model`·`tokenizer_config.json`을 함께 배치한다. tokenizer class는 내장 DebertaV2, 길이는 backbone 한도 512로 명시한다. 모델 카드·라이선스·변경 내역·출처·파일 해시를 manifest에 연결한다.
+- 완전한 Apache-2.0 사본과 Microsoft MIT 사본을 포함한 로컬 후보는 `1fcf13e85f4eef5394e1fcd406cf2ca9ea82351d/package-engineering-02`다. MIT 사본 출처는 Microsoft DeBERTa commit `4d7fe0bd4fb3c7d4f4005a7cafabde9800372098`, SHA-256 `c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383`다. [Microsoft 공식 LICENSE](https://github.com/microsoft/DeBERTa/blob/4d7fe0bd4fb3c7d4f4005a7cafabde9800372098/LICENSE)
+- 18개 라벨 설명과 0.5 임계값은 **미합의 engineering 값**이다. 패키지 `evaluation.json`은 `status=not_evaluated`, `a_b_label_agreement=false`, `quality_gate=blocked`, `actual_gpu_verified=false`를 명시한다. 이 패키지를 평가 통과 후보로 인수하거나 배포 승인된 것으로 취급하지 않는다.
+
+### 실제 API 불일치와 안전한 로딩 경계 수정
+
+설치된 실제 GLiNER 0.2.29에서 `from_pretrained(..., trust_remote_code=False)`는 해당 옵션을 내부 모델 생성자에 전달하여 `TypeError`를 발생시켰다. 합성 loader가 임의 kwargs를 받던 초기 검증으로는 이 오류를 발견하지 못했다. 실제 지원 signature를 모방한 실패 테스트를 먼저 추가한 뒤 기본 라이브러리 호출에서 지원하지 않는 옵션을 제거했다.
+
+옵션 제거와 함께 M0 전용 설정 경계를 강화했다. 고정 backbone ID, 원본 DeBERTa encoder 설정의 전체 값, M0의 주요 모델 치수, 내장 tokenizer class만 허용한다. 세 설정 JSON의 재귀 remote-code 매핑, attention/kernel 옵션, 파일·경로 override, auxiliary tokenizer 디렉터리, Python 파일, CWD의 잠재적 adapter 경로는 거절한다. 독립 검토에서는 실제 작은 DeBERTa 생성자의 Hub attention-kernel 경로를 sentinel로 재현하고 거절 회귀를 확인했다. 주입한 테스트 loader와 실제 GLiNER의 지원 인수는 구분한다.
+
+### CPU에서 수행한 범위
+
+새 프로세스에서 빈 별도 `HF_HOME`, `HF_HUB_OFFLINE=1`, `TRANSFORMERS_OFFLINE=1`을 사용하고 socket 연결도 거절한 상태로 실제 로컬 후보를 읽었다. **UniEncoderSpanGLiNER / DebertaV2TokenizerFast / tokenizer 한도 512 / CPU**로 cold loading에 성공했다. 이후 메모리 확인을 거쳐 CPU 스레드를 2개로 제한하고 `warmup` 합성 문자열로 실제 `predict_entities`를 **1회** 실행했다. `warmed=true`, 네트워크 연결 시도 **0회**, 해당 프로세스 최대 RSS **3,362,996,224 bytes**를 확인했다.
+
+단일 실행에서 로딩 17.352초·예열 8.999초를 관찰했다. 이는 초기화·CPU 조건의 한 번 측정이며 p50/p95, GPU 성능, PRD의 L4 검사 지연 목표 판정이나 한국어 정확도 평가가 아니다. 폰트 캐시를 처음 생성한 별도 cold-load에서는 총 30.609초가 관찰되어 초기화 환경 차이도 있다. 실제 tokenizer의 byte-fallback 및 regex 경고가 남아 있으므로 Unicode·장문 전체 범위와 품질 평가는 별도로 수행해야 한다.
+
+Builder TDD는 미구현 import 실패에서 시작해 **17개 합성 테스트**를 통과했으며 라인·분기 커버리지 100%를 기록했다. 실제 로딩 signature 오류, 동적 attention 옵션, 과도한 모델 치수는 각각 실패 회귀를 확인하고 수정했다. 실제 CPU 결과가 있어도 L4/GPU·TLS·서버 배포·실제 CLI·16,000자 모델 추론·A의 최종 라벨/임계값 인수는 계속 미완료다.

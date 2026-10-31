@@ -6,6 +6,7 @@ claim that the model detects every PII entity or preserves long-range context.
 """
 import importlib
 import json
+from pathlib import Path
 import warnings
 from typing import get_args
 
@@ -17,6 +18,14 @@ M0_REPO_ID = "urchade/gliner_multi_pii-v1"
 M0_REVISION = "1fcf13e85f4eef5394e1fcd406cf2ca9ea82351d"
 GLINER_VERSION = "0.2.29"
 MODEL_TYPES = frozenset(get_args(PIIType)) - {"API_KEY", "PRIVATE_KEY"}
+PINNED_ENCODER_CONFIG = {
+    "model_type": "deberta-v2", "attention_probs_dropout_prob": 0.1, "hidden_act": "gelu",
+    "hidden_dropout_prob": 0.1, "hidden_size": 768, "initializer_range": 0.02, "intermediate_size": 3072,
+    "max_position_embeddings": 512, "relative_attention": True, "position_buckets": 256,
+    "norm_rel_ebd": "layer_norm", "share_att_key": True, "pos_att_type": "p2c|c2p", "layer_norm_eps": 1e-7,
+    "max_relative_positions": -1, "position_biased_input": False, "num_attention_heads": 12,
+    "num_hidden_layers": 12, "type_vocab_size": 0, "vocab_size": 251000,
+}
 
 
 class ModelBackendError(Exception):
@@ -192,6 +201,47 @@ class GLiNERBackend:
             raise ModelBackendError("gliner_inference_failed") from None
 
 
+def _guard_builtin_m0(root, checked):
+    documents = {name: json.loads((root / name).read_text())
+                 for name in ("gliner_config.json", "config.json", "tokenizer_config.json")}
+    config, encoder, tokenizer = (documents[name] for name in ("gliner_config.json", "config.json", "tokenizer_config.json"))
+    allowed = {"size_sup", "max_types", "shuffle_types", "random_drop", "max_neg_type_ratio", "max_len",
+               "lr_encoder", "lr_others", "num_steps", "warmup_ratio", "train_batch_size", "eval_every", "max_width",
+               "model_name", "fine_tune", "subtoken_pooling", "hidden_size", "span_mode", "dropout", "name", "encoder_config"}
+    if (not isinstance(config, dict) or set(config) - allowed
+            or any(config.get(key, expected) != expected for key, expected in (("hidden_size", 512), ("max_width", 12), ("max_len", 384)))
+            or config.get("model_name") != "microsoft/mdeberta-v3-base"
+            or config.get("span_mode") != "markerV0" or config.get("encoder_config") != encoder
+            or encoder != PINNED_ENCODER_CONFIG
+            or not isinstance(tokenizer, dict) or tokenizer.get("tokenizer_class") not in {"DebertaV2Tokenizer", "DebertaV2TokenizerFast"}
+            or tokenizer.get("model_max_length") != encoder.get("max_position_embeddings")
+            or type(tokenizer.get("model_max_length")) is not int or not 1 <= tokenizer["model_max_length"] <= 8192
+            or Path(config["model_name"]).exists()
+            or any((root / name).exists() for name in ("labels_tokenizer", "decoder_tokenizer", "adapter_config.json"))
+            or any(Path(name).suffix == ".py" for name in checked["files"])):
+        raise ValueError
+
+    def guard(value):
+        if isinstance(value, dict):
+            for key, item in value.items():
+                if key in {"auto_map", "trust_remote_code", "architectures", "attn_implementation", "_attn_implementation", "kernel_config"}:
+                    raise ValueError
+                if key == "tokenizer_class" and item not in {"DebertaV2Tokenizer", "DebertaV2TokenizerFast"}:
+                    raise ValueError
+                if key == "model_type" and item != "deberta-v2":
+                    raise ValueError
+                if key.endswith(("_file", "_path", "_name_or_path")) and item is not None:
+                    # Even a basename may be interpreted relative to CWD by a
+                    # tokenizer constructor. Rely only on resolved package files.
+                    raise ValueError
+                guard(item)
+        elif isinstance(value, list):
+            for item in value:
+                guard(item)
+    for document in documents.values():
+        guard(document)
+
+
 def load_gliner(package_dir, manifest, *, loader=None, device="cpu"):
     """Load a verified M0 package locally; injected loader is for offline tests.
 
@@ -207,17 +257,19 @@ Actual backbone/config cache independence requires the separate cold-start gate.
             raise ValueError
         if device not in {"cpu", "cuda"} or not (root / "tokenizer_config.json").is_file():
             raise ValueError
-        # No config-provided custom architecture may opt into remote code.
-        config = json.loads((root / "gliner_config.json").read_text())
-        if config.get("auto_map") or config.get("trust_remote_code"):
-            raise ValueError
+        _guard_builtin_m0(root, checked)
+        options = {"local_files_only": True, "strict": True, "map_location": device, "load_tokenizer": True}
         if loader is None:
             library = importlib.import_module("gliner")
             if library.__version__ != GLINER_VERSION:
                 raise ValueError
             loader = library.GLiNER.from_pretrained
-        model = loader(str(root), local_files_only=True, trust_remote_code=False, strict=True,
-                       map_location=device, load_tokenizer=True)
+        else:
+            # Explicit test-loader interface; GLiNER itself does not accept this
+            # option at its model constructor boundary. Builtin config guards
+            # above keep its default tokenizer/config path non-custom and local.
+            options["trust_remote_code"] = False
+        model = loader(str(root), **options)
         return GLiNERBackend(model, checked)
     except Exception:
         raise ModelBackendError("gliner_load_failed") from None

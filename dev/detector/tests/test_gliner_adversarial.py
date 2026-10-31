@@ -3,13 +3,15 @@
 No actual GLiNER library, model weights, external service, or GPU is used.
 """
 from copy import copy, deepcopy
+import hashlib
+import json
 from pathlib import Path
 import re
 from types import SimpleNamespace
 
 import pytest
 
-from detector.gliner_backend import GLiNERBackend, MODEL_TYPES, ModelBackendError
+from detector.gliner_backend import GLiNERBackend, GLINER_VERSION, MODEL_TYPES, M0_REPO_ID, M0_REVISION, ModelBackendError, load_gliner
 from detector.schemas import Segment
 from detector.server import DetectorConfigError, ServerSettings, settings_from_env
 from detector.tests.test_gliner_backend import Model, Processor, Tokenizer
@@ -207,3 +209,132 @@ def test_nonmonotonic_tokenizer_fit_never_causes_an_unverified_window_to_be_infe
     else:
         assert result.status == "complete" and model.calls
         assert all(len(window.split()) in allowed_lengths for window, _, _ in model.calls)
+
+
+def strict_local_package(tmp_path, manifest, *, mutation=None, auxiliary=None):
+    root = tmp_path / "mock-v1"
+    # Independent snapshot of the pinned backbone config, rather than importing
+    # the production guard's constant into its own expected-value fixture.
+    encoder = {"model_type": "deberta-v2", "attention_probs_dropout_prob": 0.1, "hidden_act": "gelu",
+        "hidden_dropout_prob": 0.1, "hidden_size": 768, "initializer_range": 0.02, "intermediate_size": 3072,
+        "max_position_embeddings": 512, "relative_attention": True, "position_buckets": 256,
+        "norm_rel_ebd": "layer_norm", "share_att_key": True, "pos_att_type": "p2c|c2p", "layer_norm_eps": 1e-7,
+        "max_relative_positions": -1, "position_biased_input": False, "num_attention_heads": 12,
+        "num_hidden_layers": 12, "type_vocab_size": 0, "vocab_size": 251000}
+    configs = {
+        "gliner_config.json": {"model_name": "microsoft/mdeberta-v3-base", "span_mode": "markerV0",
+                               "encoder_config": deepcopy(encoder)},
+        "config.json": deepcopy(encoder),
+        "tokenizer_config.json": {"tokenizer_class": "DebertaV2Tokenizer", "model_max_length": 512},
+    }
+    if mutation:
+        name, patch = mutation
+        configs[name].update(patch)
+        # Rehash coordinated root/inline edits too: the recursive guards must
+        # not rely solely on the two copies disagreeing.
+        if name == "config.json":
+            configs["gliner_config.json"]["encoder_config"] = deepcopy(configs[name])
+        elif name == "gliner_config.json" and "encoder_config" in patch:
+            if isinstance(configs[name]["encoder_config"], dict):
+                configs[name]["encoder_config"] = encoder | configs[name]["encoder_config"]
+            configs["config.json"] = deepcopy(configs[name]["encoder_config"])
+    if auxiliary:
+        configs[auxiliary + "/tokenizer_config.json"] = {"tokenizer_class": "DebertaV2Tokenizer"}
+    manifest["model"] = {"repo_id": M0_REPO_ID, "revision": M0_REVISION}
+    manifest["artifacts"]["config"] = "gliner_config.json"
+    manifest["artifacts"]["tokenizer"].append("tokenizer_config.json")
+    for name, value in configs.items():
+        content = json.dumps(value).encode()
+        (root / name).parent.mkdir(parents=True, exist_ok=True)
+        (root / name).write_bytes(content)
+        manifest["files"][name] = hashlib.sha256(content).hexdigest()
+    (root / "manifest.json").write_text(json.dumps(manifest))
+    return root, manifest
+
+
+def fake_library(monkeypatch, loader):
+    import detector.gliner_backend as module
+    library = SimpleNamespace(__version__=GLINER_VERSION, GLiNER=SimpleNamespace(from_pretrained=loader))
+    monkeypatch.setattr(module.importlib, "import_module", lambda name: library)
+
+
+def test_default_factory_uses_supported_gliner_keywords_after_config_guards(tmp_path, complete_manifest, monkeypatch):
+    root, manifest = strict_local_package(tmp_path, complete_manifest)
+    observed = []
+    # GLiNER .29 forwards an unknown trust_remote_code kwarg to its model
+    # constructor, where it raises TypeError. Reject that unsupported argument.
+    def loader(path, *, local_files_only, strict, map_location, load_tokenizer):
+        observed.append((path, local_files_only, strict, map_location, load_tokenizer))
+        return Model()
+    fake_library(monkeypatch, loader)
+    backend = load_gliner(root, manifest)
+    assert isinstance(backend, GLiNERBackend)
+    assert observed == [(str(root), True, True, "cpu", True)]
+
+
+@pytest.mark.parametrize("name,patch", [
+    ("gliner_config.json", {"encoder_config": {"model_type": "bert"}}),
+    ("gliner_config.json", {"encoder_config": None}),
+    ("gliner_config.json", {"encoder_config": {"model_type": "deberta-v2", "nested": {"auto_map": {"AutoModel": "malicious.Custom"}}}}),
+    ("gliner_config.json", {"model_name": "../../SYNTHETIC_PRIVATE_OUTSIDE"}),
+    ("gliner_config.json", {"model_name": "https://synthetic.invalid/model"}),
+    ("gliner_config.json", {"model_type": "gliner_bi_encoder_span"}),
+    ("gliner_config.json", {"labels_encoder": "SYNTHETIC_PRIVATE_OUTSIDE"}),
+    ("gliner_config.json", {"decoder_model": "SYNTHETIC_PRIVATE_OUTSIDE"}),
+    ("gliner_config.json", {"hidden_size": 1000000000}),
+    ("gliner_config.json", {"max_width": 1000000000}),
+    ("gliner_config.json", {"max_len": 1000000000}),
+    ("config.json", {"model_type": "bert"}),
+    ("config.json", {"auto_map": {"AutoConfig": "malicious.Custom"}}),
+    ("config.json", {"encoder": {"trust_remote_code": True}}),
+    ("config.json", {"attn_implementation": "synthetic/kernel"}),
+    ("config.json", {"_attn_implementation": "synthetic/kernel"}),
+    ("config.json", {"_attn_implementation_internal": "synthetic/kernel"}),
+    ("tokenizer_config.json", {"tokenizer_class": "UnknownCustomTokenizer"}),
+    ("tokenizer_config.json", {"auto_map": {"AutoTokenizer": ["malicious.Slow", "malicious.Fast"]}}),
+    ("tokenizer_config.json", {"trust_remote_code": True}),
+    ("tokenizer_config.json", {"tokenizer_file": "../../SYNTHETIC_PRIVATE_OUTSIDE/tokenizer.json"}),
+    ("tokenizer_config.json", {"vocab_file": "/SYNTHETIC_PRIVATE_OUTSIDE/spm.model"}),
+    ("tokenizer_config.json", {"tokenizer_file": "https://synthetic.invalid/tokenizer.json"}),
+    ("tokenizer_config.json", {"tokenizer_file": "tokenizer.json"}),
+])
+def test_default_factory_rejects_rehashed_remote_architecture_and_path_config_before_loading(tmp_path, complete_manifest, monkeypatch, name, patch):
+    root, manifest = strict_local_package(tmp_path, complete_manifest, mutation=(name, patch))
+    called = []
+    def loader(*args, **kwargs):
+        called.append(True)
+        return Model()
+    fake_library(monkeypatch, loader)
+    with pytest.raises(ModelBackendError) as failure:
+        load_gliner(root, manifest)
+    assert not called
+    assert "SYNTHETIC_PRIVATE_OUTSIDE" not in str(failure.value)
+
+
+@pytest.mark.parametrize("auxiliary", ["labels_tokenizer", "decoder_tokenizer"])
+def test_default_m0_factory_rejects_auxiliary_tokenizer_autodiscovery(tmp_path, complete_manifest, monkeypatch, auxiliary):
+    root, manifest = strict_local_package(tmp_path, complete_manifest, auxiliary=auxiliary)
+    called = []
+    def loader(*args, **kwargs):
+        called.append(True)
+        return Model()
+    fake_library(monkeypatch, loader)
+    with pytest.raises(ModelBackendError):
+        load_gliner(root, manifest)
+    assert not called
+
+
+def test_pinned_backbone_name_cannot_autoload_a_cwd_adapter_outside_the_package(tmp_path, complete_manifest, monkeypatch):
+    root, manifest = strict_local_package(tmp_path, complete_manifest)
+    outside = tmp_path / "microsoft" / "mdeberta-v3-base"
+    outside.mkdir(parents=True)
+    (outside / "adapter_config.json").write_text('{"synthetic": true}')
+    monkeypatch.chdir(tmp_path)
+    called = []
+    def loader(*args, **kwargs):
+        called.append(True)
+        return Model()
+    fake_library(monkeypatch, loader)
+    with pytest.raises(ModelBackendError):
+        load_gliner(root, manifest)
+    assert not called
