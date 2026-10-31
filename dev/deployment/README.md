@@ -118,6 +118,10 @@ ready 및 프로세스·포트 소유권을 검사하고, 실패하면 기존 re
 않는다. 실제 이벤트 송수신, GPU 모델 품질·성능, TLS 및 대시보드 기능은 별도
 통합 검증이 필요하다.
 
+사용자 PC에서 실제 HTTPS 인증서·인증·응답 계약을 확인하려면
+[배포 HTTPS 검증 스크립트](../integration/DEPLOYED_VERIFICATION.md)를 사용한다.
+서버 내부 loopback 검증 통과만으로 사용자 PC와의 TLS 연결을 완료 처리하지 않는다.
+
 C 계약의 SQLite·업로드·기타 영속 데이터 경로는 반드시 release 트리 밖의
 고정된 절대 경로를 사용해야 한다. WorkingDirectory는 release마다 달라지므로
 상대 DB 경로의 연속성을 이 실행기가 보장하지 않는다.
