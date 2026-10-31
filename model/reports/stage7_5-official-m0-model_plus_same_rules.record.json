@@ -1,0 +1,383 @@
+{
+  "experiment_id": "final-official-m0-v1",
+  "parent_experiment_id": null,
+  "common_baseline_experiment_id": "final-official-m0-v1",
+  "changed_factors": [],
+  "comparison_mode": "controlled_weights_only",
+  "comparison_condition_id": "condition-sha256:30290a05d61bc8b10f873e0e649852ce53c751eb720edba809190087daeb4b94",
+  "model_repo_revision_or_checkpoint_sha256": "3003753fba99e40645cf088c7367a2c6211fc174897dc64f1f9c147c29d18d2d",
+  "dataset_revision": "844f92f7beba98fa964f957ba324017e82451701",
+  "split_and_service_test_version": "kpii-test-track-a-v1",
+  "sample_manifest_sha256": null,
+  "seed": 42,
+  "inference_configuration": {
+    "dataset_sha256": "219c023f69832f9089d59df00368320fc76be81e05ee602cf0909289cd456add",
+    "purpose": "final",
+    "labels": [
+      [
+        "KR_RRN",
+        "Korean resident registration number"
+      ],
+      [
+        "CREDIT_CARD",
+        "credit card number"
+      ],
+      [
+        "PERSON",
+        "person"
+      ],
+      [
+        "EMAIL_ADDRESS",
+        "email address"
+      ],
+      [
+        "KR_PHONE_NUMBER",
+        "phone number"
+      ],
+      [
+        "KR_BANK_ACCOUNT",
+        "bank account number"
+      ],
+      [
+        "KR_LOCATION",
+        "address"
+      ],
+      [
+        "DATE_OF_BIRTH",
+        "date of birth"
+      ],
+      [
+        "KR_DRIVER_LICENSE",
+        "driver's license number"
+      ],
+      [
+        "KR_PASSPORT",
+        "passport number"
+      ],
+      [
+        "KR_NHIS",
+        "national health insurance number"
+      ],
+      [
+        "KR_VEHICLE_PLATE",
+        "license plate number"
+      ],
+      [
+        "USERNAME",
+        "username"
+      ],
+      [
+        "PERSONAL_ATTRIBUTE",
+        "personal attribute"
+      ],
+      [
+        "ORGANIZATION",
+        "organization"
+      ],
+      [
+        "URL",
+        "URL"
+      ],
+      [
+        "IP_ADDRESS",
+        "IP address"
+      ],
+      [
+        "NRP",
+        "nationality religious or political group"
+      ]
+    ],
+    "thresholds": {
+      "KR_RRN": 0.5,
+      "CREDIT_CARD": 0.5,
+      "PERSON": 0.5,
+      "EMAIL_ADDRESS": 0.5,
+      "KR_PHONE_NUMBER": 0.5,
+      "KR_BANK_ACCOUNT": 0.5,
+      "KR_LOCATION": 0.5,
+      "DATE_OF_BIRTH": 0.5,
+      "KR_DRIVER_LICENSE": 0.5,
+      "KR_PASSPORT": 0.5,
+      "KR_NHIS": 0.5,
+      "KR_VEHICLE_PLATE": 0.5,
+      "USERNAME": 0.5,
+      "PERSONAL_ATTRIBUTE": 0.5,
+      "ORGANIZATION": 0.5,
+      "URL": 0.5,
+      "IP_ADDRESS": 0.5,
+      "NRP": 0.5
+    },
+    "splitter": "ko_atomic_suffix_v3",
+    "max_words": 384,
+    "max_span": 12,
+    "max_subtokens": 512,
+    "rules": "b-secret-rules-v1",
+    "policy": "B-gateway-one-reinspection-v1",
+    "device": "cuda",
+    "packages": {
+      "torch": "2.10.0",
+      "gliner": "0.2.29",
+      "transformers": "4.57.3",
+      "tokenizers": "0.22.2"
+    },
+    "source_sha256": {
+      "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/run_checkpoint.py": "0ddd3016bce21632adab64b973609077735534c39d89e62425c822443593dad6",
+      "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/runner.py": "51c2e711a83cb0cb0fd45ef8d0dc7248a0f739f3dc5ce2737f28e1a9bbf4b2db",
+      "/home1/ncloud/stage7_5_20261031_codex_v5/model/segmentation/splitters.py": "afdaff308036033b06b3349172b71d56d33131d3e94cd719026eb59c538c9565",
+      "/home1/ncloud/stage7_5_20261031_codex_v5/model/segmentation/runtime.py": "a121c99d0864e761393521cf5ced7a3851ab3a7916843421a1f56e26c0faaa80",
+      "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/metrics.py": "09db72af9f7027f9a39402782352c77f70d2749c6e565dbf23c886a438526827",
+      "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/policy_metrics.py": "425ba9823b8fc8813a8f089d6399c8dbcc6402582d5bdb314d5d48ed54cebd3e",
+      "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/gateway_metrics.py": "549c9e71c296549eb7eb59aa2fb266c34156b5fcf521549444889f29510177d0",
+      "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/experiment_record.py": "ec6ebcf1e6f0625d0ca0c00126ff336df5946881a2d031690046b509360597fe",
+      "/home1/ncloud/stage7_5_20261031_codex_v5/model/segmentation/coverage_backend.py": "5a4ffe7f958dea90ae6ffb21a69e3c14338ce7a5bed143850d5f91ee046645d9",
+      "/home1/ncloud/stage7_5_20261031_codex_v5/dev/detector/gliner_backend.py": "48619e8444815f9b8caa2a03e53941fee37b1ba50d3fdb496f30ecc97082099f",
+      "/home1/ncloud/stage7_5_20261031_codex_v5/dev/gateway/policy.py": "1ac171985129d045c107751811759abafc279200dd7f34584e411e7e1f4f9710",
+      "/home1/ncloud/stage7_5_20261031_codex_v5/dev/gateway/engine.py": "59d57101e79b7b993a4298898465c565b92e526c0535bd0321eb181264276e3c",
+      "/home1/ncloud/stage7_5_20261031_codex_v5/dev/gateway/secret_rules.py": "575ccb2ce9301addb2168339233dd81c14ee215c2dd5e3afa09069bd233156fd"
+    },
+    "report_mode": "model_plus_same_rules"
+  },
+  "label_mapping_version": "condition-sha256:9a1f3922132beec47fb5d33ded1e0b89d10db25df3894cd298382057ee292626",
+  "metrics_protocol_version": "char_span_exact_v1+B-gateway-one-reinspection-v1",
+  "threshold_version": "condition-sha256:2921c30959aa85f08f666fdd1e5416917c3a269c8f64475e0b64082f0bfe9ea0",
+  "rules_version": "b-secret-rules-v1",
+  "policy_version": "B-gateway-one-reinspection-v1",
+  "chunking_and_overlap_version": "gliner029-word-window-v1+ko_atomic_suffix_v3",
+  "span_postprocessing_version": "B-exact-char-dedup-v1",
+  "started_at_utc": "2026-10-31T16:03:04.414699+00:00",
+  "finished_at_utc": "2026-10-31T16:14:33.757279+00:00",
+  "delta_vs_parent": null,
+  "delta_vs_common_baseline": null,
+  "report_mode": "model_plus_same_rules",
+  "record_schema_version": "1.0",
+  "status": "executed",
+  "overall_precision_recall_f1": {
+    "tp": 84671,
+    "fp": 48478,
+    "fn": 36505,
+    "precision": 0.635911647853157,
+    "recall": 0.69874397570476,
+    "f1": 0.6658488154919886
+  },
+  "per_type_precision_recall_f1_and_denominators": {
+    "CREDIT_CARD": {
+      "tp": 2266,
+      "fp": 1,
+      "fn": 0,
+      "gold": 2266,
+      "predicted": 2267,
+      "precision": 0.9995588883987648,
+      "recall": 1.0,
+      "f1": 0.99977939554379
+    },
+    "DATE_OF_BIRTH": {
+      "tp": 2326,
+      "fp": 144,
+      "fn": 565,
+      "gold": 2891,
+      "predicted": 2470,
+      "precision": 0.9417004048582996,
+      "recall": 0.8045658941542719,
+      "f1": 0.867748554374184
+    },
+    "EMAIL_ADDRESS": {
+      "tp": 11820,
+      "fp": 81,
+      "fn": 225,
+      "gold": 12045,
+      "predicted": 11901,
+      "precision": 0.993193849256365,
+      "recall": 0.9813200498132005,
+      "f1": 0.987221247807567
+    },
+    "IP_ADDRESS": {
+      "tp": 1676,
+      "fp": 540,
+      "fn": 34,
+      "gold": 1710,
+      "predicted": 2216,
+      "precision": 0.7563176895306859,
+      "recall": 0.9801169590643275,
+      "f1": 0.8537952114111055
+    },
+    "KR_BANK_ACCOUNT": {
+      "tp": 4055,
+      "fp": 506,
+      "fn": 26,
+      "gold": 4081,
+      "predicted": 4561,
+      "precision": 0.8890594167945626,
+      "recall": 0.993629012496937,
+      "f1": 0.9384401758852118
+    },
+    "KR_DRIVER_LICENSE": {
+      "tp": 1737,
+      "fp": 2693,
+      "fn": 2,
+      "gold": 1739,
+      "predicted": 4430,
+      "precision": 0.39209932279909704,
+      "recall": 0.9988499137435307,
+      "f1": 0.5631382720051872
+    },
+    "KR_LOCATION": {
+      "tp": 3736,
+      "fp": 959,
+      "fn": 1436,
+      "gold": 5172,
+      "predicted": 4695,
+      "precision": 0.7957401490947816,
+      "recall": 0.7223511214230471,
+      "f1": 0.7572717137934529
+    },
+    "KR_NHIS": {
+      "tp": 2306,
+      "fp": 1166,
+      "fn": 0,
+      "gold": 2306,
+      "predicted": 3472,
+      "precision": 0.6641705069124424,
+      "recall": 1.0,
+      "f1": 0.7982000692281066
+    },
+    "KR_PASSPORT": {
+      "tp": 686,
+      "fp": 27,
+      "fn": 3318,
+      "gold": 4004,
+      "predicted": 713,
+      "precision": 0.9621318373071529,
+      "recall": 0.17132867132867133,
+      "f1": 0.2908628365486538
+    },
+    "KR_PHONE_NUMBER": {
+      "tp": 11448,
+      "fp": 695,
+      "fn": 34,
+      "gold": 11482,
+      "predicted": 12143,
+      "precision": 0.9427653792308326,
+      "recall": 0.9970388434070719,
+      "f1": 0.9691428571428572
+    },
+    "KR_RRN": {
+      "tp": 3393,
+      "fp": 311,
+      "fn": 8655,
+      "gold": 12048,
+      "predicted": 3704,
+      "precision": 0.916036717062635,
+      "recall": 0.28162350597609564,
+      "f1": 0.430802437785678
+    },
+    "KR_VEHICLE_PLATE": {
+      "tp": 750,
+      "fp": 25,
+      "fn": 1555,
+      "gold": 2305,
+      "predicted": 775,
+      "precision": 0.967741935483871,
+      "recall": 0.32537960954446854,
+      "f1": 0.487012987012987
+    },
+    "NRP": {
+      "tp": 543,
+      "fp": 42,
+      "fn": 1757,
+      "gold": 2300,
+      "predicted": 585,
+      "precision": 0.9282051282051282,
+      "recall": 0.23608695652173914,
+      "f1": 0.37642980935875214
+    },
+    "ORGANIZATION": {
+      "tp": 4650,
+      "fp": 10072,
+      "fn": 3362,
+      "gold": 8012,
+      "predicted": 14722,
+      "precision": 0.3158538242086673,
+      "recall": 0.5803794308537195,
+      "f1": 0.40907891264185803
+    },
+    "PERSON": {
+      "tp": 26180,
+      "fp": 29855,
+      "fn": 14665,
+      "gold": 40845,
+      "predicted": 56035,
+      "precision": 0.46720799500312304,
+      "recall": 0.6409597257926307,
+      "f1": 0.5404624277456648
+    },
+    "PERSONAL_ATTRIBUTE": {
+      "tp": 0,
+      "fp": 530,
+      "fn": 0,
+      "gold": 0,
+      "predicted": 530,
+      "precision": 0.0,
+      "recall": null,
+      "f1": 0.0
+    },
+    "URL": {
+      "tp": 5680,
+      "fp": 51,
+      "fn": 0,
+      "gold": 5680,
+      "predicted": 5731,
+      "precision": 0.9911010294887455,
+      "recall": 1.0,
+      "f1": 0.9955306283410744
+    },
+    "USERNAME": {
+      "tp": 1419,
+      "fp": 780,
+      "fn": 871,
+      "gold": 2290,
+      "predicted": 2199,
+      "precision": 0.645293315143247,
+      "recall": 0.619650655021834,
+      "f1": 0.6322120739585654
+    }
+  },
+  "critical_type_false_negatives_and_gold_counts": {
+    "KR_RRN": {
+      "false_negatives": 8655,
+      "gold": 12048
+    },
+    "KR_BANK_ACCOUNT": {
+      "false_negatives": 26,
+      "gold": 4081
+    },
+    "CREDIT_CARD": {
+      "false_negatives": 0,
+      "gold": 2266
+    },
+    "KR_PHONE_NUMBER": {
+      "false_negatives": 34,
+      "gold": 11482
+    },
+    "EMAIL_ADDRESS": {
+      "false_negatives": 225,
+      "gold": 12045
+    }
+  },
+  "normal_false_block_rate_and_denominator": {
+    "false_blocks": 0,
+    "normal_documents": 0,
+    "rate": null
+  },
+  "execution_evidence": {
+    "purpose": "final",
+    "dataset_sha256": "219c023f69832f9089d59df00368320fc76be81e05ee602cf0909289cd456add",
+    "inference_status_counts": {
+      "complete": 28142,
+      "incomplete": 0,
+      "error": 0
+    },
+    "runtime_acceptance": null,
+    "b_splitter_adoption": false,
+    "scope": "A offline measured experiment; B production acceptance remains separate."
+  }
+}

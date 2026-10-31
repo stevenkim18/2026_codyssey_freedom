@@ -4,6 +4,13 @@
 
 > **원칙**: 평가 체계는 모델을 실제로 호출하거나 학습하지 않고도 합성 정답·예측 자료를 통해 오프라인에서 검증할 수 있도록 설계되었습니다. 실제 모델 가중치 측정치나 임의의 점수를 꾸며내지 않으며, 실측 대기 항목은 명확히 `not_executed` 및 `pending` 상태로 구분합니다.
 
+## 현재 상태: 7.5단계 및 8단계(시나리오 B) 최종 완료 (2026-11-01)
+
+7.5단계 오프라인 평가 보완에 이어, **8단계(시나리오 B)**에서 B 프로덕션 백엔드([`dev/detector/gliner_backend.py`](../../dev/detector/gliner_backend.py))에 `ko_atomic_suffix_v3`, 경계 안전 윈도우 폴백(`_whole_group_plan`), `KR_RRN` 포맷·생년월일·경계 가드레일(`_is_valid_kr_rrn`), 2차 재검사 `[REDACTED]` 플레이스홀더 중첩 가드레일(`_overlaps_redacted_placeholder`)을 통합하고 GPU 서버(`NVIDIA L4`) 런타임 인수 검증([`run_stage8_acceptance.py`](run_stage8_acceptance.py))을 완료했습니다.
+
+- **최종 판정**: **`replace`** (`runtime_acceptance=True`, `b_splitter_adoption=True`, 5대 교체 게이트 전원 통과)
+- 최신 결과와 근거는 **[최종 보고서 v2 (`report_v2.md`)](../report_v2.md)**(7.5단계 보존본 [보고서 v1](../report_v1.md)), [Stage 8 서비스 최종 집계](../reports/stage8-service-final-v1.json), [Stage 8 공식 Test 최종 집계](../reports/stage8-official-final-v1.json), [Stage 8 런타임 인수](../reports/stage8-runtime-acceptance-v1.json)를 확인하세요. (초기 서비스 v1 미동결본은 탐색·회귀 자료로만 보존합니다.)
+
 ---
 
 ## 1. 지표 정의 (Metrics Definition)
@@ -103,10 +110,12 @@ model/.cache/conversion-venv/bin/python -m model.evaluation compare m1_record.js
 ```
 
 ### 3.4 PRD 교체 판정 (`decide`)
-PRD §11의 모델 교체 판정 게이트를 자동으로 검사합니다.
+PRD §6의 모델 교체 지표를 검사합니다. 시험 동결·dev 선택·실제 모델 해시·검사 완료 여부는 현재 CLI가 자동 인증하지 않습니다.
 ```bash
-model/.cache/conversion-venv/bin/python -m model.evaluation decide m1_record.json m0_record.json --runtime-accepted
+model/.cache/conversion-venv/bin/python -m model.evaluation decide m1_record.json m0_record.json
 ```
+B의 실제 로딩·지연·메모리·통합 수용 근거가 있을 때만 `--runtime-accepted`를 사용합니다. 현재는 붙이지 않습니다. `decide`의 종료 코드는 `replace`일 때 0, 나머지 판정일 때 3입니다. 기존 결과의 `reject`는 정상적인 거절 출력이며 실행 실패와 구분합니다.
+
 - **판정 결과 (`verdict`)**:
   - `replace`: 모든 기준 통과 및 B 운영 수용 확인 완료.
   - `pending_runtime_acceptance`: 성능 지표는 통과했으나 B 파트의 지연시간/메모리/통합 검증 승인이 미완료됨.
@@ -121,28 +130,38 @@ model/.cache/conversion-venv/bin/python -m model.evaluation decide m1_record.jso
 
 - **구성**: 요청 150건 + 응답 150건 = 총 300건
 - **정상 사례**: 개인정보가 전혀 없는 순수 정상 문서 100건 (오차단율 평가용)
-- **5대 중요 유형 보존**: `KR_RRN`(39개), `CREDIT_CARD`(40개), `KR_PHONE_NUMBER`(81개), `KR_BANK_ACCOUNT`(52개), `EMAIL_ADDRESS`(77개) 각각 최소 30개 이상 확보.
-- **특수 스트레스 환경 포함**: 표(table), JSON, 코드 블록, 조사/접미사 경계, 600자 이상 장문 문서(8건), 한영 혼합 언어 등.
-- **공식 데이터 결측 유형 검증**: 공식 dev/test셋에 정답이 0개인 `PERSONAL_ATTRIBUTE` 정답 11개 포함.
+- **5대 중요 유형 보존**: `KR_RRN`(42개), `CREDIT_CARD`(41개), `KR_PHONE_NUMBER`(80개), `KR_BANK_ACCOUNT`(53개), `EMAIL_ADDRESS`(77개) 각각 최소 30개 이상 확보.
+- **특수 스트레스 환경 포함**: 표(table), JSON, 코드 블록, 조사/접미사 경계, 600자 이상 장문 문서(9건), 한영 혼합 언어 등.
+- **공식 데이터 결측 유형 검증**: 공식 dev/test셋에 정답이 0개인 `PERSONAL_ATTRIBUTE` 정답 10개 포함.
 - **안전성 및 오염 방지**:
   - 실제 개인정보나 실제 인증정보가 포함되지 않도록 RFC 2606 예시 도메인, RFC 5737 테스트 IP 대역, 가상 도로명/회사명을 엄격히 사용.
   - 공식 K-PII-Bench 원본과의 완전 텍스트 중복 0건, 8자 이상 고유 엔터티 표면형 중복 0건 검증 완료.
 - **동결 및 버전 관리 방침**:
   - 생성된 300건 파일은 현재 `review_status: needs_review` 상태인 초안(`draft`)입니다.
-  - 인간 검토가 완료되어 승인되기 전까지는 최종 동결(`ready_to_freeze`)로 표시하지 않습니다.
-  - 본 독립 시험셋은 **최종 모델 평가 전용**이며, dev 튜닝 및 하이퍼파라미터/임계값 탐색에 절대 재사용할 수 없습니다.
+  - `ready_to_freeze`는 기계적 검사·사람 검토 후 동결 가능한 상태이며, 동결 자체는 별도로 시점·버전·해시를 기록해야 합니다. 현재 manifest는 `frozen=false`입니다.
+  - 원래 최종 평가용으로 계획했으나 미동결 상태에서 이미 점수를 확인했습니다. 기존 v1은 탐색/회귀용으로 보존합니다. 새 독립 최종 시험은 train/dev·조정 자료와 분리해 선택 과정 전에 사람 검토·동결하고, 후보·임계값 선택에 사용하지 않습니다.
 
 ---
 
-## 5. 실측 대기 항목 (GPU 접속 전 현황)
+## 5. 현재 구현·실행·검증 범위
 
-| 항목 | 현재 상태 | 비고 |
+| 항목 | 현재 상태 | 7.5단계에서 필요한 것 |
 |---|---|---|
-| 평가 지표 및 신뢰구간 산출 코드 | **구현 및 100% 테스트 통과** | `model/tests/test_evaluation_metrics.py` |
-| B 정책 연동 (오차단/마스킹잔존) | **구현 및 100% 테스트 통과** | `model/tests/test_evaluation_policy.py` |
-| 실험 기록 및 교체 판정 게이트 | **구현 및 100% 테스트 통과** | `model/tests/test_evaluation_records_compare.py` |
-| 독립 시험셋 300건 생성 및 검증 | **초안 생성 및 무결성 검증 완료** | `service-test-v1.manifest.json` |
-| M0 모델 실제 기준선 추론 | **실측 대기 (Pending GPU)** | 가중치 로딩 및 GPU 인퍼런스 필요 |
-| M1 추가 학습 및 dev 임계값 선정 | **실측 대기 (Pending GPU)** | GPU 학습 환경 필요 |
-| M0 vs M1 최종 비교 리포트 | **실측 대기 (Pending GPU)** | 실제 평가 결과 기록 후 산출 |
+| 스팬 지표·CI 계산 함수 | 구현·합성 테스트 있음 | 최종 실측에 유형별 CI·분모 출력. 함수 존재를 실제 CI 보고 완료로 간주하지 않음 |
+| B 정책 어댑터 | 합성 테스트, M0 서비스 오차단 재현 | M0/M1 동일 규칙 결합·잔존율·실패 지표 실제 보고 |
+| 실험 기록·교체 판정 | 저장 JSON 내부 일관성 및 `reject` 재현 | 실제 실행 설정·해시 연결, 공통 비교 ID, B 수용 상태 바로잡기 |
+| 서비스 v1 | 300건 초안·기계적 검사, 전수 미검토·미동결 | 기존 v1 보존, 새 최종 holdout 사람 검토·사전 동결 |
+| M0 초기 추론 | 결과 JSON 및 로컬 서비스 예측 있음 | 수정된 실행기·공통 분할·dev 절차에서 기준선 확인 |
+| M1 초기 학습·추론 | 실행 보고·결과 JSON 있음 | 실제 인자·저장본/로그 회수, 공통 분할 연결, dev 선택 |
+| 최종 비교 | 잠정 집계, 오차단 +7%p 및 중요 유형 퇴행 | 공식 test·새 서비스 최종 평가, 모든 교체 조건과 한계 보고 |
 
+## 6. 실행기를 보완할 때 지킬 계약
+
+1. `complete/incomplete/error`를 문서마다 보존합니다. 미완료를 빈 탐지로 바꾸거나 합격 평가로 승인하지 않습니다.
+2. 학습 입력·GLiNER 실제 예측·backend 창 계획·위치 복원에 같은 분할을 적용하고 재로딩 후에도 검증합니다.
+3. 데이터·시험·표본·모델·설정·소스 해시와 실행 시각을 기록합니다. 문서별 예측과 상태는 원문 노출을 줄인 Git 제외 경로에 보존합니다.
+4. `comparison_condition_id`를 실제 공통 조건에 맞게 생성합니다. ID 일치나 스키마 통과만으로 공정성이 성립하지 않습니다.
+5. M0/M1 모두 dev와 별도 정상 조정 자료에서 같은 절차·예산으로 설정을 선택합니다. 최종 시험으로 선택하지 않습니다.
+6. CI는 방법·단위·표본 수를 기록합니다. paired 비교에는 동일 문서별 M0/M1 예측이 필요합니다. gold 0인 유형의 recall은 평가 불가로 표시합니다.
+
+현재 `model_plus_same_rules`는 모델 탐지에 B 비밀키 규칙 탐지를 더하는 어댑터입니다. 모델의 오탐을 자동으로 제거하는 체크섬 필터가 아닙니다. 임계값 상향의 효과도 dev에서 측정하기 전에는 보장하지 않습니다.

@@ -1,0 +1,664 @@
+{
+  "schema_version": "1.0",
+  "recovered_at_utc": "2026-10-31T13:49:33.646720+00:00",
+  "raw_evidence_sha256": "dd2e9702a7228ce2ca52b09b720c485d162df52d5658b1fe4b215a6afd88edba",
+  "raw_evidence_local_path": "model/.cache/stage7_5-20261031/recovered-evidence-v2.json",
+  "python": "3.12.16 (main, Oct 26 2026, 11:37:43) [GCC 15.3.0]",
+  "executable": "/home1/ncloud/miniforge3/envs/py312/bin/python",
+  "packages": {
+    "torch": "2.10.0",
+    "gliner": "0.2.29",
+    "transformers": "4.57.3",
+    "tokenizers": "0.22.2",
+    "accelerate": "1.15.0",
+    "safetensors": "0.7.0",
+    "numpy": "1.26.4"
+  },
+  "remote_git_commit": null,
+  "sources": {
+    "model/training/run_stage6_m1.py": {
+      "exists": true,
+      "bytes": 14040,
+      "sha256": "b02a10991b23f858aba7060c3fa4e60ac8d36b67bf27f802f3e91bf4be597eb5",
+      "matches_local_before_stage7_5_fixes": true
+    },
+    "model/evaluation/evaluate_m0.py": {
+      "exists": true,
+      "bytes": 8381,
+      "sha256": "d8afa47e8b65dd13b7b858a219766b5d9a464363c770babf85b7c189a127d23e",
+      "matches_local_before_stage7_5_fixes": false
+    },
+    "model/segmentation/splitters.py": {
+      "exists": true,
+      "bytes": 5930,
+      "sha256": "afdaff308036033b06b3349172b71d56d33131d3e94cd719026eb59c538c9565",
+      "matches_local_before_stage7_5_fixes": true
+    },
+    "dev/detector/gliner_backend.py": {
+      "exists": true,
+      "bytes": 14863,
+      "sha256": "48619e8444815f9b8caa2a03e53941fee37b1ba50d3fdb496f30ecc97082099f",
+      "matches_local_before_stage7_5_fixes": true
+    }
+  },
+  "training_arguments_from_recovered_source": {
+    "num_train_epochs": 2,
+    "per_device_train_batch_size": 8,
+    "gradient_accumulation_steps": 1,
+    "learning_rate": 3e-05,
+    "weight_decay": 0.01,
+    "warmup_ratio": 0.1,
+    "logging_steps": 50,
+    "save_strategy": "epoch",
+    "save_total_limit": 2,
+    "fp16": true,
+    "dataloader_num_workers": 2,
+    "report_to": "none",
+    "remove_unused_columns": false
+  },
+  "training_arguments_binary_present": false,
+  "training_arguments_proof_scope": "Recovered source plus trainer-state log. No training_args file exists in the checked checkpoints; source alone cannot prove all execution-time overrides.",
+  "sample": {
+    "train_5k.jsonl": {
+      "exists": true,
+      "bytes": 26033181,
+      "sha256": "a1936a858d8cfea593792681e796f5ef50d96c8e9b376745adb732f327030506",
+      "documents": 5000,
+      "unique_ids": 5000,
+      "unique_texts": 4996,
+      "domains": {
+        "chat": 402,
+        "document": 389,
+        "education": 352,
+        "email_thread": 444,
+        "employment": 415,
+        "financial": 462,
+        "government": 429,
+        "insurance": 374,
+        "legal": 493,
+        "medical": 415,
+        "support_ticket": 385,
+        "telecommunications": 440
+      },
+      "entities_by_type": {
+        "CREDIT_CARD": 407,
+        "DATE_OF_BIRTH": 884,
+        "EMAIL_ADDRESS": 1585,
+        "IP_ADDRESS": 654,
+        "KR_BANK_ACCOUNT": 1016,
+        "KR_DRIVER_LICENSE": 409,
+        "KR_LOCATION": 1172,
+        "KR_NHIS": 450,
+        "KR_PASSPORT": 306,
+        "KR_PHONE_NUMBER": 1953,
+        "KR_RRN": 2211,
+        "KR_VEHICLE_PLATE": 469,
+        "NRP": 457,
+        "ORGANIZATION": 1255,
+        "PERSON": 8352,
+        "PERSONAL_ATTRIBUTE": 53,
+        "URL": 760,
+        "USERNAME": 386
+      }
+    },
+    "train_5k_gliner.jsonl": {
+      "exists": true,
+      "bytes": 6435006,
+      "sha256": "222257d4b67457e9400e5860212e288cc247925b8c01c77fa2db82240ac0cad5"
+    }
+  },
+  "artifacts": {
+    "/home1/ncloud/b-gpu-trial-3c76ce4d6f8a4525a2f4bb3072ccd671/models/49a065fb3f08ca1291b56c514ec0dd6f11d906890d2d60d1d8c79b22800775c0/pytorch_model.bin": {
+      "exists": true,
+      "bytes": 1155900362,
+      "sha256": "3003753fba99e40645cf088c7367a2c6211fc174897dc64f1f9c147c29d18d2d"
+    },
+    "/home1/ncloud/b-gpu-trial-3c76ce4d6f8a4525a2f4bb3072ccd671/models/49a065fb3f08ca1291b56c514ec0dd6f11d906890d2d60d1d8c79b22800775c0/model.safetensors": {
+      "exists": false
+    },
+    "/home1/ncloud/b-gpu-trial-3c76ce4d6f8a4525a2f4bb3072ccd671/models/49a065fb3f08ca1291b56c514ec0dd6f11d906890d2d60d1d8c79b22800775c0/gliner_config.json": {
+      "exists": true,
+      "bytes": 1122,
+      "sha256": "05b9a8b4e474e519fd0e57648a6c9fab2403fea936003af4993a2d15c3135370"
+    },
+    "/home1/ncloud/b-gpu-trial-3c76ce4d6f8a4525a2f4bb3072ccd671/models/49a065fb3f08ca1291b56c514ec0dd6f11d906890d2d60d1d8c79b22800775c0/config.json": {
+      "exists": true,
+      "bytes": 579,
+      "sha256": "bcffcd343dc5efa5ef2d5a58d2b405eed108f01cc45b48d0a907b333ec41801f"
+    },
+    "/home1/ncloud/b-gpu-trial-3c76ce4d6f8a4525a2f4bb3072ccd671/models/49a065fb3f08ca1291b56c514ec0dd6f11d906890d2d60d1d8c79b22800775c0/spm.model": {
+      "exists": true,
+      "bytes": 4305025,
+      "sha256": "13c8d666d62a7bc4ac8f040aab68e942c861f93303156cc28f5c7e885d86d6e3"
+    },
+    "/home1/ncloud/b-gpu-trial-3c76ce4d6f8a4525a2f4bb3072ccd671/models/49a065fb3f08ca1291b56c514ec0dd6f11d906890d2d60d1d8c79b22800775c0/tokenizer.json": {
+      "exists": false
+    },
+    "/home1/ncloud/b-gpu-trial-3c76ce4d6f8a4525a2f4bb3072ccd671/models/49a065fb3f08ca1291b56c514ec0dd6f11d906890d2d60d1d8c79b22800775c0/tokenizer_config.json": {
+      "exists": true,
+      "bytes": 122,
+      "sha256": "5249d6f991d952e10fe49794576e8566aa5f5c82226ab4c9d8f3f78462a8d007"
+    },
+    "/home1/ncloud/b-gpu-trial-3c76ce4d6f8a4525a2f4bb3072ccd671/models/49a065fb3f08ca1291b56c514ec0dd6f11d906890d2d60d1d8c79b22800775c0/manifest.json": {
+      "exists": true,
+      "bytes": 2964,
+      "sha256": "49a065fb3f08ca1291b56c514ec0dd6f11d906890d2d60d1d8c79b22800775c0"
+    },
+    "/home1/ncloud/b-gpu-trial-3c76ce4d6f8a4525a2f4bb3072ccd671/models/49a065fb3f08ca1291b56c514ec0dd6f11d906890d2d60d1d8c79b22800775c0/added_tokens.json": {
+      "exists": false
+    },
+    "/home1/ncloud/b-gpu-trial-3c76ce4d6f8a4525a2f4bb3072ccd671/models/49a065fb3f08ca1291b56c514ec0dd6f11d906890d2d60d1d8c79b22800775c0/special_tokens_map.json": {
+      "exists": false
+    },
+    "/home1/ncloud/b-gpu-trial-3c76ce4d6f8a4525a2f4bb3072ccd671/models/49a065fb3f08ca1291b56c514ec0dd6f11d906890d2d60d1d8c79b22800775c0/trainer_state.json": {
+      "exists": false
+    },
+    "/home1/ncloud/b-gpu-trial-3c76ce4d6f8a4525a2f4bb3072ccd671/models/49a065fb3f08ca1291b56c514ec0dd6f11d906890d2d60d1d8c79b22800775c0/training_args.bin": {
+      "exists": false
+    },
+    "/home1/ncloud/b-gpu-trial-3c76ce4d6f8a4525a2f4bb3072ccd671/models/49a065fb3f08ca1291b56c514ec0dd6f11d906890d2d60d1d8c79b22800775c0/training_args.json": {
+      "exists": false
+    },
+    "/home1/ncloud/m1_model/pytorch_model.bin": {
+      "exists": true,
+      "bytes": 1155879495,
+      "sha256": "099ac5d30880b52abaf26d0bbffc6e868e55f1f8b64d1e437ee793f9a5865fba"
+    },
+    "/home1/ncloud/m1_model/model.safetensors": {
+      "exists": false
+    },
+    "/home1/ncloud/m1_model/gliner_config.json": {
+      "exists": true,
+      "bytes": 3415,
+      "sha256": "5933c2407deaf51bdf7cbdebff5a0fceb014ec223e50019e67b6f69000444f96"
+    },
+    "/home1/ncloud/m1_model/config.json": {
+      "exists": false
+    },
+    "/home1/ncloud/m1_model/spm.model": {
+      "exists": true,
+      "bytes": 4305025,
+      "sha256": "13c8d666d62a7bc4ac8f040aab68e942c861f93303156cc28f5c7e885d86d6e3"
+    },
+    "/home1/ncloud/m1_model/tokenizer.json": {
+      "exists": true,
+      "bytes": 16351316,
+      "sha256": "87208f39b9e81f180629d45da55d7a24cf1e011884552d6d5096c92e0a639d39"
+    },
+    "/home1/ncloud/m1_model/tokenizer_config.json": {
+      "exists": true,
+      "bytes": 122,
+      "sha256": "5249d6f991d952e10fe49794576e8566aa5f5c82226ab4c9d8f3f78462a8d007"
+    },
+    "/home1/ncloud/m1_model/manifest.json": {
+      "exists": true,
+      "bytes": 2942,
+      "sha256": "d57a47f52c54955dcb1bab22da0b23cb9fcacc8b1fc30a3d0d785c5a31265b7b"
+    },
+    "/home1/ncloud/m1_model/added_tokens.json": {
+      "exists": true,
+      "bytes": 86,
+      "sha256": "030e747c4ca7992a3ac794c6fda9919352c88ae722e85178217cd083b450078d"
+    },
+    "/home1/ncloud/m1_model/special_tokens_map.json": {
+      "exists": true,
+      "bytes": 286,
+      "sha256": "9463f61e1b109a8eb4688b829260d7c6b1e6dff04c98ff7269bb89e2b92369b9"
+    },
+    "/home1/ncloud/m1_model/trainer_state.json": {
+      "exists": false
+    },
+    "/home1/ncloud/m1_model/training_args.bin": {
+      "exists": false
+    },
+    "/home1/ncloud/m1_model/training_args.json": {
+      "exists": false
+    },
+    "/home1/ncloud/m1_checkpoints/checkpoint-631/pytorch_model.bin": {
+      "exists": false
+    },
+    "/home1/ncloud/m1_checkpoints/checkpoint-631/model.safetensors": {
+      "exists": true,
+      "bytes": 1155830112,
+      "sha256": "11d9c46e79d9198d55b276c9a511cd3b349717897f9c43eb018484f425c3e763"
+    },
+    "/home1/ncloud/m1_checkpoints/checkpoint-631/gliner_config.json": {
+      "exists": true,
+      "bytes": 3415,
+      "sha256": "5933c2407deaf51bdf7cbdebff5a0fceb014ec223e50019e67b6f69000444f96"
+    },
+    "/home1/ncloud/m1_checkpoints/checkpoint-631/config.json": {
+      "exists": false
+    },
+    "/home1/ncloud/m1_checkpoints/checkpoint-631/spm.model": {
+      "exists": true,
+      "bytes": 4305025,
+      "sha256": "13c8d666d62a7bc4ac8f040aab68e942c861f93303156cc28f5c7e885d86d6e3"
+    },
+    "/home1/ncloud/m1_checkpoints/checkpoint-631/tokenizer.json": {
+      "exists": true,
+      "bytes": 16351316,
+      "sha256": "87208f39b9e81f180629d45da55d7a24cf1e011884552d6d5096c92e0a639d39"
+    },
+    "/home1/ncloud/m1_checkpoints/checkpoint-631/tokenizer_config.json": {
+      "exists": true,
+      "bytes": 20199,
+      "sha256": "9d3a9e5b184d44b2cb2f14af3e7cf57b788e674ce17768b688c4473a1c2e71f5"
+    },
+    "/home1/ncloud/m1_checkpoints/checkpoint-631/manifest.json": {
+      "exists": false
+    },
+    "/home1/ncloud/m1_checkpoints/checkpoint-631/added_tokens.json": {
+      "exists": true,
+      "bytes": 86,
+      "sha256": "030e747c4ca7992a3ac794c6fda9919352c88ae722e85178217cd083b450078d"
+    },
+    "/home1/ncloud/m1_checkpoints/checkpoint-631/special_tokens_map.json": {
+      "exists": true,
+      "bytes": 286,
+      "sha256": "9463f61e1b109a8eb4688b829260d7c6b1e6dff04c98ff7269bb89e2b92369b9"
+    },
+    "/home1/ncloud/m1_checkpoints/checkpoint-631/trainer_state.json": {
+      "exists": true,
+      "bytes": 2827,
+      "sha256": "2462476e45bd728c7d9009b1860c2231cc30e217f50bae9e9a9098e690eff505"
+    },
+    "/home1/ncloud/m1_checkpoints/checkpoint-631/training_args.bin": {
+      "exists": false
+    },
+    "/home1/ncloud/m1_checkpoints/checkpoint-631/training_args.json": {
+      "exists": false
+    },
+    "/home1/ncloud/m1_checkpoints/checkpoint-1262/pytorch_model.bin": {
+      "exists": false
+    },
+    "/home1/ncloud/m1_checkpoints/checkpoint-1262/model.safetensors": {
+      "exists": true,
+      "bytes": 1155830112,
+      "sha256": "ed2546b8b6a721be18a6a9e644fe6fd423016c7a457b5e30521d85c3d86228a2"
+    },
+    "/home1/ncloud/m1_checkpoints/checkpoint-1262/gliner_config.json": {
+      "exists": true,
+      "bytes": 3415,
+      "sha256": "5933c2407deaf51bdf7cbdebff5a0fceb014ec223e50019e67b6f69000444f96"
+    },
+    "/home1/ncloud/m1_checkpoints/checkpoint-1262/config.json": {
+      "exists": false
+    },
+    "/home1/ncloud/m1_checkpoints/checkpoint-1262/spm.model": {
+      "exists": true,
+      "bytes": 4305025,
+      "sha256": "13c8d666d62a7bc4ac8f040aab68e942c861f93303156cc28f5c7e885d86d6e3"
+    },
+    "/home1/ncloud/m1_checkpoints/checkpoint-1262/tokenizer.json": {
+      "exists": true,
+      "bytes": 16351316,
+      "sha256": "87208f39b9e81f180629d45da55d7a24cf1e011884552d6d5096c92e0a639d39"
+    },
+    "/home1/ncloud/m1_checkpoints/checkpoint-1262/tokenizer_config.json": {
+      "exists": true,
+      "bytes": 20199,
+      "sha256": "9d3a9e5b184d44b2cb2f14af3e7cf57b788e674ce17768b688c4473a1c2e71f5"
+    },
+    "/home1/ncloud/m1_checkpoints/checkpoint-1262/manifest.json": {
+      "exists": false
+    },
+    "/home1/ncloud/m1_checkpoints/checkpoint-1262/added_tokens.json": {
+      "exists": true,
+      "bytes": 86,
+      "sha256": "030e747c4ca7992a3ac794c6fda9919352c88ae722e85178217cd083b450078d"
+    },
+    "/home1/ncloud/m1_checkpoints/checkpoint-1262/special_tokens_map.json": {
+      "exists": true,
+      "bytes": 286,
+      "sha256": "9463f61e1b109a8eb4688b829260d7c6b1e6dff04c98ff7269bb89e2b92369b9"
+    },
+    "/home1/ncloud/m1_checkpoints/checkpoint-1262/trainer_state.json": {
+      "exists": true,
+      "bytes": 5068,
+      "sha256": "bedc14185a4220fd93699f04372f27a5d002e86516e25ff84cb9f27ded7eca74"
+    },
+    "/home1/ncloud/m1_checkpoints/checkpoint-1262/training_args.bin": {
+      "exists": false
+    },
+    "/home1/ncloud/m1_checkpoints/checkpoint-1262/training_args.json": {
+      "exists": false
+    }
+  },
+  "trainer_states": {
+    "/home1/ncloud/m1_checkpoints/checkpoint-631/trainer_state.json": {
+      "best_global_step": null,
+      "best_metric": null,
+      "best_model_checkpoint": null,
+      "epoch": 1.0,
+      "eval_steps": 500,
+      "global_step": 631,
+      "is_hyper_param_search": false,
+      "is_local_process_zero": true,
+      "is_world_process_zero": true,
+      "log_history": [
+        {
+          "epoch": 0.07923930269413629,
+          "grad_norm": 598.9593505859375,
+          "learning_rate": 7.5590551181102365e-06,
+          "loss": 71.1466,
+          "step": 50
+        },
+        {
+          "epoch": 0.15847860538827258,
+          "grad_norm": 402.6724853515625,
+          "learning_rate": 1.889763779527559e-05,
+          "loss": 25.0295,
+          "step": 100
+        },
+        {
+          "epoch": 0.23771790808240886,
+          "grad_norm": 504.7007751464844,
+          "learning_rate": 2.9947136563876655e-05,
+          "loss": 15.2983,
+          "step": 150
+        },
+        {
+          "epoch": 0.31695721077654515,
+          "grad_norm": 1568.90625,
+          "learning_rate": 2.8625550660792953e-05,
+          "loss": 14.7217,
+          "step": 200
+        },
+        {
+          "epoch": 0.39619651347068147,
+          "grad_norm": 695.9129028320312,
+          "learning_rate": 2.7303964757709253e-05,
+          "loss": 11.9695,
+          "step": 250
+        },
+        {
+          "epoch": 0.4754358161648177,
+          "grad_norm": 598.6778564453125,
+          "learning_rate": 2.598237885462555e-05,
+          "loss": 9.287,
+          "step": 300
+        },
+        {
+          "epoch": 0.554675118858954,
+          "grad_norm": 479.97210693359375,
+          "learning_rate": 2.4660792951541852e-05,
+          "loss": 8.2961,
+          "step": 350
+        },
+        {
+          "epoch": 0.6339144215530903,
+          "grad_norm": 803.1714477539062,
+          "learning_rate": 2.333920704845815e-05,
+          "loss": 7.3325,
+          "step": 400
+        },
+        {
+          "epoch": 0.7131537242472267,
+          "grad_norm": 794.28369140625,
+          "learning_rate": 2.201762114537445e-05,
+          "loss": 6.3126,
+          "step": 450
+        },
+        {
+          "epoch": 0.7923930269413629,
+          "grad_norm": 597.1368408203125,
+          "learning_rate": 2.0696035242290748e-05,
+          "loss": 4.6918,
+          "step": 500
+        },
+        {
+          "epoch": 0.8716323296354992,
+          "grad_norm": 1281.8123779296875,
+          "learning_rate": 1.937444933920705e-05,
+          "loss": 5.9279,
+          "step": 550
+        },
+        {
+          "epoch": 0.9508716323296355,
+          "grad_norm": 168.4305877685547,
+          "learning_rate": 1.8052863436123346e-05,
+          "loss": 4.8672,
+          "step": 600
+        }
+      ],
+      "logging_steps": 50,
+      "max_steps": 1262,
+      "num_input_tokens_seen": 0,
+      "num_train_epochs": 2,
+      "save_steps": 500,
+      "stateful_callbacks": {
+        "TrainerControl": {
+          "args": {
+            "should_epoch_stop": false,
+            "should_evaluate": false,
+            "should_log": false,
+            "should_save": true,
+            "should_training_stop": false
+          },
+          "attributes": {}
+        }
+      },
+      "total_flos": 0.0,
+      "train_batch_size": 8,
+      "trial_name": null,
+      "trial_params": null
+    },
+    "/home1/ncloud/m1_checkpoints/checkpoint-1262/trainer_state.json": {
+      "best_global_step": null,
+      "best_metric": null,
+      "best_model_checkpoint": null,
+      "epoch": 2.0,
+      "eval_steps": 500,
+      "global_step": 1262,
+      "is_hyper_param_search": false,
+      "is_local_process_zero": true,
+      "is_world_process_zero": true,
+      "log_history": [
+        {
+          "epoch": 0.07923930269413629,
+          "grad_norm": 598.9593505859375,
+          "learning_rate": 7.5590551181102365e-06,
+          "loss": 71.1466,
+          "step": 50
+        },
+        {
+          "epoch": 0.15847860538827258,
+          "grad_norm": 402.6724853515625,
+          "learning_rate": 1.889763779527559e-05,
+          "loss": 25.0295,
+          "step": 100
+        },
+        {
+          "epoch": 0.23771790808240886,
+          "grad_norm": 504.7007751464844,
+          "learning_rate": 2.9947136563876655e-05,
+          "loss": 15.2983,
+          "step": 150
+        },
+        {
+          "epoch": 0.31695721077654515,
+          "grad_norm": 1568.90625,
+          "learning_rate": 2.8625550660792953e-05,
+          "loss": 14.7217,
+          "step": 200
+        },
+        {
+          "epoch": 0.39619651347068147,
+          "grad_norm": 695.9129028320312,
+          "learning_rate": 2.7303964757709253e-05,
+          "loss": 11.9695,
+          "step": 250
+        },
+        {
+          "epoch": 0.4754358161648177,
+          "grad_norm": 598.6778564453125,
+          "learning_rate": 2.598237885462555e-05,
+          "loss": 9.287,
+          "step": 300
+        },
+        {
+          "epoch": 0.554675118858954,
+          "grad_norm": 479.97210693359375,
+          "learning_rate": 2.4660792951541852e-05,
+          "loss": 8.2961,
+          "step": 350
+        },
+        {
+          "epoch": 0.6339144215530903,
+          "grad_norm": 803.1714477539062,
+          "learning_rate": 2.333920704845815e-05,
+          "loss": 7.3325,
+          "step": 400
+        },
+        {
+          "epoch": 0.7131537242472267,
+          "grad_norm": 794.28369140625,
+          "learning_rate": 2.201762114537445e-05,
+          "loss": 6.3126,
+          "step": 450
+        },
+        {
+          "epoch": 0.7923930269413629,
+          "grad_norm": 597.1368408203125,
+          "learning_rate": 2.0696035242290748e-05,
+          "loss": 4.6918,
+          "step": 500
+        },
+        {
+          "epoch": 0.8716323296354992,
+          "grad_norm": 1281.8123779296875,
+          "learning_rate": 1.937444933920705e-05,
+          "loss": 5.9279,
+          "step": 550
+        },
+        {
+          "epoch": 0.9508716323296355,
+          "grad_norm": 168.4305877685547,
+          "learning_rate": 1.8052863436123346e-05,
+          "loss": 4.8672,
+          "step": 600
+        },
+        {
+          "epoch": 1.0301109350237718,
+          "grad_norm": 66.21114349365234,
+          "learning_rate": 1.673127753303965e-05,
+          "loss": 3.622,
+          "step": 650
+        },
+        {
+          "epoch": 1.109350237717908,
+          "grad_norm": 1024.49658203125,
+          "learning_rate": 1.5409691629955948e-05,
+          "loss": 1.71,
+          "step": 700
+        },
+        {
+          "epoch": 1.1885895404120443,
+          "grad_norm": 3256.740478515625,
+          "learning_rate": 1.4088105726872247e-05,
+          "loss": 2.2922,
+          "step": 750
+        },
+        {
+          "epoch": 1.2678288431061806,
+          "grad_norm": 3.8700833320617676,
+          "learning_rate": 1.2766519823788548e-05,
+          "loss": 2.5993,
+          "step": 800
+        },
+        {
+          "epoch": 1.3470681458003169,
+          "grad_norm": 0.721535325050354,
+          "learning_rate": 1.1444933920704847e-05,
+          "loss": 2.6997,
+          "step": 850
+        },
+        {
+          "epoch": 1.4263074484944531,
+          "grad_norm": 1844.8934326171875,
+          "learning_rate": 1.0123348017621146e-05,
+          "loss": 2.7626,
+          "step": 900
+        },
+        {
+          "epoch": 1.5055467511885894,
+          "grad_norm": 3995.0546875,
+          "learning_rate": 8.801762114537446e-06,
+          "loss": 2.0274,
+          "step": 950
+        },
+        {
+          "epoch": 1.5847860538827259,
+          "grad_norm": 96.70736694335938,
+          "learning_rate": 7.480176211453745e-06,
+          "loss": 1.1323,
+          "step": 1000
+        },
+        {
+          "epoch": 1.6640253565768621,
+          "grad_norm": 2.626119375228882,
+          "learning_rate": 6.158590308370044e-06,
+          "loss": 2.4855,
+          "step": 1050
+        },
+        {
+          "epoch": 1.7432646592709984,
+          "grad_norm": 0.9129101634025574,
+          "learning_rate": 4.837004405286343e-06,
+          "loss": 1.5657,
+          "step": 1100
+        },
+        {
+          "epoch": 1.8225039619651349,
+          "grad_norm": 5.619784832000732,
+          "learning_rate": 3.515418502202643e-06,
+          "loss": 3.8032,
+          "step": 1150
+        },
+        {
+          "epoch": 1.9017432646592711,
+          "grad_norm": 1003.0316772460938,
+          "learning_rate": 2.1938325991189428e-06,
+          "loss": 3.8791,
+          "step": 1200
+        },
+        {
+          "epoch": 1.9809825673534074,
+          "grad_norm": 1.08513605594635,
+          "learning_rate": 8.722466960352423e-07,
+          "loss": 1.2245,
+          "step": 1250
+        }
+      ],
+      "logging_steps": 50,
+      "max_steps": 1262,
+      "num_input_tokens_seen": 0,
+      "num_train_epochs": 2,
+      "save_steps": 500,
+      "stateful_callbacks": {
+        "TrainerControl": {
+          "args": {
+            "should_epoch_stop": false,
+            "should_evaluate": false,
+            "should_log": false,
+            "should_save": true,
+            "should_training_stop": true
+          },
+          "attributes": {}
+        }
+      },
+      "total_flos": 0.0,
+      "train_batch_size": 8,
+      "trial_name": null,
+      "trial_params": null
+    }
+  },
+  "decision": "keep_M0_pending_validated_re_evaluation",
+  "limitations": [
+    "Remote work directory is not a Git checkout; source hashes are retained.",
+    "Original selection is a prefix scan; 5000 records contain 4996 unique texts.",
+    "No epoch dev history or best checkpoint selected.",
+    "No independent final-test freeze or B adoption attestation."
+  ]
+}

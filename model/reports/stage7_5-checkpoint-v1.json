@@ -1,0 +1,29 @@
+{
+  "status": "stage8_scenario_b_runtime_acceptance_and_reporting_complete",
+  "previous_checkpoint_stopped_at_utc": "2026-10-31T15:50:42.297139+00:00",
+  "stage7_5_completed_at_utc": "2026-10-31T16:45:00+00:00",
+  "stage8_completed_at_utc": "2026-10-31T18:10:00+00:00",
+  "five_hour_remaining_percent_at_previous_stop": 9,
+  "own_gpu_process_confirmed_exited": true,
+  "service_final_stage7_5": "Both models 300/300 complete; see stage7_5-service-final-v1.json",
+  "service_final_stage8": "Both models 300/300 complete with Stage 8 B runtime guardrails; F1 90.76%, normal false block 0/100; see stage8-service-final-v1.json",
+  "official_final_stage7_5": "28142/28142 complete; see stage7_5-official-final-v1.json",
+  "official_final_stage8": "28142/28142 complete with Stage 8 B runtime guardrails; F1 98.70%, reinspection errors reduced 11921 -> 289 (-97.58%); see stage8-official-final-v1.json",
+  "runtime_acceptance_stage8": "NVIDIA L4 verified: p95=98.456ms (<=500ms SLA), M0<->M1 hot-swap & instant rollback verified, C audit journal 0 raw PII leaks; see stage8-runtime-acceptance-v1.json",
+  "selected_configuration": "stage7_5-selection-v1.json & configs/m1-package.manifest.json (M1 checkpoint-1262, threshold=0.5, splitter=ko_atomic_suffix_v3)",
+  "local_cache": "model/.cache/stage7_5-20261031 (dev-recovered-v1, final-recovered-v2, official-handoff-v1, final-combined-v1)",
+  "remote_evaluation_workspace": "/home1/ncloud/stage7_5_20261031_codex_v5 & /home1/ncloud/stage8_20261101_v1/models/m1-checkpoint-1262-ko-atomic-v3",
+  "final_verdict": "replace (all 5 PRD replacement gates passed: critical_micro_recall_not_below_baseline=True, overall_f1_not_below_baseline=True, normal_false_block_increase_within_limit=True, no_unresolved_critical_type_regression=True, runtime_memory_latency_integration_accepted=True)",
+  "completed_stage8_b_items": [
+    "8-1: Packaged M1 checkpoint-1262 per dev/contracts/model-package.schema.json (configs/m1-package.manifest.json) with verified instant rollback to M0.",
+    "8-2: Adopted ko_atomic_suffix_v3 and boundary-safe window fallback (_whole_group_plan) directly in dev/detector/gliner_backend.py (b_splitter_adoption=True).",
+    "8-3 (Short-Term): Added _is_valid_kr_rrn guardrail in dev/detector/gliner_backend.py, reducing service holdout KR_RRN FP 13 -> 0 and normal false blocks 2/100 -> 0/100.",
+    "8-4: Added _overlaps_redacted_placeholder guardrail in dev/detector/gliner_backend.py, reducing service reinspection errors 57 -> 1 and official test reinspection errors 11921 -> 289 (-97.58%).",
+    "8-6: Completed GPU server (NVIDIA L4) runtime acceptance (p95=98.456ms <= 500ms, memory, rollback, C audit journal zero-leakage; runtime_acceptance=True)."
+  ],
+  "future_roadmap_scenario_c": [
+    "8-3 (Mid-Term / M1.1): Retrain M1.1 with 12-domain balanced 5k sample (stage7_5-sample-v1.json) + hard negative numeric lookalikes.",
+    "8-5: Supplement PERSONAL_ATTRIBUTE (0 gold in K-PII-Bench) and KR_LOCATION unit suffix boundary alignment."
+  ],
+  "git_commit_push_performed": true
+}

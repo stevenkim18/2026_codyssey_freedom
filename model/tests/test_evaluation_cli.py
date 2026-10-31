@@ -24,6 +24,8 @@ class CliTest(unittest.TestCase):
                 {'document_id': 'b', 'text': '정상 문장', 'entities': []}]
         pred = [{'document_id': 'a', 'findings': [{'type': 'PERSON', 'start': 0, 'end': 3, 'score': .9}]},
                 {'document_id': 'b', 'findings': [{'type': 'KR_RRN', 'start': 0, 'end': 2, 'score': .9}]}]
+        for row in pred:
+            row['status']='complete'
         with tempfile.TemporaryDirectory() as tmp:
             g, p = Path(tmp) / 'g.jsonl', Path(tmp) / 'p.jsonl'
             g.write_text(''.join(json.dumps(r, ensure_ascii=False) + '\n' for r in gold), encoding='utf-8')
@@ -36,6 +38,18 @@ class CliTest(unittest.TestCase):
         self.assertEqual(result['policy']['model_only']['false_block_count'], 1)
         self.assertEqual(result['policy']['model_plus_same_rules']['mode'], 'model_plus_same_rules')
         self.assertEqual(result['critical_micro']['gold'], 1)
+
+    def test_incomplete_or_missing_normal_prediction_is_not_scored(self):
+        gold=[{'document_id':'normal','text':'normal fixture','entities':[]}]
+        for predictions in [[],[{'document_id':'normal','status':'incomplete','findings':[]}],
+                            [{'document_id':'normal','findings':[]}]]:
+            with self.subTest(predictions=predictions),tempfile.TemporaryDirectory() as tmp:
+                g,p=Path(tmp)/'g.jsonl',Path(tmp)/'p.jsonl'
+                g.write_text(''.join(json.dumps(row)+'\n' for row in gold))
+                p.write_text(''.join(json.dumps(row)+'\n' for row in predictions))
+                code,out=run('score','--gold',str(g),'--pred',str(p),'--with-policy')
+                self.assertEqual(code,2)
+                self.assertNotIn('overall_micro',json.loads(out))
 
     def test_check_compare_decide(self):
         with tempfile.TemporaryDirectory() as tmp:

@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "role": "dev_only",
+  "dataset_version": "kpii-dev-plus-normal-v1",
+  "official_dev_sha256": "2f056ea7eb4a55054aeeb278416b088b02a7fc0254a8afbfd5c9ede4deffa493",
+  "normal_sha256": "6efc8a6da7950c9ae937b5c78db06be6a1a22a2f01ddf1fd577bec9fc124d3f1",
+  "combined_sha256": "6a60cb889f2641039569a871c3c8ef2f1c45cc70464c7a90f6c5c3aa4a03a1b4",
+  "official_documents": 28147,
+  "normal_documents": 200,
+  "combined_documents": 28347,
+  "normal_templates": 20,
+  "holdout_and_legacy_exact_or_normal_skeleton_overlap": 0,
+  "implementation_sha256": "f5042e0a85e8d07440ae4bbda09125469a84ee198d47bf5199695c7a2853a0f6",
+  "scope": "Authored normal dev calibration cases, not a human-reviewed final benchmark; original dev preserved."
+}

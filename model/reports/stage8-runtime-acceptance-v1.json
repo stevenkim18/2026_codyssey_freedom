@@ -1,0 +1,66 @@
+{
+  "device": "cuda",
+  "gpu_name": "NVIDIA L4",
+  "lifecycle": {
+    "m0_init_ms": 17743.048,
+    "m0_to_m1_replace_ms": 10161.852,
+    "m1_to_m0_rollback_ms": 11988.529,
+    "m0_to_m1_reactivate_ms": 9849.115,
+    "rollback_verified": true,
+    "reactivate_verified": true,
+    "active_model_version": "M1-gliner_multi_pii-ko-v1-ckpt1262"
+  },
+  "memory": {
+    "rss_mb": 4166.15,
+    "m0_gpu": {
+      "allocated_mb": 1112.38,
+      "reserved_mb": 1186.0,
+      "max_allocated_mb": 1134.61
+    },
+    "m1_gpu_after_replace": {
+      "allocated_mb": 1112.37,
+      "reserved_mb": 2324.0,
+      "max_allocated_mb": 2237.86
+    },
+    "m1_gpu_post_benchmark": {
+      "allocated_mb": 1122.49,
+      "reserved_mb": 2332.0,
+      "max_allocated_mb": 2240.34
+    }
+  },
+  "gateway_latency_concurrency_1": {
+    "le_2000_codepoints": {
+      "count": 300,
+      "mean_ms": 42.273,
+      "p50_ms": 28.468,
+      "p90_ms": 51.148,
+      "p95_ms": 98.456,
+      "p99_ms": 194.195,
+      "max_ms": 194.716
+    },
+    "all_300_holdout_docs": {
+      "count": 300,
+      "mean_ms": 42.273,
+      "p50_ms": 28.468,
+      "p90_ms": 51.148,
+      "p95_ms": 98.456,
+      "p99_ms": 194.195,
+      "max_ms": 194.716
+    },
+    "sla_p95_limit_ms": 500.0,
+    "sla_p95_passed": true
+  },
+  "gateway_actions_on_holdout": {
+    "block": 81,
+    "mask": 120,
+    "allow": 98,
+    "error": 1
+  },
+  "audit_journal_verification": {
+    "journal_file_bytes": 442368,
+    "raw_pii_leak_count": 0,
+    "zero_leak_verified": true
+  },
+  "runtime_acceptance": true,
+  "b_splitter_adoption": true
+}

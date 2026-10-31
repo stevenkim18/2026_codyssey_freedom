@@ -51,3 +51,9 @@ K-PII-Bench. Woohyun Park, Jinyoung Oh, Jeong-Won Cha, Changwon National Univers
 - 실제 신경망 가중치를 내려받거나 모델을 학습하지 않았습니다. 정식 학습 자료가 아닌 진단용 변환 예시를 Git 제외 캐시에 만들었습니다.
 - 원본 데이터 레코드·정답·분할은 변경하지 않았고 변환 실패 사유를 기록했습니다. 한국어 경계 호환성 문제를 해결하기 전 이 부분집합을 학습 자료로 사용하지 않습니다.
 - 로컬 Mac CPU 검증용 별도 환경에 설치한 외부 패키지의 정확한 버전·출처·확인값은 [환경 기록](../metadata/conversion-local-environment.json), [해시 포함 목록](../configs/conversion-macos.lock.txt)에 있습니다. 서버 CUDA 환경의 기록과 구분합니다.
+
+## 4~8단계에서 한 변경 (2026-10-31 ~ 2026-11-01)
+
+- 고정한 K-PII-Bench(`woohyun212/k-pii-bench`, CC BY 4.0, revision `844f92f7beba98fa964f957ba324017e82451701`)의 `train` 분할에서 변환된 5,000건 표본으로 `urchade/gliner_multi_pii-v1`(Apache-2.0)을 미세조정하여 M1(`checkpoint-1262`, 가중치 SHA-256 `ed2546b8b6a721be18a6a9e644fe6fd423016c7a457b5e30521d85c3d86228a2`)을 생성했습니다.
+- 7.5단계에서 독립 생성·검토·동결한 서비스 홀드아웃(`service-holdout-v2-r2`, 300건) 및 공식 Test(`test_track_a`, 28,142건)에서 M0와 M1을 공정 평가하고, 8단계에서 B 모델 패키지 계약(`dev/contracts/model-package.schema.json`)에 맞춘 매니페스트([m1-package.manifest.json](../configs/m1-package.manifest.json)) 및 GPU 런타임 인수 검증(`verdict: "replace"`)을 완료했습니다([최종 보고서 v2](../report_v2.md)).
+- 모든 공개 문서·JSON·그래프 산출물에는 원본 텍스트와 개인정보 원문을 포함하지 않았으며, 원본 라이선스 사본(`Apache-2.0`, `MIT`, `CC BY 4.0`)은 변경 없이 그대로 보존합니다.

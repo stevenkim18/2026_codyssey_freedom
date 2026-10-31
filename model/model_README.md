@@ -1,102 +1,109 @@
-# A 파트: 모델 추가 학습 준비 및 평가 체계 (`model_README.md`)
+# A 파트: 한국어 개인정보 탐지 모델 학습·평가 및 B 런타임 통합
 
-먼저 [쉬운 전체 작업 안내](process.md) 및 [Codex 인수인계 문서](to_codex.md)를 읽으면 됩니다. 이 폴더는 기존 개인정보 탐지 모델 M0를 한국어 데이터로 추가 학습하고, 후보 M1을 공정하게 평가하기 위한 A 작업 공간입니다.
+> **8단계(시나리오 B) 최종 완료 안내(2026-11-01):** 7.5단계 오프라인 평가 완료([최종 보고서 v1](report_v1.md))에 이어, **8단계에서 B 프로덕션 런타임(`dev/detector/gliner_backend.py`) 통합, 한국어 조사 분리기(`ko_atomic_suffix_v3`) 및 경계 안전 창 처리 내장, `KR_RRN`·`[REDACTED]` 가드레일 반영, GPU 서버(`NVIDIA L4`) 종단간 인수 검증(`p95=98.46ms <= 500ms`, 무중단 핫스왑·롤백, 감사 저널 원문 무누출)을 모두 완료하여 최종 판정이 `replace`(즉시 교체 승인)로 확정**되었습니다!
+> - **읽기 쉬운 통합 문서실**: 사람이 열람하기 좋은 모든 핵심 문서는 **[`model/docs/`](docs/README.md)** 폴더에 일목요연하게 정리해 두었습니다.
+> - **동결 서비스 시험(300건, Stage 8 최종)**: 전체 F1 `76.50% → 90.76%`(`+14.26%p`), 중요 5종 재현율 `89.52% → 94.76%`(`+5.24%p`), 정상 문서 오차단·오류율 `1/100 → 0/100`(`-1.00%p`), 2차 재검사 `error` `57 → 1건`. ([stage8-service-final-v1.json](reports/stage8-service-final-v1.json))
+> - **공식 Test(`test_track_a`, 28,142건, Stage 8 최종)**: 전체 F1 `66.58% → 98.70%`(`+32.12%p`), 중요 5종 재현율 `78.67% → 99.99%`(`+21.32%p`, 미탐 `8,940 → 3`), 2차 재검사 `error` `11,921 → 289건`(`-97.58%`), 전달 문서 보호 대상 잔존율 `21.89% → 0.25%`. ([stage8-official-final-v1.json](reports/stage8-official-final-v1.json))
+> - **현재 최종 판정**: **`replace`** (`runtime_acceptance=True`, `b_splitter_adoption=True`). 최신 전체 결과와 시나리오 C(추후 개발 과제)는 **[최종 보고서 v2 (`report_v2.md`)](report_v2.md)** 및 **[`model/docs/`](docs/README.md)**를 우선 확인하세요.
 
----
+이 폴더는 기존 모델 M0를 한국어 데이터로 추가 학습해 후보 M1을 만들고 평가·통합하는 작업 공간입니다. 쉬운 설명은 [process.md](process.md), 7.5~8단계 기준은 [stage7_5.md](stage7_5.md), 최종 보고서는 [report_v2.md](report_v2.md)(7.5단계 보존본은 [report_v1.md](report_v1.md))를 읽으세요.
 
-## 현재 진행 상태 (1~7단계 완료)
+## 현재 상태 — 2026-11-01 (Stage 8 완료)
 
-### 1. 작업 A: 한국어 분할 호환성 해결안 도출 (완료, 95.9% 달성)
-- **문제 진단**: B의 기존 공백 분할기(`whitespace_default_v1`) 적용 시, 한글 조사/접미사 결합(`김가상에게`, `010...로`)으로 인해 전체 243,711개 train 문서 중 2,615건(1.08%)만 표현 가능하여 `blocked_compatibility` 상태였습니다.
-- **해결안 구현**:
-  - 원문 텍스트와 골드 오프셋을 일체 변경하지 않고 한글 자모 및 특수문자 규칙을 적용하는 `ko_atomic_suffix_v3` 분할기 구현.
-  - train 243,711건 중 **233,724건(95.9%) 고유 문서 확보** 및 URL/이메일을 포함한 18개 전 유형 정답 보존 달성 (PRD 5,000건 요건 초과 충족).
-  - B 파트 연동을 위한 규격 제안서([model/segmentation/README.md](segmentation/README.md)) 작성 완료.
+**1단계~8단계(시나리오 B) 모델 학습·평가·B 프로덕션 런타임 통합·GPU 인수 검증 및 [최종 보고서 v2](report_v2.md) 작성이 모두 완료되었습니다. 최종 판정은 `replace`입니다.**
 
-### 2. 작업 B: 4단계 평가 시스템 구현 및 독립 서비스 시험셋 구성 (완료)
-- **문자 스팬 단위 지표 (`char_span_exact_v1`)**:
-  - 채점 단위 `(document_id, type, start, end)` 기준 TP/FP/FN, precision, recall, F1 구현.
-  - 분모 0일 때 `null` 처리, `duplicates='multiset'` 정책, Wilson 95% 신뢰구간, 문서 단위 부트스트랩 구현.
-- **B 정책 결합 지표 (`policy-metrics-v1`)**:
-  - B의 [policy.py](../dev/gateway/policy.py)를 재사용하여 정상 문장 오차단율(`false_block_rate`) 및 마스킹 잔존율(`masking_residual`) 산출.
-  - 모델 단독(`model_only`)과 B 비밀키 규칙 결합(`model_plus_same_rules`) 모드 분리.
-- **실험 기록 및 교체 판정 게이트**:
-  - [experiment-plan.json](configs/experiment-plan.json) 스키마를 엄격히 검증하는 [records.py](evaluation/records.py) 구현.
-  - 동일 평가 조건 검증, %p 델타 계산 및 PRD §11 교체 기준(재현율/F1 유지, 오차단율 +1.0%p 이하, 5대 중요유형 퇴행 방지, B 런타임 수용)을 자동 판정하는 [compare.py](evaluation/compare.py) 구현.
-- **독립 서비스 시험셋 300건 (B4)**:
-  - 요청 150건 + 응답 150건 = 300건 구축 ([service-test-v1.manifest.json](evaluation/service-test-v1.manifest.json)).
-  - 정상 문서 100건, 5대 중요 유형 각 30개 이상 확보. K-PII-Bench 중복 0건.
-- **평가 CLI**: `score`, `check-record`, `compare`, `decide` 커맨드 제공 ([model/evaluation/README.md](evaluation/README.md)).
+기존 초기 실행(서비스 v1 미동결본) 기록과 7.5단계 오프라인 평가, 8단계 프로덕션 통합 최종 결과를 명확히 구분합니다.
 
-### 3. 작업 C: 후보 보충 데이터셋(`townboy/korean-pii-dataset`) 검증 (공식 채택 제외)
-- 11,732건 원문 스팬 100% 무결성 검증 (오류 0건).
-- 확정 15개 라벨 적용 시 유효 train 문서는 1,780건에 불과하여 PRD 5,000건 기준 미달로 **공식 채택 보류(`candidate_not_adopted`)** 판정 ([보고서](reports/candidate-supplement-summary.md)).
+| 단계 | 확인된 산출물 | 상태 |
+|---|---|---|
+| 1. 버전·출처 고정 | 모델/데이터/도구 기준, 라이선스 기록 | [stage7_5-recovery-v2.json](reports/stage7_5-recovery-v2.json)으로 GPU 환경·해시 연결 완료 |
+| 2. 데이터 검증 | 원본 30만 건 구조·위치·중복 감사 | 기존 5k(고유 4,996) 확인 및 새 12분야 균형 5k([stage7_5-sample-v1.json](reports/stage7_5-sample-v1.json)) 준비 완료 |
+| 3. 변환·분할 후보 | 엄밀 변환기, 한국어 분할 후보(`ko_atomic_suffix_v3`) | A 평가 경로 및 **B 운영 런타임(`dev/detector/gliner_backend.py`) 공동 채택(`b_splitter_adoption=True`) 완료** |
+| 4. 평가 준비 | 채점기·게이트웨이 정책·1회 재검사, 동결 서비스 r2 300건 | 미완료 검사 차단 완료, 사람 전수 재검토 동결 완료([service-holdout-v2-r2.frozen.manifest.json](evaluation/service-holdout-v2-r2.frozen.manifest.json)) |
+| 5. M0 측정 | Dev·동결 서비스·공식 Test M0 완주 결과 | 공통 분할(`ko_atomic_suffix_v3`) 및 `threshold=0.5` 기준선 확정 |
+| 6. M1 학습·선택 | 서버 epoch 1·2 저장본 회수 및 Dev 임계값 탐색 | `checkpoint-1262` + `threshold=0.5` 사전 선택 고정([stage7_5-selection-v1.json](reports/stage7_5-selection-v1.json)) |
+| 7. 비교·판정 | 초기 서비스 v1 비교(`reject`) 보존 | 7.5단계 및 8단계 동결 시험 결과로 갱신 |
+| **7.5. 신뢰성 보완** | [보고서 v1](report_v1.md), [그래프 18종](graph/README.md), [서비스 최종(7.5)](reports/stage7_5-service-final-v1.json), [공식 최종(7.5)](reports/stage7_5-official-final-v1.json) | **A 오프라인 평가·보고서 완료 (`pending_runtime_acceptance`)** |
+| **8. B 런타임 통합·인수** | [최종 보고서 v2](report_v2.md), [M1 패키지 매니페스트](configs/m1-package.manifest.json), [런타임 인수](reports/stage8-runtime-acceptance-v1.json), [서비스 최종(8)](reports/stage8-service-final-v1.json), [공식 최종(8)](reports/stage8-official-final-v1.json) | **B 프로덕션 통합·가드레일·GPU 인수 완료 (`verdict: "replace"`)** |
 
-### 4. 작업 D (5단계): GPU M0 베이스라인 실측 완료 (완료)
-- 원격 GPU 서버(NVIDIA L4 24GB, CUDA 13.0)에서 M0 모델(`urchade/gliner_multi_pii-v1`) 실측 완료 ([상세 보고서](reports/m0-baseline-summary.md)):
-  - **독립 서비스 평가셋 (300건)**: **Overall F1 = 49.16%**, **Critical Recall = 51.88%**, **Normal False Block Rate = 1.00%** (소요시간 6.8초).
-  - **K-PII-Bench Dev (28,147건 전수)**: **Overall F1 = 19.61%**, **Critical Recall = 16.89%** (소요시간 10.4분).
-- 주민등록번호(RRN 7.15%), 여권/건보(0%) 등 한국어 식별자 부재 실증 $\rightarrow$ M1 파인튜닝의 필요성과 목표치 명확화.
-- 생성 레코드: [`m0-baseline-record.json`](reports/m0-baseline-record.json), [`m0-dev-record.json`](reports/m0-dev-record.json).
+## 기존 결과는 어떻게 읽나요?
 
-### 5. 작업 E (6~7단계): GPU M1 파인튜닝 및 PRD §11 교체 판정 완료 (완료)
-- 원격 GPU 서버에서 5,000건 표본 2 에포크 학습 완료 (Loss 8.61 $\rightarrow$ 1.22, 가중치: `/home1/ncloud/m1_model`, [상세 보고서](reports/m1-training-summary.md)):
-  - **독립 서비스 평가셋 (300건)**: **Overall F1 = 58.31% (+9.16%p)**, **Critical Recall = 61.43% (+9.56%p)**, **False Block Rate = 8.00% (+7.00%p)**.
-  - **주민등록번호(KR_RRN)**: 재현율 9.52% $\rightarrow$ **69.05%** (+59.52%p, 미탐 25건 감소).
-  - **운전면허증/여권번호**: 100% 정밀도 및 재현율 달성.
-  - **K-PII-Bench Dev (28,147건 전수)**: **Overall F1 = 30.02% (+10.41%p)**, **Critical Recall = 24.41% (+7.52%p)**.
-- **PRD §11 판정 결과**: F1/재현율 기준 통과했으나, 오차단율 증가(+7.0%p)로 인해 **`reject`** 판정 (`m1-vs-m0-decision.json`). Stage 8에서 임계값 캘리브레이션 및 게이트웨이 정규식 룰 결합으로 오차단율 억제 계획 수립.
+아래는 저장된 JSON의 **잠정 결과**입니다. 서비스 v1은 300건 전수 미검토·미동결이며 이미 결과를 확인했습니다. 최종 성능 증거로 재사용하지 않고 탐색/회귀 자료로 보존합니다.
 
-### 6. 테스트 현황
-- 단위/통합 테스트 **173개 전체 통과** (`pytest model/tests -q`). 로컬 CPU 환경에서 0.23초 만에 전수 통과.
+| 지표 | M0 | M1 | 변화 |
+|---|---:|---:|---:|
+| 서비스 v1 전체 micro F1 | 49.16% | 58.31% | +9.16%p |
+| 서비스 v1 중요 5종 micro recall | 51.88% | 61.43% | +9.56%p |
+| 서비스 v1 중요 5종 micro F1 | 59.49% | 58.06% | **−1.43%p** |
+| 서비스 v1 정상 오차단 | 1/100 | 8/100 | **+7%p, 허용 +1%p 초과** |
+| dev 28,147건 전체 micro F1 | 19.61% | 30.02% | +10.41%p |
 
----
+계좌·카드 재현율도 각각 −1.89%p·−12.20%p 하락했습니다. 합산 개선만으로 교체할 수 없습니다. 임계값 상향이나 비밀키 규칙 추가가 오차단을 자동 해결한다는 근거는 없습니다.
+
+[7단계 검토](reports/stage7-review-v1.md)에서 확인한 핵심 문제는 학습/실제 추론 분할 불일치, 미완료 검사 무시, 시험 미동결, epoch별 dev 선택 부재, 학습 인자·일부 보고 수치 불일치입니다. 기존 173개 테스트 통과는 이 문제들의 해결 증거가 아닙니다.
+
+## 완료된 7.5단계와 남은 8단계 할 일
+
+### 7.5단계 완료 항목
+- [x] 1. 서버의 실제 학습 설정·로그·표본 manifest·epoch 저장본·가중치 해시 확보 ([stage7_5-recovery-v2.json](reports/stage7_5-recovery-v2.json))
+- [x] 2. 공통 분할(`ko_atomic_suffix_v3`)과 검사 상태 처리(`incomplete` 차단), 비교 조건·캐시·예측 보존 수정 및 회귀 검증 (`209 passed`)
+- [x] 3. 기존 저장본부터 dev(28,347건)에서 평가하고 M0/M1에 같은 절차로 임계값 선택 (`checkpoint-1262`, `threshold=0.5`, [stage7_5-selection-v1.json](reports/stage7_5-selection-v1.json))
+- [x] 4. 오차단·계좌·카드 퇴행 원인 확인 (공통 분할 결합만으로 계좌·카드 퇴행 해소, 숫자 유사 정상 문서 오차단 원인 규명)
+- [x] 5. 새 서비스 holdout(`service-holdout-v2-r2`, 300건) 사람 검토·동결 후 공식 시험셋(`test_track_a`, 28,142건)과 함께 최종 평가 완료 ([stage7_5-service-final-v1.json](reports/stage7_5-service-final-v1.json), [stage7_5-official-final-v1.json](reports/stage7_5-official-final-v1.json))
+- [x] 6. 판정(`pending_runtime_acceptance`)·실행 이력 확정 및 [`model/report_v1.md`](report_v1.md)와 [`model/graph/`](graph/README.md) 18종 작성 완료
+
+### 8단계 완료 항목 (시나리오 B: B 파트 인계·운영 인수 완료) 및 추후 과제 (시나리오 C)
+- [x] 1. **패키지 계약 번들링 및 M0 즉시 롤백 구성**: B 모델 패키지 계약(`dev/contracts/model-package.schema.json`)에 맞춘 M1(`checkpoint-1262`, `threshold=0.5`, 전처리 버전 `ko_atomic_suffix_v3`, 창 `384/64/12/512`) 최종 패키지 매니페스트([m1-package.manifest.json](configs/m1-package.manifest.json)) 생성 및 `ModelManager.replace` 기반 M0(`49a065fb...`) 즉시 롤백(`11.99s`) 검증 완료
+- [x] 2. **B 런타임 분할기 및 경계 안전 창 처리 이관 (`b_splitter_adoption=True`)**: [`dev/detector/gliner_backend.py`](../dev/detector/gliner_backend.py)에 `ko_atomic_suffix_v3`(`_KoreanWordsSplitter`) 및 `_whole_group_plan` 경계 안전 폴백 직접 통합, 장문 경계 어절 회귀 테스트([test_stage8_b_integration.py](tests/test_stage8_b_integration.py)) 추가 (`341 passed`)
+- [x] 3. **숫자 유사 정상 문서(`KR_RRN`) 오차단 가드레일 완료 (중기 M1.1 재학습은 추후 과제)**: [`dev/detector/gliner_backend.py`](../dev/detector/gliner_backend.py)에 `_is_valid_kr_rrn` 형식·유효 생년월일·ASCII 경계 검증을 적용해 서비스 홀드아웃 `KR_RRN` 오탐 `13 → 0건`, 정상 문서 오차단 `2/100 → 0/100 (0.00%)` 달성 (12분야 균형 5k + 음성 예시 혼합 재학습 `M1.1`은 [report_v2.md §5.1](report_v2.md) 추후 과제로 정리)
+- [x] 4. **마스킹 후 1회 재검사(`REINSPECTION_FAILED` → `error`) 가드레일 반영**: `_overlaps_redacted_placeholder`를 B 백엔드에 내장하여 2차 재검사 `error`를 서비스 홀드아웃 `57 → 1건`, 공식 Test `11,921 → 289건`(`-97.58%`)으로 대폭 축소
+- [ ] 5. **(추후 개발 — 시나리오 C) 비핵심 마스킹 유형(`PERSONAL_ATTRIBUTE`, `KR_LOCATION`, `USERNAME`) 보완**: K-PII-Bench 정답 0건인 `PERSONAL_ATTRIBUTE` 보충 데이터/규칙 및 도로명 주소 동·호수 접미부 경계 보완 ([report_v2.md §5.2](report_v2.md))
+- [x] 6. **종단간 런타임 인수 시험(`runtime_acceptance=True`) 및 C 저널 검증 완료**: GPU 서버(`NVIDIA L4`) 서빙 환경 로딩·메모리(`1,122MB`)·클라이언트 종단간 지연(`p95 = 98.46ms ≤ 500ms`)·무중단 핫스왑/롤백·C 파트 비식별 감사 로그(`dev/gateway/journal.py`, 원문 노출 `0건`) 연동 검증 및 최종 `verdict: "replace"` 확정 ([stage8-runtime-acceptance-v1.json](reports/stage8-runtime-acceptance-v1.json))
+
+체크리스트와 완료 증거는 [stage7_5.md](stage7_5.md), [report_v2.md](report_v2.md)(7.5단계 기준은 [report_v1.md](report_v1.md)), 그리고 통합 문서실 [`model/docs/README.md`](docs/README.md)가 기준입니다.
 
 ## 어떤 버전을 사용하나요?
 
 | 대상 | 이름·버전 | 고정 리비전 |
 |---|---|---|
 | 기존 모델 M0 | `urchade/gliner_multi_pii-v1` | `1fcf13e85f4eef5394e1fcd406cf2ca9ea82351d` |
-| 학습 데이터 | `woohyun212/k-pii-bench`, 원본 통계의 표기 `v4-corrected` | `844f92f7beba98fa964f957ba324017e82451701` |
-| M0 기반 모델 설정·토크나이저 | `microsoft/mdeberta-v3-base` | `a0484667b22365f84929a935b5e50a51f71f159d` |
-| GLiNER 코드 | `0.2.29`, B와 동일 | `3e1723b49539d518f76d4d8282f1e05d8b6e74f0` |
-| 후보 보충 데이터 | `townboy/korean-pii-dataset` (채택 보류) | `076419f07f7073b6b28cdfdb6fbd8b75e1278053` |
+| 학습 데이터 | `woohyun212/k-pii-bench`, `v4-corrected` | `844f92f7beba98fa964f957ba324017e82451701` |
+| backbone 설정·토크나이저 | `microsoft/mdeberta-v3-base` | `a0484667b22365f84929a935b5e50a51f71f159d` |
+| GLiNER 코드 | `0.2.29` | `3e1723b49539d518f76d4d8282f1e05d8b6e74f0` |
+| 보충 데이터 후보 | `townboy/korean-pii-dataset` (미채택) | `076419f07f7073b6b28cdfdb6fbd8b75e1278053` |
 
----
+M1 레코드의 `m1-ko-atomic-5k-v1`은 이름이며 가중치 SHA-256이 아닙니다. 실제 체크포인트 확인값은 7.5단계에서 회수합니다.
 
-## 파일을 찾는 방법
+## 파일 안내
 
-| 파일·폴더 | 담긴 내용 |
+| 파일 | 역할 |
 |---|---|
-| [to_codex.md](to_codex.md) | **Codex 인수인계 문서 (현재 진행 상황 및 6~8단계 실행 가이드)** |
-| [process.md](process.md) | 쉬운 단계별 전체 작업 흐름 및 종합 체크리스트 |
-| [configs/assets.lock.json](configs/assets.lock.json) | M0 및 K-PII-Bench 고정 자산 명세 |
-| [configs/candidate-townboy-lock.json](configs/candidate-townboy-lock.json) | 후보 보충 데이터셋 파일 크기·SHA-256 및 CC-BY-4.0 명세 |
-| [configs/experiment-plan.json](configs/experiment-plan.json) | 학습·평가 출발 설정, 교체 판정 게이트, 실험 기록 명세 |
-| [segmentation/splitters.py](segmentation/splitters.py) | 한국어 단어 분할기 (`ko_atomic_suffix_v3` 권장 구현) |
-| [segmentation/README.md](segmentation/README.md) | 분할 호환성 분석 및 B 파트 연동 규격 제안서 |
-| [evaluation/README.md](evaluation/README.md) | 4단계 평가 시스템 구조, 지표 정의, CLI 가이드 |
-| [evaluation/evaluate_m0.py](evaluation/evaluate_m0.py) | GPU 서버 전용 M0 베이스라인 실측 자동화 스크립트 |
-| [evaluation/service-test-v1.manifest.json](evaluation/service-test-v1.manifest.json) | 독립 서비스 시험셋 300건 무결성·통계·중복 검증 명세 |
-| [reports/segmentation-diagnosis-v2.json](reports/segmentation-diagnosis-v2.json) | 분할기별 변환율/유형보존 진단 결과 (ko_atomic_suffix_v3 95.9% 달성) |
-| [reports/candidate-supplement-summary.md](reports/candidate-supplement-summary.md) | 후보 보충 데이터셋 검증 결과 요약 보고서 (공식 제외) |
-| [reports/m0-baseline-summary.md](reports/m0-baseline-summary.md) | **M0 GPU 베이스라인 실측 결과 보고서 (5단계 완료)** |
-| [reports/m0-baseline-record.json](reports/m0-baseline-record.json) | 독립 300건 공식 베이스라인 검증 레코드 (F1 49.16%, Critical Recall 51.88%) |
-| [reports/m0-dev-record.json](reports/m0-dev-record.json) | Dev 28,147건 전수 실측 레코드 (F1 19.61%) |
-| [reports/m1-training-summary.md](reports/m1-training-summary.md) | **M1 GPU 파인튜닝 및 평가 종합 보고서 (6~7단계 완료)** |
-| [reports/m1-service-test-record.json](reports/m1-service-test-record.json) | M1 서비스 시험셋 검증 레코드 (F1 58.31%, Critical Recall 61.43%) |
-| [reports/m1-dev-record.json](reports/m1-dev-record.json) | M1 Dev 28,147건 전수 실측 레코드 (F1 30.02%) |
-| [reports/m1-vs-m0-comparison.json](reports/m1-vs-m0-comparison.json) | M1 vs M0 지표 델타 레코드 |
-| [reports/m1-vs-m0-decision.json](reports/m1-vs-m0-decision.json) | PRD §11 교체 판정 결과 (`reject`: 오차단율 증가) |
+| [process.md](process.md) | 처음 접하는 사람을 위한 작업 흐름 |
+| [stage7_5.md](stage7_5.md) | 현재 보완 작업·완료 기준·담당 구분 |
+| [to_codex.md](to_codex.md) | 현재 인계 정보와 재개 순서 |
+| [to_agy.md](to_agy.md) | 3단계 직후 최초 인계 지침의 역사적 기록 |
+| [reports/stage7-review-v1.md](reports/stage7-review-v1.md) | 발견 문제와 근거 |
+| [reports/stage7-review-checks-v1.json](reports/stage7-review-checks-v1.json) | 검토 시점 검사 결과·입력 확인값 |
+| [configs/assets.lock.json](configs/assets.lock.json) | 원본 자산 고정 기준 |
+| [configs/experiment-plan.json](configs/experiment-plan.json) | 기존 계획·기록 스키마. 실행 상태 일부가 오래되어 후속 동기화 필요 |
+| [data/README.md](data/README.md), [data/CONVERSION.md](data/CONVERSION.md) | 다운로드·감사·엄밀 변환 재현 |
+| [segmentation/README.md](segmentation/README.md) | 분할 후보와 공통 연동 조건 |
+| [reports/segmentation-diagnosis-v2.json](reports/segmentation-diagnosis-v2.json) | 후보별 변환 수·유형 보존. 탐지 성능이 아님 |
+| [evaluation/README.md](evaluation/README.md) | 지표·정책·CLI와 현재 실행기 제약 |
+| [evaluation/service-test-v1.manifest.json](evaluation/service-test-v1.manifest.json) | 서비스 v1 초안의 해시·구성·미검토 상태 |
+| [reports/m0-baseline-summary.md](reports/m0-baseline-summary.md) | M0 초기 측정의 잠정 수치·제한 |
+| [reports/m1-training-summary.md](reports/m1-training-summary.md) | M1 초기 실행 보고·정정 수치·제한 |
+| [reports/m1-vs-m0-decision.json](reports/m1-vs-m0-decision.json) | 과거 레코드 기준 `reject` 판정 |
+| [reports/data-audit-summary.md](reports/data-audit-summary.md) | 원본 감사 이력 |
+| [reports/candidate-supplement-summary.md](reports/candidate-supplement-summary.md) | 보충 데이터 후보 미채택 근거 |
+| [licenses/NOTICE.md](licenses/NOTICE.md) | 출처·라이선스·단계별 변경 기록 |
 
----
+한국어 분할 후보는 train 243,711문서 중 236,900문서(97.21%) 변환, 고유 문장 233,724개를 기록했습니다. 고유 수를 전체 문서 수로 나눈 95.90%와 문서 변환율은 다릅니다. 유형별 정답은 일부 거절됐으므로 “18종 모두 남음”과 “모든 정답 보존”도 구분합니다.
 
-## 단계별 진행 현황 및 남은 작업
+## 로컬 확인
 
-1. [x] **서버 환경 확인 (5단계)**: NVIDIA L4 24GB (Driver 580.159, CUDA 13.0, py312), VRAM 21.6GB 여유 확인 및 SSH 키 인증 구성 완료.
-2. [x] **M0 기준선(Baseline) 실측 (5단계)**: 독립 서비스 시험셋 300건 및 Dev 28,147건 전수 GPU 실측 완료 (`m0-baseline-record.json` 생성).
-3. [x] **학습 표본 5,000건 추출 (6단계)**: 변환 성공 train 233,724건 중 시드 42로 5,000건 표본 선정 및 해시 기록 (`train_5k.jsonl`).
-4. [x] **M1 추가 학습 및 dev 평가 (6단계)**: batch 4, LR 2e-5, 2 epoch GPU 파인튜닝 완료 (Loss 8.61 $\rightarrow$ 1.22, 가중치 저장 완료).
-5. [x] **최종 공정 비교 및 교체 판정 게이트 (7단계)**: M0 vs M1 교체 판정 게이트(`compare.py`) 실행 (F1 +9.16%p, Critical Recall +9.56%p 달성, 오차단율 +7.0%p로 `reject` 판정 및 임계값 튜닝 후속 조치 수립).
-6. [ ] **B와 분할기 공동 채택**: `ko_atomic_suffix_v3`를 A/B 공동 분할기로 최종 합의.
-7. [ ] **모델 패키지 구성 및 B 인계 (8단계)**: 모델 아티팩트 번들링, 임계값 캘리브레이션 프로파일 포함 및 최종 핸드오프.
+```bash
+PYTHONPATH=dev:. model/.cache/conversion-venv/bin/python -m pytest --noconftest model/tests dev/detector/tests -q
+```
+
+최신 로컬 통합 검증 결과는 **`341 passed in 0.75s`**입니다. 원문·모델 가중치·가상환경·접속정보는 Git 제외 경로에 보존합니다.

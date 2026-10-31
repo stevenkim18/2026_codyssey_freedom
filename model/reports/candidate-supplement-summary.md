@@ -3,11 +3,13 @@
 작성일: 2026-10-31 · 상태: **검증 완료, 공식 학습 데이터 채택 보류 (`candidate_not_adopted`)**  
 근거 데이터: [candidate-townboy-v1.json](candidate-townboy-v1.json) · 잠금 명세: [candidate-townboy-lock.json](../configs/candidate-townboy-lock.json)
 
+현재 K-PII-Bench를 유지하며 이 후보는 미채택입니다. 7.5단계 및 8단계를 통해 K-PII-Bench 기반 M1이 프로덕션 교체 승인(`verdict: "replace"`)을 완료했으며, `PERSONAL_ATTRIBUTE` 등 희소 유형 보강은 차기 마일스톤(시나리오 C, [report_v2.md §5.2](../report_v2.md)) 추후 개발 과제로 관리합니다.
+
 ---
 
 ## 1. 개요 및 목적
 
-본 조사는 K-PII-Bench의 `PERSONAL_ATTRIBUTE` 결측 및 특정 라벨 수량 보충 가능성을 검토하기 위해 공개 데이터셋 [townboy/korean-pii-dataset](https://huggingface.co/datasets/townboy/korean-pii-dataset)을 독립적으로 검증한 결과입니다.
+본 조사는 K-PII-Bench **dev/test의** `PERSONAL_ATTRIBUTE` 정답 부재 및 특정 라벨 수량 보충 가능성을 검토하기 위해 공개 데이터셋 [townboy/korean-pii-dataset](https://huggingface.co/datasets/townboy/korean-pii-dataset)을 독립적으로 검증한 결과입니다.
 - **원칙**: 본 데이터는 *후보 조사*이며, PRD 공식 기준인 K-PII-Bench를 임의로 대체하거나 조용히 합치지 않습니다.
 - **분할 원칙**: 보충 데이터의 `test` 분할은 학습에 절대 사용하지 않으며, 자체 `train` 및 `validation` 분할 체계를 독립적으로 보존합니다.
 
@@ -81,7 +83,7 @@
    - 다른 데이터를 가져오더라도 기존 공백 분할기(`whitespace_default_v1`)를 사용하면 조사 결합 등으로 인해 846건 이상의 정답 경계가 어긋나 대거 거절됩니다.
    - 한국어 분할 호환성(`ko_atomic_suffix_v3`)이 결합되어야만 94% 이상의 문서를 온전히 보존할 수 있습니다.
 2. **`PERSONAL_ATTRIBUTE` 결측 보충 잠재력**:
-   - `confirmed_and_tentative` 채택 시, K-PII-Bench에 없던 `PERSONAL_ATTRIBUTE` 엔터티를 4,201개 확보할 수 있습니다.
+   - `confirmed_and_tentative` 채택 시, `PERSONAL_ATTRIBUTE` 후보 엔터티 4,201개를 추가할 수 있습니다. K-PII-Bench train에는 이미 2,460개가 있으며 dev/test에만 정답이 없습니다. 학습 보충과 독립 평가 자료 확보는 별개의 문제입니다.
    - 단, 혈액형/신장/체중/전공 등이 실제 프로젝트 운영 정책에서 의도한 민감 개인속성과 일치하는지 사전 정의가 필수적입니다.
 
 ---
@@ -95,5 +97,5 @@
    - 4,728건을 확보하려면 13개 미확정(`tentative`) 라벨을 모두 수용해야 하나, 이는 라벨 정의 변경을 수반하므로 B 파트 및 PRD 요구사항 검토 없이 단독 채택할 수 없습니다.
    - K-PII-Bench 원본만으로도 한국어 분할기 개선(`ko_atomic_suffix_v3`) 적용 시 **20만 건 이상의 학습 가능 고유 문서**가 확보되므로, 즉각적인 외부 데이터 추가의 시급성이 낮습니다.
 2. **향후 보충 데이터 활용 가이드**:
-   - M0 기준선 측정 및 M1 1차 학습 후, `PERSONAL_ATTRIBUTE` 유형의 성능을 특화 보강해야 할 경우에 한하여 A/B 협의 하에 독립 서브셋으로 추가하는 방안을 권장합니다.
+   - 7.5단계에서 평가의 신뢰성을 보완한 뒤 `PERSONAL_ATTRIBUTE` 유형의 성능을 특화 보강할 근거가 있는 경우에 한하여 A/B 협의 하에 독립 서브셋으로 추가하는 방안을 권장합니다.
 

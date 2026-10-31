@@ -45,6 +45,7 @@ from detector.gliner_backend import GLiNERBackend, load_gliner
 from model.data.conversion import convert_record
 from model.evaluation import compare as compare_mod, metrics, policy_metrics, records
 from model.segmentation.planner import load_candidate_planner
+from model.segmentation.runtime import attach_splitter
 
 BASE_MODEL_DIR = Path('/home1/ncloud/b-gpu-trial-3c76ce4d6f8a4525a2f4bb3072ccd671/models/49a065fb3f08ca1291b56c514ec0dd6f11d906890d2d60d1d8c79b22800775c0')
 TRAIN_DATA_PATH = Path('/home1/ncloud/data/k-pii-bench/train.jsonl')
@@ -66,72 +67,30 @@ def sha256_file(path):
 
 
 def prepare_5k_sample(target_count=5000, seed=42):
-    sample_path = DATA_CACHE_DIR / 'train_5k.jsonl'
-    sha_path = DATA_CACHE_DIR / 'sample_manifest_sha256.txt'
-    gliner_sample_path = DATA_CACHE_DIR / 'train_5k_gliner.jsonl'
-
-    manifest = json.loads((BASE_MODEL_DIR / 'manifest.json').read_text(encoding='utf-8'))
-    label_mapping = manifest['label_mapping']
-
-    if sample_path.exists() and gliner_sample_path.exists() and sha_path.exists():
-        print(f"[Sampling] Found existing 5k sample at {sample_path}")
-        sample_sha = sha_path.read_text().strip()
-        gliner_examples = []
-        with open(gliner_sample_path, 'r', encoding='utf-8') as f:
-            for line in f:
-                gliner_examples.append(json.loads(line))
-        return sample_sha, gliner_examples
-
-    print(f"[Sampling] Sampling {target_count} convertible documents with seed {seed}...")
-    TOKENIZER_DIR = Path('/home1/ncloud/data/tokenizer_mdeberta')
-    planner = load_candidate_planner(TOKENIZER_DIR, label_mapping, 'ko_atomic_suffix_v3')
-
-    # Reservoir / linear scan of convertible documents
-    random.seed(seed)
-    sampled_docs = []
-    gliner_examples = []
-    total_scanned = 0
-
-    with open(TRAIN_DATA_PATH, 'r', encoding='utf-8') as f:
-        for line in f:
-            if not line.strip():
-                continue
-            total_scanned += 1
-            row = json.loads(line)
-            try:
-                res = convert_record(row, planner, label_mapping)
-                sampled_docs.append(row)
-                for ex in res['examples']:
-                    gliner_examples.append(ex)
-                if len(sampled_docs) >= target_count:
-                    break
-            except Exception:
-                continue
-
-    print(f"[Sampling] Sampled {len(sampled_docs)} docs ({len(gliner_examples)} windows) from {total_scanned} scanned.")
-
-    with open(sample_path, 'w', encoding='utf-8') as f:
-        for r in sampled_docs:
-            f.write(json.dumps(r, ensure_ascii=False) + '\n')
-
-    with open(gliner_sample_path, 'w', encoding='utf-8') as f:
-        for ex in gliner_examples:
-            f.write(json.dumps(ex, ensure_ascii=False) + '\n')
-
-    sample_sha = sha256_file(sample_path)
-    sha_path.write_text(sample_sha, encoding='utf-8')
-    print(f"[Sampling] Sample SHA-256: {sample_sha}")
-    return sample_sha, gliner_examples
+    """Prepare a NEW domain/type-aware unique sample; never reuse legacy prefix cache."""
+    from model.data.prepare_sample import prepare_sample
+    mapping=json.loads((REPO_ROOT/'model/configs/conversion-plan.json').read_text())['label_mapping']
+    audit=json.loads((REPO_ROOT/'model/reports/data-audit-v2.json').read_text())
+    lock=json.loads((REPO_ROOT/'model/configs/assets.lock.json').read_text())['dataset']
+    expected=next(x['digest']['value'] for x in lock['artifacts'] if x['path']=='data/train.jsonl')
+    planner=load_candidate_planner(Path('/home1/ncloud/data/tokenizer_mdeberta'),mapping,'ko_atomic_suffix_v3')
+    output=DATA_CACHE_DIR/f'stage7_5-train-{target_count}-seed{seed}'
+    manifest=prepare_sample(TRAIN_DATA_PATH,output,planner,mapping,
+                            domains=audit['splits']['train']['domain_counts'],count=target_count,
+                            seed=seed,source_sha256=expected)
+    examples=[json.loads(line) for line in (output/'train.gliner.jsonl').read_text().splitlines()]
+    return manifest['files_sha256']['train.sample.jsonl'], examples
 
 
-def train_m1(gliner_examples):
+def train_m1(gliner_examples, *, holdout_manifest, holdout_dataset):
+    from model.evaluation.runner import require_frozen_holdout
+    require_frozen_holdout(json.loads(Path(holdout_manifest).read_text()),sha256_file(holdout_dataset))
     print("=" * 60)
     print("M1 Fine-Tuning on NVIDIA L4 GPU")
     print("=" * 60)
 
     if (FINAL_MODEL_DIR / 'gliner_config.json').exists():
-        print(f"[Training] Found existing trained M1 model at {FINAL_MODEL_DIR}, skipping re-training.")
-        return FINAL_MODEL_DIR
+        raise RuntimeError('Existing model is preserved; evaluate it with verified artifact hashes, or configure a new training experiment directory.')
 
     model = GLiNER.from_pretrained(BASE_MODEL_DIR)
     collator = SpanDataCollator(model.config, data_processor=model.data_processor)
@@ -186,27 +145,13 @@ def train_m1(gliner_examples):
     return FINAL_MODEL_DIR
 
 
-def run_inference(backend, rows, name='dataset'):
-    print(f"[{name}] Starting inference for {len(rows)} documents...", flush=True)
-    predictions, pred_rows = {}, []
-    t0 = time.time()
-    for idx, row in enumerate(rows):
-        doc_id = row.get('document_id') or row.get('id') or row.get('doc_id')
-        text = row['text']
-        res = backend.inspect([{'segment_id': doc_id, 'text': text}])
-        findings = [{'type': f.type, 'start': f.start, 'end': f.end, 'score': f.score} for f in res.findings]
-        predictions[doc_id] = findings
-        pred_rows.append({'document_id': doc_id, 'findings': findings})
-        if (idx + 1) % 1000 == 0 or (idx + 1) == len(rows):
-            elapsed = time.time() - t0
-            rate = (idx + 1) / elapsed
-            eta = (len(rows) - (idx + 1)) / rate if rate > 0 else 0
-            print(f"[{name}] {idx + 1}/{len(rows)} ({(idx + 1)/len(rows)*100:.1f}%) - {rate:.1f} doc/s - ETA: {eta:.0f}s", flush=True)
-    return predictions, pred_rows
+# Both historical entry points use the complete-only implementation.
+from model.evaluation.runner import run_inference, validate_prediction_coverage
 
 
 def evaluate_and_record(rows, predictions, pred_rows, *, experiment_id, split_version,
                         sample_sha, started_at, finished_at, parent_id='m0-baseline-service-test-v1'):
+    validate_prediction_coverage(rows, pred_rows)
     lengths = {(r.get('document_id') or r.get('id') or r.get('doc_id')): len(r['text']) for r in rows}
     gold = [((r.get('document_id') or r.get('id') or r.get('doc_id')), e['type'], e['start'], e['end'])
             for r in rows for e in r.get('entities', [])]
@@ -233,7 +178,7 @@ def evaluate_and_record(rows, predictions, pred_rows, *, experiment_id, split_ve
         common_baseline_experiment_id='m0-baseline-service-test-v1',
         changed_factors=['model_weights', 'korean_segmentation_training'],
         comparison_mode='dev_selected_pipeline',
-        comparison_condition_id='m1-fine-tuned-5k',
+        comparison_condition_id='legacy-unverified-do-not-compare',
         model_repo_revision_or_checkpoint_sha256='m1-ko-atomic-5k-v1',
         dataset_revision='844f92f7beba98fa964f957ba324017e82451701',
         split_and_service_test_version=split_version,
@@ -257,86 +202,8 @@ def evaluate_and_record(rows, predictions, pred_rows, *, experiment_id, split_ve
 
 
 def main():
-    # Step 1: Sampling
-    sample_sha, gliner_examples = prepare_5k_sample(target_count=5000, seed=42)
-
-    # Step 2: Training
-    m1_model_dir = train_m1(gliner_examples)
-
-    # Step 3: Initialize M1 Backend for evaluation
-    manifest = json.loads((m1_model_dir / 'manifest.json').read_text())
-    model = GLiNER.from_pretrained(str(m1_model_dir)).to('cuda')
-    backend = GLiNERBackend(model, manifest)
-    backend.warmup()
-
-    # Step 4: Evaluate Service Test Set (300 cases)
-    print("\n>>> Evaluating M1 on Independent Service Test Set (300 cases)...")
-    service_rows = [json.loads(l) for l in open(SERVICE_TEST_PATH, encoding='utf-8') if l.strip()]
-    t_start = datetime.now(timezone.utc).isoformat()
-    service_preds, service_pred_rows = run_inference(backend, service_rows, name='m1-service-test')
-    t_end = datetime.now(timezone.utc).isoformat()
-
-    m1_service_record, m1_service_score = evaluate_and_record(
-        service_rows, service_preds, service_pred_rows,
-        experiment_id='m1-service-test-v1',
-        split_version='service-test-v1',
-        sample_sha=sample_sha,
-        started_at=t_start,
-        finished_at=t_end,
-    )
-
-    (REPORTS_DIR / 'm1-service-test-record.json').write_text(
-        json.dumps(m1_service_record, ensure_ascii=False, indent=2), encoding='utf-8'
-    )
-    (REPORTS_DIR / 'm1-service-test-score.json').write_text(
-        json.dumps(m1_service_score, ensure_ascii=False, indent=2), encoding='utf-8'
-    )
-    print(f"M1 Service Test F1: {m1_service_record['overall_precision_recall_f1']['f1']}")
-    print(f"M1 Critical Recall: {records.critical_recall(m1_service_record)}")
-    print(f"M1 Normal False Block Rate: {m1_service_record['normal_false_block_rate_and_denominator']['rate']}")
-
-    # Step 5: Evaluate Dev Set (28,147 cases)
-    print("\n>>> Evaluating M1 on K-PII-Bench Dev Set (28,147 cases)...")
-    dev_rows = [json.loads(l) for l in open(DEV_DATA_PATH, encoding='utf-8') if l.strip()]
-    t_dev_start = datetime.now(timezone.utc).isoformat()
-    dev_preds, dev_pred_rows = run_inference(backend, dev_rows, name='m1-kpii-dev')
-    t_dev_end = datetime.now(timezone.utc).isoformat()
-
-    m1_dev_record, m1_dev_score = evaluate_and_record(
-        dev_rows, dev_preds, dev_pred_rows,
-        experiment_id='m1-kpii-dev-v1',
-        split_version='kpii-dev-v1',
-        sample_sha=sample_sha,
-        started_at=t_dev_start,
-        finished_at=t_dev_end,
-        parent_id='m0-baseline-kpii-dev-v1',
-    )
-
-    (REPORTS_DIR / 'm1-dev-record.json').write_text(
-        json.dumps(m1_dev_record, ensure_ascii=False, indent=2), encoding='utf-8'
-    )
-    (REPORTS_DIR / 'm1-dev-score.json').write_text(
-        json.dumps(m1_dev_score, ensure_ascii=False, indent=2), encoding='utf-8'
-    )
-    print(f"M1 Dev F1: {m1_dev_record['overall_precision_recall_f1']['f1']}")
-    print(f"M1 Dev Critical Recall: {records.critical_recall(m1_dev_record)}")
-
-    # Step 6: PRD §11 Replacement Decision
-    m0_record = json.loads((REPORTS_DIR / 'm0-baseline-record.json').read_text())
-    decision = compare_mod.replacement_decision(m1_service_record, m0_record, runtime_acceptance=True)
-    comp = compare_mod.compare(m1_service_record, m0_record)
-    (REPORTS_DIR / 'm1-vs-m0-decision.json').write_text(
-        json.dumps(decision, ensure_ascii=False, indent=2), encoding='utf-8'
-    )
-    (REPORTS_DIR / 'm1-vs-m0-comparison.json').write_text(
-        json.dumps(comp, ensure_ascii=False, indent=2), encoding='utf-8'
-    )
-
-    print("\n" + "=" * 60)
-    print("STAGE 6 FINISHED SUCCESSFULLY!")
-    print(f"PRD Replacement Verdict: {decision['verdict'].upper()}")
-    print("=" * 60)
+    raise SystemExit('Historical entry point disabled. Use python -m model.evaluation.run_checkpoint --help with a fresh experiment ID and verified artifacts.')
 
 
 if __name__ == '__main__':
-    main()
+    raise SystemExit('Historical train+test pipeline disabled: recover existing checkpoints, use run_checkpoint; new training requires a frozen holdout and verified sample/config manifest.')

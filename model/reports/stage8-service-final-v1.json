@@ -1,0 +1,2289 @@
+{
+  "scope": "Stage 8 B-runtime integrated service final evaluation (runtime_acceptance=True, b_splitter_adoption=True).",
+  "models": [
+    {
+      "experiment_id": "final-service-m0-v1",
+      "purpose": "final",
+      "status": "executed",
+      "condition_id": "condition-sha256:e5b14c5b180939ae696c4c96462aa2d0b21910480f88147c9c8900187b42e105",
+      "conditions": {
+        "dataset_sha256": "26c21a0293ff71c49be9d36ee9749c3d85249f545713c24dcb49027758f7db87",
+        "purpose": "final",
+        "labels": [
+          [
+            "KR_RRN",
+            "Korean resident registration number"
+          ],
+          [
+            "CREDIT_CARD",
+            "credit card number"
+          ],
+          [
+            "PERSON",
+            "person"
+          ],
+          [
+            "EMAIL_ADDRESS",
+            "email address"
+          ],
+          [
+            "KR_PHONE_NUMBER",
+            "phone number"
+          ],
+          [
+            "KR_BANK_ACCOUNT",
+            "bank account number"
+          ],
+          [
+            "KR_LOCATION",
+            "address"
+          ],
+          [
+            "DATE_OF_BIRTH",
+            "date of birth"
+          ],
+          [
+            "KR_DRIVER_LICENSE",
+            "driver's license number"
+          ],
+          [
+            "KR_PASSPORT",
+            "passport number"
+          ],
+          [
+            "KR_NHIS",
+            "national health insurance number"
+          ],
+          [
+            "KR_VEHICLE_PLATE",
+            "license plate number"
+          ],
+          [
+            "USERNAME",
+            "username"
+          ],
+          [
+            "PERSONAL_ATTRIBUTE",
+            "personal attribute"
+          ],
+          [
+            "ORGANIZATION",
+            "organization"
+          ],
+          [
+            "URL",
+            "URL"
+          ],
+          [
+            "IP_ADDRESS",
+            "IP address"
+          ],
+          [
+            "NRP",
+            "nationality religious or political group"
+          ]
+        ],
+        "thresholds": {
+          "KR_RRN": 0.5,
+          "CREDIT_CARD": 0.5,
+          "PERSON": 0.5,
+          "EMAIL_ADDRESS": 0.5,
+          "KR_PHONE_NUMBER": 0.5,
+          "KR_BANK_ACCOUNT": 0.5,
+          "KR_LOCATION": 0.5,
+          "DATE_OF_BIRTH": 0.5,
+          "KR_DRIVER_LICENSE": 0.5,
+          "KR_PASSPORT": 0.5,
+          "KR_NHIS": 0.5,
+          "KR_VEHICLE_PLATE": 0.5,
+          "USERNAME": 0.5,
+          "PERSONAL_ATTRIBUTE": 0.5,
+          "ORGANIZATION": 0.5,
+          "URL": 0.5,
+          "IP_ADDRESS": 0.5,
+          "NRP": 0.5
+        },
+        "splitter": "ko_atomic_suffix_v3",
+        "max_words": 384,
+        "max_span": 12,
+        "max_subtokens": 512,
+        "rules": "b-secret-rules-v1",
+        "policy": "B-gateway-one-reinspection-v1",
+        "device": "cuda",
+        "packages": {
+          "torch": "2.10.0",
+          "gliner": "0.2.29",
+          "transformers": "4.57.3",
+          "tokenizers": "0.22.2"
+        },
+        "source_sha256": {
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/run_checkpoint.py": "0ddd3016bce21632adab64b973609077735534c39d89e62425c822443593dad6",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/runner.py": "51c2e711a83cb0cb0fd45ef8d0dc7248a0f739f3dc5ce2737f28e1a9bbf4b2db",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/segmentation/splitters.py": "afdaff308036033b06b3349172b71d56d33131d3e94cd719026eb59c538c9565",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/segmentation/runtime.py": "a121c99d0864e761393521cf5ced7a3851ab3a7916843421a1f56e26c0faaa80",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/metrics.py": "09db72af9f7027f9a39402782352c77f70d2749c6e565dbf23c886a438526827",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/policy_metrics.py": "425ba9823b8fc8813a8f089d6399c8dbcc6402582d5bdb314d5d48ed54cebd3e",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/gateway_metrics.py": "549c9e71c296549eb7eb59aa2fb266c34156b5fcf521549444889f29510177d0",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/experiment_record.py": "ec6ebcf1e6f0625d0ca0c00126ff336df5946881a2d031690046b509360597fe",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/segmentation/coverage_backend.py": "5a4ffe7f958dea90ae6ffb21a69e3c14338ce7a5bed143850d5f91ee046645d9",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/dev/detector/gliner_backend.py": "48619e8444815f9b8caa2a03e53941fee37b1ba50d3fdb496f30ecc97082099f",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/dev/gateway/policy.py": "1ac171985129d045c107751811759abafc279200dd7f34584e411e7e1f4f9710",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/dev/gateway/engine.py": "59d57101e79b7b993a4298898465c565b92e526c0535bd0321eb181264276e3c",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/dev/gateway/secret_rules.py": "575ccb2ce9301addb2168339233dd81c14ee215c2dd5e3afa09069bd233156fd"
+        }
+      },
+      "artifacts_sha256": {
+        "pytorch_model.bin": "3003753fba99e40645cf088c7367a2c6211fc174897dc64f1f9c147c29d18d2d",
+        "gliner_config.json": "05b9a8b4e474e519fd0e57648a6c9fab2403fea936003af4993a2d15c3135370",
+        "tokenizer_config.json": "5249d6f991d952e10fe49794576e8566aa5f5c82226ab4c9d8f3f78462a8d007",
+        "spm.model": "13c8d666d62a7bc4ac8f040aab68e942c861f93303156cc28f5c7e885d86d6e3",
+        "config.json": "bcffcd343dc5efa5ef2d5a58d2b405eed108f01cc45b48d0a907b333ec41801f"
+      },
+      "documents": 300,
+      "inference_status_counts": {
+        "complete": 300,
+        "incomplete": 0,
+        "error": 0
+      },
+      "score": {
+        "metric_id": "char_span_exact_v1",
+        "duplicates": "multiset",
+        "document_count": 300,
+        "overall_micro": {
+          "tp": 345,
+          "fp": 147,
+          "fn": 65,
+          "gold": 410,
+          "predicted": 492,
+          "precision": 0.7012195121951219,
+          "recall": 0.8414634146341463,
+          "f1": 0.7649667405764967
+        },
+        "per_type": {
+          "CREDIT_CARD": {
+            "tp": 46,
+            "fp": 9,
+            "fn": 4,
+            "gold": 50,
+            "predicted": 55,
+            "precision": 0.8363636363636363,
+            "recall": 0.92,
+            "f1": 0.8761904761904762,
+            "recall_wilson_95": {
+              "low": 0.8116175297192756,
+              "high": 0.9684504861306886,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "DATE_OF_BIRTH": {
+            "tp": 16,
+            "fp": 2,
+            "fn": 0,
+            "gold": 16,
+            "predicted": 18,
+            "precision": 0.8888888888888888,
+            "recall": 1.0,
+            "f1": 0.9411764705882353,
+            "recall_wilson_95": {
+              "low": 0.8063923170025951,
+              "high": 1.0,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "EMAIL_ADDRESS": {
+            "tp": 37,
+            "fp": 0,
+            "fn": 3,
+            "gold": 40,
+            "predicted": 37,
+            "precision": 1.0,
+            "recall": 0.925,
+            "f1": 0.961038961038961,
+            "recall_wilson_95": {
+              "low": 0.8013576634835684,
+              "high": 0.9741639744267374,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "IP_ADDRESS": {
+            "tp": 14,
+            "fp": 0,
+            "fn": 0,
+            "gold": 14,
+            "predicted": 14,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "recall_wilson_95": {
+              "low": 0.7846891945970195,
+              "high": 0.9999999999999999,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_BANK_ACCOUNT": {
+            "tp": 35,
+            "fp": 2,
+            "fn": 5,
+            "gold": 40,
+            "predicted": 37,
+            "precision": 0.9459459459459459,
+            "recall": 0.875,
+            "f1": 0.9090909090909091,
+            "recall_wilson_95": {
+              "low": 0.7388788003201471,
+              "high": 0.9454049978360052,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_DRIVER_LICENSE": {
+            "tp": 12,
+            "fp": 27,
+            "fn": 2,
+            "gold": 14,
+            "predicted": 39,
+            "precision": 0.3076923076923077,
+            "recall": 0.8571428571428571,
+            "f1": 0.4528301886792453,
+            "recall_wilson_95": {
+              "low": 0.600586202762663,
+              "high": 0.959906079092351,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_LOCATION": {
+            "tp": 15,
+            "fp": 0,
+            "fn": 2,
+            "gold": 17,
+            "predicted": 15,
+            "precision": 1.0,
+            "recall": 0.8823529411764706,
+            "f1": 0.9375,
+            "recall_wilson_95": {
+              "low": 0.6566364919396065,
+              "high": 0.9671202265340099,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_NHIS": {
+            "tp": 14,
+            "fp": 1,
+            "fn": 0,
+            "gold": 14,
+            "predicted": 15,
+            "precision": 0.9333333333333333,
+            "recall": 1.0,
+            "f1": 0.9655172413793104,
+            "recall_wilson_95": {
+              "low": 0.7846891945970195,
+              "high": 0.9999999999999999,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_PASSPORT": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 14,
+            "gold": 14,
+            "predicted": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "recall_wilson_95": {
+              "low": 0.0,
+              "high": 0.21531080540298042,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_PHONE_NUMBER": {
+            "tp": 38,
+            "fp": 3,
+            "fn": 2,
+            "gold": 40,
+            "predicted": 41,
+            "precision": 0.926829268292683,
+            "recall": 0.95,
+            "f1": 0.9382716049382716,
+            "recall_wilson_95": {
+              "low": 0.8349612250489412,
+              "high": 0.9861793327384413,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_RRN": {
+            "tp": 32,
+            "fp": 0,
+            "fn": 8,
+            "gold": 40,
+            "predicted": 32,
+            "precision": 1.0,
+            "recall": 0.8,
+            "f1": 0.8888888888888888,
+            "recall_wilson_95": {
+              "low": 0.6524269352437855,
+              "high": 0.8950001032811363,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_VEHICLE_PLATE": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 15,
+            "gold": 16,
+            "predicted": 1,
+            "precision": 1.0,
+            "recall": 0.0625,
+            "f1": 0.11764705882352941,
+            "recall_wilson_95": {
+              "low": 0.011119344641247308,
+              "high": 0.283287377981482,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "NRP": {
+            "tp": 14,
+            "fp": 0,
+            "fn": 1,
+            "gold": 15,
+            "predicted": 14,
+            "precision": 1.0,
+            "recall": 0.9333333333333333,
+            "f1": 0.9655172413793104,
+            "recall_wilson_95": {
+              "low": 0.7018346989112435,
+              "high": 0.9881331046384677,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "ORGANIZATION": {
+            "tp": 14,
+            "fp": 17,
+            "fn": 1,
+            "gold": 15,
+            "predicted": 31,
+            "precision": 0.45161290322580644,
+            "recall": 0.9333333333333333,
+            "f1": 0.6086956521739131,
+            "recall_wilson_95": {
+              "low": 0.7018346989112435,
+              "high": 0.9881331046384677,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "PERSON": {
+            "tp": 17,
+            "fp": 75,
+            "fn": 0,
+            "gold": 17,
+            "predicted": 92,
+            "precision": 0.18478260869565216,
+            "recall": 1.0,
+            "f1": 0.3119266055045872,
+            "recall_wilson_95": {
+              "low": 0.8156818626193445,
+              "high": 1.0,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "PERSONAL_ATTRIBUTE": {
+            "tp": 11,
+            "fp": 3,
+            "fn": 6,
+            "gold": 17,
+            "predicted": 14,
+            "precision": 0.7857142857142857,
+            "recall": 0.6470588235294118,
+            "f1": 0.7096774193548387,
+            "recall_wilson_95": {
+              "low": 0.4130036331490377,
+              "high": 0.8269027970331224,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "URL": {
+            "tp": 14,
+            "fp": 2,
+            "fn": 0,
+            "gold": 14,
+            "predicted": 16,
+            "precision": 0.875,
+            "recall": 1.0,
+            "f1": 0.9333333333333333,
+            "recall_wilson_95": {
+              "low": 0.7846891945970195,
+              "high": 0.9999999999999999,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "USERNAME": {
+            "tp": 15,
+            "fp": 5,
+            "fn": 2,
+            "gold": 17,
+            "predicted": 20,
+            "precision": 0.75,
+            "recall": 0.8823529411764706,
+            "f1": 0.8108108108108109,
+            "recall_wilson_95": {
+              "low": 0.6566364919396065,
+              "high": 0.9671202265340099,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          }
+        },
+        "critical_micro": {
+          "tp": 188,
+          "fp": 14,
+          "fn": 22,
+          "gold": 210,
+          "predicted": 202,
+          "types": [
+            "KR_RRN",
+            "KR_BANK_ACCOUNT",
+            "CREDIT_CARD",
+            "KR_PHONE_NUMBER",
+            "EMAIL_ADDRESS"
+          ],
+          "precision": 0.9306930693069307,
+          "recall": 0.8952380952380953,
+          "f1": 0.912621359223301
+        }
+      },
+      "gateway": {
+        "model_only": {
+          "protocol": "B-gateway-one-reinspection-v1",
+          "mode": "model_only",
+          "scope": "all supplied documents; no external transmission",
+          "actions": {
+            "block": 76,
+            "error": 92,
+            "mask": 34,
+            "allow": 98
+          },
+          "normal_false_block": {
+            "false_blocks": 1,
+            "normal_documents": 100,
+            "explicit_blocks": 0,
+            "fail_closed_errors": 1,
+            "reinspection_failures": 1,
+            "rate": 0.01,
+            "wilson_95": {
+              "low": 0.0017674320446096452,
+              "high": 0.05448619674900669,
+              "method": "wilson",
+              "z": 1.959964
+            },
+            "definition": "normal documents not forwarded due to block OR error; differs from v1 block-only"
+          },
+          "normal_wrong_masks": 10,
+          "forwarded_protected_gold_entities": 54,
+          "residual_protected_entities": 22,
+          "residual_rate": 0.4074074074074074,
+          "residual_scope": "protected gold in allow or successfully masked documents; blocked/error documents not forwarded",
+          "B_runtime_acceptance": null,
+          "cached_reinspection_calls": 0,
+          "latency_scope": "Cached mode timings are not independent end-to-end latency measurements; use uncached model_only traces."
+        },
+        "model_plus_same_rules": {
+          "protocol": "B-gateway-one-reinspection-v1",
+          "mode": "model_plus_same_rules",
+          "scope": "all supplied documents; no external transmission",
+          "actions": {
+            "block": 76,
+            "error": 92,
+            "mask": 34,
+            "allow": 98
+          },
+          "normal_false_block": {
+            "false_blocks": 1,
+            "normal_documents": 100,
+            "explicit_blocks": 0,
+            "fail_closed_errors": 1,
+            "reinspection_failures": 1,
+            "rate": 0.01,
+            "wilson_95": {
+              "low": 0.0017674320446096452,
+              "high": 0.05448619674900669,
+              "method": "wilson",
+              "z": 1.959964
+            },
+            "definition": "normal documents not forwarded due to block OR error; differs from v1 block-only"
+          },
+          "normal_wrong_masks": 10,
+          "forwarded_protected_gold_entities": 54,
+          "residual_protected_entities": 22,
+          "residual_rate": 0.4074074074074074,
+          "residual_scope": "protected gold in allow or successfully masked documents; blocked/error documents not forwarded",
+          "B_runtime_acceptance": null,
+          "cached_reinspection_calls": 126,
+          "latency_scope": "Cached mode timings are not independent end-to-end latency measurements; use uncached model_only traces."
+        }
+      }
+    },
+    {
+      "experiment_id": "final-service-m1-v1",
+      "purpose": "final",
+      "status": "executed",
+      "condition_id": "condition-sha256:e5b14c5b180939ae696c4c96462aa2d0b21910480f88147c9c8900187b42e105",
+      "conditions": {
+        "dataset_sha256": "26c21a0293ff71c49be9d36ee9749c3d85249f545713c24dcb49027758f7db87",
+        "purpose": "final",
+        "labels": [
+          [
+            "KR_RRN",
+            "Korean resident registration number"
+          ],
+          [
+            "CREDIT_CARD",
+            "credit card number"
+          ],
+          [
+            "PERSON",
+            "person"
+          ],
+          [
+            "EMAIL_ADDRESS",
+            "email address"
+          ],
+          [
+            "KR_PHONE_NUMBER",
+            "phone number"
+          ],
+          [
+            "KR_BANK_ACCOUNT",
+            "bank account number"
+          ],
+          [
+            "KR_LOCATION",
+            "address"
+          ],
+          [
+            "DATE_OF_BIRTH",
+            "date of birth"
+          ],
+          [
+            "KR_DRIVER_LICENSE",
+            "driver's license number"
+          ],
+          [
+            "KR_PASSPORT",
+            "passport number"
+          ],
+          [
+            "KR_NHIS",
+            "national health insurance number"
+          ],
+          [
+            "KR_VEHICLE_PLATE",
+            "license plate number"
+          ],
+          [
+            "USERNAME",
+            "username"
+          ],
+          [
+            "PERSONAL_ATTRIBUTE",
+            "personal attribute"
+          ],
+          [
+            "ORGANIZATION",
+            "organization"
+          ],
+          [
+            "URL",
+            "URL"
+          ],
+          [
+            "IP_ADDRESS",
+            "IP address"
+          ],
+          [
+            "NRP",
+            "nationality religious or political group"
+          ]
+        ],
+        "thresholds": {
+          "KR_RRN": 0.5,
+          "CREDIT_CARD": 0.5,
+          "PERSON": 0.5,
+          "EMAIL_ADDRESS": 0.5,
+          "KR_PHONE_NUMBER": 0.5,
+          "KR_BANK_ACCOUNT": 0.5,
+          "KR_LOCATION": 0.5,
+          "DATE_OF_BIRTH": 0.5,
+          "KR_DRIVER_LICENSE": 0.5,
+          "KR_PASSPORT": 0.5,
+          "KR_NHIS": 0.5,
+          "KR_VEHICLE_PLATE": 0.5,
+          "USERNAME": 0.5,
+          "PERSONAL_ATTRIBUTE": 0.5,
+          "ORGANIZATION": 0.5,
+          "URL": 0.5,
+          "IP_ADDRESS": 0.5,
+          "NRP": 0.5
+        },
+        "splitter": "ko_atomic_suffix_v3",
+        "max_words": 384,
+        "max_span": 12,
+        "max_subtokens": 512,
+        "rules": "b-secret-rules-v1",
+        "policy": "B-gateway-one-reinspection-v1",
+        "device": "cuda",
+        "packages": {
+          "torch": "2.10.0",
+          "gliner": "0.2.29",
+          "transformers": "4.57.3",
+          "tokenizers": "0.22.2"
+        },
+        "source_sha256": {
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/run_checkpoint.py": "0ddd3016bce21632adab64b973609077735534c39d89e62425c822443593dad6",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/runner.py": "51c2e711a83cb0cb0fd45ef8d0dc7248a0f739f3dc5ce2737f28e1a9bbf4b2db",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/segmentation/splitters.py": "afdaff308036033b06b3349172b71d56d33131d3e94cd719026eb59c538c9565",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/segmentation/runtime.py": "a121c99d0864e761393521cf5ced7a3851ab3a7916843421a1f56e26c0faaa80",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/metrics.py": "09db72af9f7027f9a39402782352c77f70d2749c6e565dbf23c886a438526827",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/policy_metrics.py": "425ba9823b8fc8813a8f089d6399c8dbcc6402582d5bdb314d5d48ed54cebd3e",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/gateway_metrics.py": "549c9e71c296549eb7eb59aa2fb266c34156b5fcf521549444889f29510177d0",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/experiment_record.py": "ec6ebcf1e6f0625d0ca0c00126ff336df5946881a2d031690046b509360597fe",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/segmentation/coverage_backend.py": "5a4ffe7f958dea90ae6ffb21a69e3c14338ce7a5bed143850d5f91ee046645d9",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/dev/detector/gliner_backend.py": "48619e8444815f9b8caa2a03e53941fee37b1ba50d3fdb496f30ecc97082099f",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/dev/gateway/policy.py": "1ac171985129d045c107751811759abafc279200dd7f34584e411e7e1f4f9710",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/dev/gateway/engine.py": "59d57101e79b7b993a4298898465c565b92e526c0535bd0321eb181264276e3c",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/dev/gateway/secret_rules.py": "575ccb2ce9301addb2168339233dd81c14ee215c2dd5e3afa09069bd233156fd"
+        }
+      },
+      "artifacts_sha256": {
+        "model.safetensors": "ed2546b8b6a721be18a6a9e644fe6fd423016c7a457b5e30521d85c3d86228a2",
+        "gliner_config.json": "5933c2407deaf51bdf7cbdebff5a0fceb014ec223e50019e67b6f69000444f96",
+        "tokenizer_config.json": "9d3a9e5b184d44b2cb2f14af3e7cf57b788e674ce17768b688c4473a1c2e71f5",
+        "spm.model": "13c8d666d62a7bc4ac8f040aab68e942c861f93303156cc28f5c7e885d86d6e3",
+        "tokenizer.json": "87208f39b9e81f180629d45da55d7a24cf1e011884552d6d5096c92e0a639d39",
+        "added_tokens.json": "030e747c4ca7992a3ac794c6fda9919352c88ae722e85178217cd083b450078d",
+        "special_tokens_map.json": "9463f61e1b109a8eb4688b829260d7c6b1e6dff04c98ff7269bb89e2b92369b9"
+      },
+      "documents": 300,
+      "inference_status_counts": {
+        "complete": 300,
+        "incomplete": 0,
+        "error": 0
+      },
+      "score": {
+        "metric_id": "char_span_exact_v1",
+        "duplicates": "multiset",
+        "document_count": 300,
+        "overall_micro": {
+          "tp": 383,
+          "fp": 51,
+          "fn": 27,
+          "gold": 410,
+          "predicted": 434,
+          "precision": 0.8824884792626728,
+          "recall": 0.9341463414634147,
+          "f1": 0.9075829383886256
+        },
+        "per_type": {
+          "CREDIT_CARD": {
+            "tp": 46,
+            "fp": 9,
+            "fn": 4,
+            "gold": 50,
+            "predicted": 55,
+            "precision": 0.8363636363636363,
+            "recall": 0.92,
+            "f1": 0.8761904761904762,
+            "recall_wilson_95": {
+              "low": 0.8116175297192756,
+              "high": 0.9684504861306886,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "DATE_OF_BIRTH": {
+            "tp": 15,
+            "fp": 1,
+            "fn": 1,
+            "gold": 16,
+            "predicted": 16,
+            "precision": 0.9375,
+            "recall": 0.9375,
+            "f1": 0.9375,
+            "recall_wilson_95": {
+              "low": 0.716712622018518,
+              "high": 0.9888806553587528,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "EMAIL_ADDRESS": {
+            "tp": 40,
+            "fp": 0,
+            "fn": 0,
+            "gold": 40,
+            "predicted": 40,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "recall_wilson_95": {
+              "low": 0.9123783975415363,
+              "high": 1.0,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "IP_ADDRESS": {
+            "tp": 14,
+            "fp": 0,
+            "fn": 0,
+            "gold": 14,
+            "predicted": 14,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "recall_wilson_95": {
+              "low": 0.7846891945970195,
+              "high": 0.9999999999999999,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_BANK_ACCOUNT": {
+            "tp": 36,
+            "fp": 0,
+            "fn": 4,
+            "gold": 40,
+            "predicted": 36,
+            "precision": 1.0,
+            "recall": 0.9,
+            "f1": 0.9473684210526315,
+            "recall_wilson_95": {
+              "low": 0.7694822464406407,
+              "high": 0.9604204715925885,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_DRIVER_LICENSE": {
+            "tp": 13,
+            "fp": 0,
+            "fn": 1,
+            "gold": 14,
+            "predicted": 13,
+            "precision": 1.0,
+            "recall": 0.9285714285714286,
+            "f1": 0.9629629629629629,
+            "recall_wilson_95": {
+              "low": 0.6853129533326209,
+              "high": 0.9872777848933957,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_LOCATION": {
+            "tp": 14,
+            "fp": 2,
+            "fn": 3,
+            "gold": 17,
+            "predicted": 16,
+            "precision": 0.875,
+            "recall": 0.8235294117647058,
+            "f1": 0.8484848484848485,
+            "recall_wilson_95": {
+              "low": 0.5897054122922163,
+              "high": 0.938088734108536,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_NHIS": {
+            "tp": 14,
+            "fp": 2,
+            "fn": 0,
+            "gold": 14,
+            "predicted": 16,
+            "precision": 0.875,
+            "recall": 1.0,
+            "f1": 0.9333333333333333,
+            "recall_wilson_95": {
+              "low": 0.7846891945970195,
+              "high": 0.9999999999999999,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_PASSPORT": {
+            "tp": 14,
+            "fp": 0,
+            "fn": 0,
+            "gold": 14,
+            "predicted": 14,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "recall_wilson_95": {
+              "low": 0.7846891945970195,
+              "high": 0.9999999999999999,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_PHONE_NUMBER": {
+            "tp": 38,
+            "fp": 1,
+            "fn": 2,
+            "gold": 40,
+            "predicted": 39,
+            "precision": 0.9743589743589743,
+            "recall": 0.95,
+            "f1": 0.9620253164556962,
+            "recall_wilson_95": {
+              "low": 0.8349612250489412,
+              "high": 0.9861793327384413,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_RRN": {
+            "tp": 39,
+            "fp": 0,
+            "fn": 1,
+            "gold": 40,
+            "predicted": 39,
+            "precision": 1.0,
+            "recall": 0.975,
+            "f1": 0.9873417721518988,
+            "recall_wilson_95": {
+              "low": 0.8711863091181636,
+              "high": 0.9955731685462955,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_VEHICLE_PLATE": {
+            "tp": 15,
+            "fp": 1,
+            "fn": 1,
+            "gold": 16,
+            "predicted": 16,
+            "precision": 0.9375,
+            "recall": 0.9375,
+            "f1": 0.9375,
+            "recall_wilson_95": {
+              "low": 0.716712622018518,
+              "high": 0.9888806553587528,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "NRP": {
+            "tp": 15,
+            "fp": 3,
+            "fn": 0,
+            "gold": 15,
+            "predicted": 18,
+            "precision": 0.8333333333333334,
+            "recall": 1.0,
+            "f1": 0.9090909090909091,
+            "recall_wilson_95": {
+              "low": 0.7961166964035129,
+              "high": 1.0,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "ORGANIZATION": {
+            "tp": 14,
+            "fp": 18,
+            "fn": 1,
+            "gold": 15,
+            "predicted": 32,
+            "precision": 0.4375,
+            "recall": 0.9333333333333333,
+            "f1": 0.5957446808510638,
+            "recall_wilson_95": {
+              "low": 0.7018346989112435,
+              "high": 0.9881331046384677,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "PERSON": {
+            "tp": 17,
+            "fp": 13,
+            "fn": 0,
+            "gold": 17,
+            "predicted": 30,
+            "precision": 0.5666666666666667,
+            "recall": 1.0,
+            "f1": 0.723404255319149,
+            "recall_wilson_95": {
+              "low": 0.8156818626193445,
+              "high": 1.0,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "PERSONAL_ATTRIBUTE": {
+            "tp": 8,
+            "fp": 1,
+            "fn": 9,
+            "gold": 17,
+            "predicted": 9,
+            "precision": 0.8888888888888888,
+            "recall": 0.47058823529411764,
+            "f1": 0.6153846153846154,
+            "recall_wilson_95": {
+              "low": 0.2616510631137911,
+              "high": 0.6903676508497769,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "URL": {
+            "tp": 14,
+            "fp": 0,
+            "fn": 0,
+            "gold": 14,
+            "predicted": 14,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "recall_wilson_95": {
+              "low": 0.7846891945970195,
+              "high": 0.9999999999999999,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "USERNAME": {
+            "tp": 17,
+            "fp": 0,
+            "fn": 0,
+            "gold": 17,
+            "predicted": 17,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "recall_wilson_95": {
+              "low": 0.8156818626193445,
+              "high": 1.0,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          }
+        },
+        "critical_micro": {
+          "tp": 199,
+          "fp": 10,
+          "fn": 11,
+          "gold": 210,
+          "predicted": 209,
+          "types": [
+            "KR_RRN",
+            "KR_BANK_ACCOUNT",
+            "CREDIT_CARD",
+            "KR_PHONE_NUMBER",
+            "EMAIL_ADDRESS"
+          ],
+          "precision": 0.9521531100478469,
+          "recall": 0.9476190476190476,
+          "f1": 0.9498806682577565
+        }
+      },
+      "gateway": {
+        "model_only": {
+          "protocol": "B-gateway-one-reinspection-v1",
+          "mode": "model_only",
+          "scope": "all supplied documents; no external transmission",
+          "actions": {
+            "block": 81,
+            "mask": 120,
+            "allow": 98,
+            "error": 1
+          },
+          "normal_false_block": {
+            "false_blocks": 0,
+            "normal_documents": 100,
+            "explicit_blocks": 0,
+            "fail_closed_errors": 0,
+            "reinspection_failures": 0,
+            "rate": 0.0,
+            "wilson_95": {
+              "low": 0.0,
+              "high": 0.03699349876899627,
+              "method": "wilson",
+              "z": 1.959964
+            },
+            "definition": "normal documents not forwarded due to block OR error; differs from v1 block-only"
+          },
+          "normal_wrong_masks": 5,
+          "forwarded_protected_gold_entities": 203,
+          "residual_protected_entities": 17,
+          "residual_rate": 0.08374384236453201,
+          "residual_scope": "protected gold in allow or successfully masked documents; blocked/error documents not forwarded",
+          "B_runtime_acceptance": true,
+          "cached_reinspection_calls": 0,
+          "latency_scope": "Cached mode timings are not independent end-to-end latency measurements; use uncached model_only traces."
+        },
+        "model_plus_same_rules": {
+          "protocol": "B-gateway-one-reinspection-v1",
+          "mode": "model_plus_same_rules",
+          "scope": "all supplied documents; no external transmission",
+          "actions": {
+            "block": 81,
+            "mask": 120,
+            "allow": 98,
+            "error": 1
+          },
+          "normal_false_block": {
+            "false_blocks": 0,
+            "normal_documents": 100,
+            "explicit_blocks": 0,
+            "fail_closed_errors": 0,
+            "reinspection_failures": 0,
+            "rate": 0.0,
+            "wilson_95": {
+              "low": 0.0,
+              "high": 0.03699349876899627,
+              "method": "wilson",
+              "z": 1.959964
+            },
+            "definition": "normal documents not forwarded due to block OR error; differs from v1 block-only"
+          },
+          "normal_wrong_masks": 5,
+          "forwarded_protected_gold_entities": 203,
+          "residual_protected_entities": 17,
+          "residual_rate": 0.08374384236453201,
+          "residual_scope": "protected gold in allow or successfully masked documents; blocked/error documents not forwarded",
+          "B_runtime_acceptance": true,
+          "cached_reinspection_calls": 121,
+          "latency_scope": "Cached mode timings are not independent end-to-end latency measurements; use uncached model_only traces."
+        }
+      }
+    }
+  ],
+  "paired_ci": {
+    "method": "paired document bootstrap, NumPy PCG64; normal subset stratified",
+    "iterations": 1000,
+    "seed": 42,
+    "documents": 300,
+    "metrics": {
+      "overall_f1": {
+        "estimate_pp": 14.261619781212886,
+        "low_pp": 10.582108924553848,
+        "high_pp": 17.888061925150872,
+        "valid_iterations": 1000
+      },
+      "critical_micro_recall": {
+        "estimate_pp": 5.23809523809523,
+        "low_pp": 2.4740459482841404,
+        "high_pp": 8.45087940578796,
+        "valid_iterations": 1000
+      },
+      "recall:KR_RRN": {
+        "estimate_pp": 17.499999999999993,
+        "low_pp": 6.653061224489795,
+        "high_pp": 29.792553191489358,
+        "valid_iterations": 1000
+      },
+      "recall:KR_BANK_ACCOUNT": {
+        "estimate_pp": 2.500000000000002,
+        "low_pp": 0.0,
+        "high_pp": 7.900071123755332,
+        "valid_iterations": 1000
+      },
+      "recall:CREDIT_CARD": {
+        "estimate_pp": 0.0,
+        "low_pp": 0.0,
+        "high_pp": 0.0,
+        "valid_iterations": 1000
+      },
+      "recall:KR_PHONE_NUMBER": {
+        "estimate_pp": 0.0,
+        "low_pp": 0.0,
+        "high_pp": 0.0,
+        "valid_iterations": 1000
+      },
+      "recall:EMAIL_ADDRESS": {
+        "estimate_pp": 7.499999999999996,
+        "low_pp": 0.0,
+        "high_pp": 16.666666666666664,
+        "valid_iterations": 1000
+      },
+      "normal_failure_rate": {
+        "estimate_pp": -1.0,
+        "low_pp": -3.0,
+        "high_pp": 0.0,
+        "valid_iterations": 1000
+      }
+    },
+    "limitations": "Conditional on this synthetic/template-derived benchmark. Document dependence and sample size limit generalization.",
+    "normal_documents": 100
+  },
+  "comparisons": {
+    "model_only": {
+      "comparison": {
+        "comparable": true,
+        "mismatches": [],
+        "delta": {
+          "unit": "percentage_points for rates; counts for denominators and misses",
+          "overall_precision_pp": 18.12689670675509,
+          "overall_recall_pp": 9.268292682926838,
+          "overall_f1_pp": 14.261619781212886,
+          "critical_micro_recall_pp": 5.23809523809523,
+          "normal_false_block_rate_pp": -1.0,
+          "normal_documents_count_difference": 0,
+          "per_type": {
+            "CREDIT_CARD": {
+              "recall_pp": 0.0,
+              "precision_pp": 0.0,
+              "f1_pp": 0.0,
+              "false_negative_count_difference": 0,
+              "gold_count_difference": 0
+            },
+            "DATE_OF_BIRTH": {
+              "recall_pp": -6.25,
+              "precision_pp": 4.861111111111116,
+              "f1_pp": -0.3676470588235281,
+              "false_negative_count_difference": 1,
+              "gold_count_difference": 0
+            },
+            "EMAIL_ADDRESS": {
+              "recall_pp": 7.499999999999996,
+              "precision_pp": 0.0,
+              "f1_pp": 3.8961038961038974,
+              "false_negative_count_difference": -3,
+              "gold_count_difference": 0
+            },
+            "IP_ADDRESS": {
+              "recall_pp": 0.0,
+              "precision_pp": 0.0,
+              "f1_pp": 0.0,
+              "false_negative_count_difference": 0,
+              "gold_count_difference": 0
+            },
+            "KR_BANK_ACCOUNT": {
+              "recall_pp": 2.500000000000002,
+              "precision_pp": 5.405405405405405,
+              "f1_pp": 3.8277511961722466,
+              "false_negative_count_difference": -1,
+              "gold_count_difference": 0
+            },
+            "KR_DRIVER_LICENSE": {
+              "recall_pp": 7.142857142857151,
+              "precision_pp": 69.23076923076923,
+              "f1_pp": 51.013277428371765,
+              "false_negative_count_difference": -1,
+              "gold_count_difference": 0
+            },
+            "KR_LOCATION": {
+              "recall_pp": -5.882352941176472,
+              "precision_pp": -12.5,
+              "f1_pp": -8.901515151515149,
+              "false_negative_count_difference": 1,
+              "gold_count_difference": 0
+            },
+            "KR_NHIS": {
+              "recall_pp": 0.0,
+              "precision_pp": -5.833333333333335,
+              "f1_pp": -3.218390804597704,
+              "false_negative_count_difference": 0,
+              "gold_count_difference": 0
+            },
+            "KR_PASSPORT": {
+              "recall_pp": 100.0,
+              "precision_pp": 100.0,
+              "f1_pp": 100.0,
+              "false_negative_count_difference": -14,
+              "gold_count_difference": 0
+            },
+            "KR_PHONE_NUMBER": {
+              "recall_pp": 0.0,
+              "precision_pp": 4.752970606629137,
+              "f1_pp": 2.375371151742467,
+              "false_negative_count_difference": 0,
+              "gold_count_difference": 0
+            },
+            "KR_RRN": {
+              "recall_pp": 17.499999999999993,
+              "precision_pp": 0.0,
+              "f1_pp": 9.845288326300993,
+              "false_negative_count_difference": -7,
+              "gold_count_difference": 0
+            },
+            "KR_VEHICLE_PLATE": {
+              "recall_pp": 87.5,
+              "precision_pp": -6.25,
+              "f1_pp": 81.98529411764706,
+              "false_negative_count_difference": -14,
+              "gold_count_difference": 0
+            },
+            "NRP": {
+              "recall_pp": 6.666666666666665,
+              "precision_pp": -16.666666666666664,
+              "f1_pp": -5.642633228840133,
+              "false_negative_count_difference": -1,
+              "gold_count_difference": 0
+            },
+            "ORGANIZATION": {
+              "recall_pp": 0.0,
+              "precision_pp": -1.411290322580644,
+              "f1_pp": -1.295097132284928,
+              "false_negative_count_difference": 0,
+              "gold_count_difference": 0
+            },
+            "PERSON": {
+              "recall_pp": 0.0,
+              "precision_pp": 38.188405797101446,
+              "f1_pp": 41.14776498145618,
+              "false_negative_count_difference": 0,
+              "gold_count_difference": 0
+            },
+            "PERSONAL_ATTRIBUTE": {
+              "recall_pp": -17.647058823529417,
+              "precision_pp": 10.317460317460315,
+              "f1_pp": -9.429280397022332,
+              "false_negative_count_difference": 3,
+              "gold_count_difference": 0
+            },
+            "URL": {
+              "recall_pp": 0.0,
+              "precision_pp": 12.5,
+              "f1_pp": 6.666666666666665,
+              "false_negative_count_difference": 0,
+              "gold_count_difference": 0
+            },
+            "USERNAME": {
+              "recall_pp": 11.764705882352944,
+              "precision_pp": 25.0,
+              "f1_pp": 18.918918918918916,
+              "false_negative_count_difference": -2,
+              "gold_count_difference": 0
+            }
+          }
+        }
+      },
+      "decision": {
+        "verdict": "replace",
+        "reasons": [],
+        "gates": {
+          "critical_micro_recall_not_below_baseline": true,
+          "overall_f1_not_below_baseline": true,
+          "normal_false_block_increase_within_limit": true,
+          "no_unresolved_critical_type_regression": true,
+          "runtime_memory_latency_integration_accepted": true
+        }
+      },
+      "critical_regressions": []
+    },
+    "model_plus_same_rules": {
+      "comparison": {
+        "comparable": true,
+        "mismatches": [],
+        "delta": {
+          "unit": "percentage_points for rates; counts for denominators and misses",
+          "overall_precision_pp": 18.12689670675509,
+          "overall_recall_pp": 9.268292682926838,
+          "overall_f1_pp": 14.261619781212886,
+          "critical_micro_recall_pp": 5.23809523809523,
+          "normal_false_block_rate_pp": -1.0,
+          "normal_documents_count_difference": 0,
+          "per_type": {
+            "CREDIT_CARD": {
+              "recall_pp": 0.0,
+              "precision_pp": 0.0,
+              "f1_pp": 0.0,
+              "false_negative_count_difference": 0,
+              "gold_count_difference": 0
+            },
+            "DATE_OF_BIRTH": {
+              "recall_pp": -6.25,
+              "precision_pp": 4.861111111111116,
+              "f1_pp": -0.3676470588235281,
+              "false_negative_count_difference": 1,
+              "gold_count_difference": 0
+            },
+            "EMAIL_ADDRESS": {
+              "recall_pp": 7.499999999999996,
+              "precision_pp": 0.0,
+              "f1_pp": 3.8961038961038974,
+              "false_negative_count_difference": -3,
+              "gold_count_difference": 0
+            },
+            "IP_ADDRESS": {
+              "recall_pp": 0.0,
+              "precision_pp": 0.0,
+              "f1_pp": 0.0,
+              "false_negative_count_difference": 0,
+              "gold_count_difference": 0
+            },
+            "KR_BANK_ACCOUNT": {
+              "recall_pp": 2.500000000000002,
+              "precision_pp": 5.405405405405405,
+              "f1_pp": 3.8277511961722466,
+              "false_negative_count_difference": -1,
+              "gold_count_difference": 0
+            },
+            "KR_DRIVER_LICENSE": {
+              "recall_pp": 7.142857142857151,
+              "precision_pp": 69.23076923076923,
+              "f1_pp": 51.013277428371765,
+              "false_negative_count_difference": -1,
+              "gold_count_difference": 0
+            },
+            "KR_LOCATION": {
+              "recall_pp": -5.882352941176472,
+              "precision_pp": -12.5,
+              "f1_pp": -8.901515151515149,
+              "false_negative_count_difference": 1,
+              "gold_count_difference": 0
+            },
+            "KR_NHIS": {
+              "recall_pp": 0.0,
+              "precision_pp": -5.833333333333335,
+              "f1_pp": -3.218390804597704,
+              "false_negative_count_difference": 0,
+              "gold_count_difference": 0
+            },
+            "KR_PASSPORT": {
+              "recall_pp": 100.0,
+              "precision_pp": 100.0,
+              "f1_pp": 100.0,
+              "false_negative_count_difference": -14,
+              "gold_count_difference": 0
+            },
+            "KR_PHONE_NUMBER": {
+              "recall_pp": 0.0,
+              "precision_pp": 4.752970606629137,
+              "f1_pp": 2.375371151742467,
+              "false_negative_count_difference": 0,
+              "gold_count_difference": 0
+            },
+            "KR_RRN": {
+              "recall_pp": 17.499999999999993,
+              "precision_pp": 0.0,
+              "f1_pp": 9.845288326300993,
+              "false_negative_count_difference": -7,
+              "gold_count_difference": 0
+            },
+            "KR_VEHICLE_PLATE": {
+              "recall_pp": 87.5,
+              "precision_pp": -6.25,
+              "f1_pp": 81.98529411764706,
+              "false_negative_count_difference": -14,
+              "gold_count_difference": 0
+            },
+            "NRP": {
+              "recall_pp": 6.666666666666665,
+              "precision_pp": -16.666666666666664,
+              "f1_pp": -5.642633228840133,
+              "false_negative_count_difference": -1,
+              "gold_count_difference": 0
+            },
+            "ORGANIZATION": {
+              "recall_pp": 0.0,
+              "precision_pp": -1.411290322580644,
+              "f1_pp": -1.295097132284928,
+              "false_negative_count_difference": 0,
+              "gold_count_difference": 0
+            },
+            "PERSON": {
+              "recall_pp": 0.0,
+              "precision_pp": 38.188405797101446,
+              "f1_pp": 41.14776498145618,
+              "false_negative_count_difference": 0,
+              "gold_count_difference": 0
+            },
+            "PERSONAL_ATTRIBUTE": {
+              "recall_pp": -17.647058823529417,
+              "precision_pp": 10.317460317460315,
+              "f1_pp": -9.429280397022332,
+              "false_negative_count_difference": 3,
+              "gold_count_difference": 0
+            },
+            "URL": {
+              "recall_pp": 0.0,
+              "precision_pp": 12.5,
+              "f1_pp": 6.666666666666665,
+              "false_negative_count_difference": 0,
+              "gold_count_difference": 0
+            },
+            "USERNAME": {
+              "recall_pp": 11.764705882352944,
+              "precision_pp": 25.0,
+              "f1_pp": 18.918918918918916,
+              "false_negative_count_difference": -2,
+              "gold_count_difference": 0
+            }
+          }
+        }
+      },
+      "decision": {
+        "verdict": "replace",
+        "reasons": [],
+        "gates": {
+          "critical_micro_recall_not_below_baseline": true,
+          "overall_f1_not_below_baseline": true,
+          "normal_false_block_increase_within_limit": true,
+          "no_unresolved_critical_type_regression": true,
+          "runtime_memory_latency_integration_accepted": true
+        }
+      },
+      "critical_regressions": []
+    }
+  },
+  "m1_records": {
+    "model_only": {
+      "experiment_id": "final-service-m1-v1",
+      "parent_experiment_id": "final-service-m0-v1",
+      "common_baseline_experiment_id": "final-service-m0-v1",
+      "changed_factors": [
+        "model_weights"
+      ],
+      "comparison_mode": "controlled_weights_only",
+      "comparison_condition_id": "condition-sha256:f7fa621863e46ea3b2a8c29894b0273eb1ee6a15a980d15a737ee2992b72e832",
+      "model_repo_revision_or_checkpoint_sha256": "ed2546b8b6a721be18a6a9e644fe6fd423016c7a457b5e30521d85c3d86228a2",
+      "dataset_revision": "authored-service-holdout-v2-r2",
+      "split_and_service_test_version": "service-holdout-v2-r2-frozen",
+      "sample_manifest_sha256": "a1936a858d8cfea593792681e796f5ef50d96c8e9b376745adb732f327030506",
+      "seed": 42,
+      "inference_configuration": {
+        "dataset_sha256": "26c21a0293ff71c49be9d36ee9749c3d85249f545713c24dcb49027758f7db87",
+        "purpose": "final",
+        "labels": [
+          [
+            "KR_RRN",
+            "Korean resident registration number"
+          ],
+          [
+            "CREDIT_CARD",
+            "credit card number"
+          ],
+          [
+            "PERSON",
+            "person"
+          ],
+          [
+            "EMAIL_ADDRESS",
+            "email address"
+          ],
+          [
+            "KR_PHONE_NUMBER",
+            "phone number"
+          ],
+          [
+            "KR_BANK_ACCOUNT",
+            "bank account number"
+          ],
+          [
+            "KR_LOCATION",
+            "address"
+          ],
+          [
+            "DATE_OF_BIRTH",
+            "date of birth"
+          ],
+          [
+            "KR_DRIVER_LICENSE",
+            "driver's license number"
+          ],
+          [
+            "KR_PASSPORT",
+            "passport number"
+          ],
+          [
+            "KR_NHIS",
+            "national health insurance number"
+          ],
+          [
+            "KR_VEHICLE_PLATE",
+            "license plate number"
+          ],
+          [
+            "USERNAME",
+            "username"
+          ],
+          [
+            "PERSONAL_ATTRIBUTE",
+            "personal attribute"
+          ],
+          [
+            "ORGANIZATION",
+            "organization"
+          ],
+          [
+            "URL",
+            "URL"
+          ],
+          [
+            "IP_ADDRESS",
+            "IP address"
+          ],
+          [
+            "NRP",
+            "nationality religious or political group"
+          ]
+        ],
+        "thresholds": {
+          "KR_RRN": 0.5,
+          "CREDIT_CARD": 0.5,
+          "PERSON": 0.5,
+          "EMAIL_ADDRESS": 0.5,
+          "KR_PHONE_NUMBER": 0.5,
+          "KR_BANK_ACCOUNT": 0.5,
+          "KR_LOCATION": 0.5,
+          "DATE_OF_BIRTH": 0.5,
+          "KR_DRIVER_LICENSE": 0.5,
+          "KR_PASSPORT": 0.5,
+          "KR_NHIS": 0.5,
+          "KR_VEHICLE_PLATE": 0.5,
+          "USERNAME": 0.5,
+          "PERSONAL_ATTRIBUTE": 0.5,
+          "ORGANIZATION": 0.5,
+          "URL": 0.5,
+          "IP_ADDRESS": 0.5,
+          "NRP": 0.5
+        },
+        "splitter": "ko_atomic_suffix_v3",
+        "max_words": 384,
+        "max_span": 12,
+        "max_subtokens": 512,
+        "rules": "none",
+        "policy": "B-gateway-one-reinspection-v1",
+        "device": "cuda",
+        "packages": {
+          "torch": "2.10.0",
+          "gliner": "0.2.29",
+          "transformers": "4.57.3",
+          "tokenizers": "0.22.2"
+        },
+        "source_sha256": {
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/run_checkpoint.py": "0ddd3016bce21632adab64b973609077735534c39d89e62425c822443593dad6",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/runner.py": "51c2e711a83cb0cb0fd45ef8d0dc7248a0f739f3dc5ce2737f28e1a9bbf4b2db",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/segmentation/splitters.py": "afdaff308036033b06b3349172b71d56d33131d3e94cd719026eb59c538c9565",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/segmentation/runtime.py": "a121c99d0864e761393521cf5ced7a3851ab3a7916843421a1f56e26c0faaa80",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/metrics.py": "09db72af9f7027f9a39402782352c77f70d2749c6e565dbf23c886a438526827",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/policy_metrics.py": "425ba9823b8fc8813a8f089d6399c8dbcc6402582d5bdb314d5d48ed54cebd3e",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/gateway_metrics.py": "549c9e71c296549eb7eb59aa2fb266c34156b5fcf521549444889f29510177d0",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/experiment_record.py": "ec6ebcf1e6f0625d0ca0c00126ff336df5946881a2d031690046b509360597fe",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/segmentation/coverage_backend.py": "5a4ffe7f958dea90ae6ffb21a69e3c14338ce7a5bed143850d5f91ee046645d9",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/dev/detector/gliner_backend.py": "48619e8444815f9b8caa2a03e53941fee37b1ba50d3fdb496f30ecc97082099f",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/dev/gateway/policy.py": "1ac171985129d045c107751811759abafc279200dd7f34584e411e7e1f4f9710",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/dev/gateway/engine.py": "59d57101e79b7b993a4298898465c565b92e526c0535bd0321eb181264276e3c",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/dev/gateway/secret_rules.py": "575ccb2ce9301addb2168339233dd81c14ee215c2dd5e3afa09069bd233156fd"
+        },
+        "report_mode": "model_only"
+      },
+      "label_mapping_version": "condition-sha256:9a1f3922132beec47fb5d33ded1e0b89d10db25df3894cd298382057ee292626",
+      "metrics_protocol_version": "char_span_exact_v1+B-gateway-one-reinspection-v1",
+      "threshold_version": "condition-sha256:2921c30959aa85f08f666fdd1e5416917c3a269c8f64475e0b64082f0bfe9ea0",
+      "rules_version": "none",
+      "policy_version": "B-gateway-one-reinspection-v1",
+      "chunking_and_overlap_version": "gliner029-word-window-v1+ko_atomic_suffix_v3",
+      "span_postprocessing_version": "B-exact-char-dedup-v1",
+      "started_at_utc": "2026-10-31T15:33:35.102931+00:00",
+      "finished_at_utc": "2026-10-31T15:33:56.047882+00:00",
+      "delta_vs_parent": null,
+      "delta_vs_common_baseline": null,
+      "report_mode": "model_only",
+      "record_schema_version": "1.0",
+      "status": "executed",
+      "overall_precision_recall_f1": {
+        "tp": 383,
+        "fp": 51,
+        "fn": 27,
+        "precision": 0.8824884792626728,
+        "recall": 0.9341463414634147,
+        "f1": 0.9075829383886256
+      },
+      "per_type_precision_recall_f1_and_denominators": {
+        "CREDIT_CARD": {
+          "tp": 46,
+          "fp": 9,
+          "fn": 4,
+          "gold": 50,
+          "predicted": 55,
+          "precision": 0.8363636363636363,
+          "recall": 0.92,
+          "f1": 0.8761904761904762
+        },
+        "DATE_OF_BIRTH": {
+          "tp": 15,
+          "fp": 1,
+          "fn": 1,
+          "gold": 16,
+          "predicted": 16,
+          "precision": 0.9375,
+          "recall": 0.9375,
+          "f1": 0.9375
+        },
+        "EMAIL_ADDRESS": {
+          "tp": 40,
+          "fp": 0,
+          "fn": 0,
+          "gold": 40,
+          "predicted": 40,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "IP_ADDRESS": {
+          "tp": 14,
+          "fp": 0,
+          "fn": 0,
+          "gold": 14,
+          "predicted": 14,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "KR_BANK_ACCOUNT": {
+          "tp": 36,
+          "fp": 0,
+          "fn": 4,
+          "gold": 40,
+          "predicted": 36,
+          "precision": 1.0,
+          "recall": 0.9,
+          "f1": 0.9473684210526315
+        },
+        "KR_DRIVER_LICENSE": {
+          "tp": 13,
+          "fp": 0,
+          "fn": 1,
+          "gold": 14,
+          "predicted": 13,
+          "precision": 1.0,
+          "recall": 0.9285714285714286,
+          "f1": 0.9629629629629629
+        },
+        "KR_LOCATION": {
+          "tp": 14,
+          "fp": 2,
+          "fn": 3,
+          "gold": 17,
+          "predicted": 16,
+          "precision": 0.875,
+          "recall": 0.8235294117647058,
+          "f1": 0.8484848484848485
+        },
+        "KR_NHIS": {
+          "tp": 14,
+          "fp": 2,
+          "fn": 0,
+          "gold": 14,
+          "predicted": 16,
+          "precision": 0.875,
+          "recall": 1.0,
+          "f1": 0.9333333333333333
+        },
+        "KR_PASSPORT": {
+          "tp": 14,
+          "fp": 0,
+          "fn": 0,
+          "gold": 14,
+          "predicted": 14,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "KR_PHONE_NUMBER": {
+          "tp": 38,
+          "fp": 1,
+          "fn": 2,
+          "gold": 40,
+          "predicted": 39,
+          "precision": 0.9743589743589743,
+          "recall": 0.95,
+          "f1": 0.9620253164556962
+        },
+        "KR_RRN": {
+          "tp": 39,
+          "fp": 0,
+          "fn": 1,
+          "gold": 40,
+          "predicted": 39,
+          "precision": 1.0,
+          "recall": 0.975,
+          "f1": 0.9873417721518988
+        },
+        "KR_VEHICLE_PLATE": {
+          "tp": 15,
+          "fp": 1,
+          "fn": 1,
+          "gold": 16,
+          "predicted": 16,
+          "precision": 0.9375,
+          "recall": 0.9375,
+          "f1": 0.9375
+        },
+        "NRP": {
+          "tp": 15,
+          "fp": 3,
+          "fn": 0,
+          "gold": 15,
+          "predicted": 18,
+          "precision": 0.8333333333333334,
+          "recall": 1.0,
+          "f1": 0.9090909090909091
+        },
+        "ORGANIZATION": {
+          "tp": 14,
+          "fp": 18,
+          "fn": 1,
+          "gold": 15,
+          "predicted": 32,
+          "precision": 0.4375,
+          "recall": 0.9333333333333333,
+          "f1": 0.5957446808510638
+        },
+        "PERSON": {
+          "tp": 17,
+          "fp": 13,
+          "fn": 0,
+          "gold": 17,
+          "predicted": 30,
+          "precision": 0.5666666666666667,
+          "recall": 1.0,
+          "f1": 0.723404255319149
+        },
+        "PERSONAL_ATTRIBUTE": {
+          "tp": 8,
+          "fp": 1,
+          "fn": 9,
+          "gold": 17,
+          "predicted": 9,
+          "precision": 0.8888888888888888,
+          "recall": 0.47058823529411764,
+          "f1": 0.6153846153846154
+        },
+        "URL": {
+          "tp": 14,
+          "fp": 0,
+          "fn": 0,
+          "gold": 14,
+          "predicted": 14,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "USERNAME": {
+          "tp": 17,
+          "fp": 0,
+          "fn": 0,
+          "gold": 17,
+          "predicted": 17,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        }
+      },
+      "critical_type_false_negatives_and_gold_counts": {
+        "KR_RRN": {
+          "false_negatives": 1,
+          "gold": 40
+        },
+        "KR_BANK_ACCOUNT": {
+          "false_negatives": 4,
+          "gold": 40
+        },
+        "CREDIT_CARD": {
+          "false_negatives": 4,
+          "gold": 50
+        },
+        "KR_PHONE_NUMBER": {
+          "false_negatives": 2,
+          "gold": 40
+        },
+        "EMAIL_ADDRESS": {
+          "false_negatives": 0,
+          "gold": 40
+        }
+      },
+      "normal_false_block_rate_and_denominator": {
+        "false_blocks": 0,
+        "normal_documents": 100,
+        "rate": 0.0
+      },
+      "execution_evidence": {
+        "purpose": "final",
+        "dataset_sha256": "26c21a0293ff71c49be9d36ee9749c3d85249f545713c24dcb49027758f7db87",
+        "inference_status_counts": {
+          "complete": 300,
+          "incomplete": 0,
+          "error": 0
+        },
+        "runtime_acceptance": true,
+        "b_splitter_adoption": true,
+        "scope": "Stage 8 integrated B-runtime evaluation (ko_atomic_suffix_v3 + KR_RRN & REDACTED guardrails)."
+      }
+    },
+    "model_plus_same_rules": {
+      "experiment_id": "final-service-m1-v1",
+      "parent_experiment_id": "final-service-m0-v1",
+      "common_baseline_experiment_id": "final-service-m0-v1",
+      "changed_factors": [
+        "model_weights"
+      ],
+      "comparison_mode": "controlled_weights_only",
+      "comparison_condition_id": "condition-sha256:ea8caf0b2f8edccb403c968a7352bcbb0a50433cf3ecd796ac12e42c5460c0ce",
+      "model_repo_revision_or_checkpoint_sha256": "ed2546b8b6a721be18a6a9e644fe6fd423016c7a457b5e30521d85c3d86228a2",
+      "dataset_revision": "authored-service-holdout-v2-r2",
+      "split_and_service_test_version": "service-holdout-v2-r2-frozen",
+      "sample_manifest_sha256": "a1936a858d8cfea593792681e796f5ef50d96c8e9b376745adb732f327030506",
+      "seed": 42,
+      "inference_configuration": {
+        "dataset_sha256": "26c21a0293ff71c49be9d36ee9749c3d85249f545713c24dcb49027758f7db87",
+        "purpose": "final",
+        "labels": [
+          [
+            "KR_RRN",
+            "Korean resident registration number"
+          ],
+          [
+            "CREDIT_CARD",
+            "credit card number"
+          ],
+          [
+            "PERSON",
+            "person"
+          ],
+          [
+            "EMAIL_ADDRESS",
+            "email address"
+          ],
+          [
+            "KR_PHONE_NUMBER",
+            "phone number"
+          ],
+          [
+            "KR_BANK_ACCOUNT",
+            "bank account number"
+          ],
+          [
+            "KR_LOCATION",
+            "address"
+          ],
+          [
+            "DATE_OF_BIRTH",
+            "date of birth"
+          ],
+          [
+            "KR_DRIVER_LICENSE",
+            "driver's license number"
+          ],
+          [
+            "KR_PASSPORT",
+            "passport number"
+          ],
+          [
+            "KR_NHIS",
+            "national health insurance number"
+          ],
+          [
+            "KR_VEHICLE_PLATE",
+            "license plate number"
+          ],
+          [
+            "USERNAME",
+            "username"
+          ],
+          [
+            "PERSONAL_ATTRIBUTE",
+            "personal attribute"
+          ],
+          [
+            "ORGANIZATION",
+            "organization"
+          ],
+          [
+            "URL",
+            "URL"
+          ],
+          [
+            "IP_ADDRESS",
+            "IP address"
+          ],
+          [
+            "NRP",
+            "nationality religious or political group"
+          ]
+        ],
+        "thresholds": {
+          "KR_RRN": 0.5,
+          "CREDIT_CARD": 0.5,
+          "PERSON": 0.5,
+          "EMAIL_ADDRESS": 0.5,
+          "KR_PHONE_NUMBER": 0.5,
+          "KR_BANK_ACCOUNT": 0.5,
+          "KR_LOCATION": 0.5,
+          "DATE_OF_BIRTH": 0.5,
+          "KR_DRIVER_LICENSE": 0.5,
+          "KR_PASSPORT": 0.5,
+          "KR_NHIS": 0.5,
+          "KR_VEHICLE_PLATE": 0.5,
+          "USERNAME": 0.5,
+          "PERSONAL_ATTRIBUTE": 0.5,
+          "ORGANIZATION": 0.5,
+          "URL": 0.5,
+          "IP_ADDRESS": 0.5,
+          "NRP": 0.5
+        },
+        "splitter": "ko_atomic_suffix_v3",
+        "max_words": 384,
+        "max_span": 12,
+        "max_subtokens": 512,
+        "rules": "b-secret-rules-v1",
+        "policy": "B-gateway-one-reinspection-v1",
+        "device": "cuda",
+        "packages": {
+          "torch": "2.10.0",
+          "gliner": "0.2.29",
+          "transformers": "4.57.3",
+          "tokenizers": "0.22.2"
+        },
+        "source_sha256": {
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/run_checkpoint.py": "0ddd3016bce21632adab64b973609077735534c39d89e62425c822443593dad6",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/runner.py": "51c2e711a83cb0cb0fd45ef8d0dc7248a0f739f3dc5ce2737f28e1a9bbf4b2db",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/segmentation/splitters.py": "afdaff308036033b06b3349172b71d56d33131d3e94cd719026eb59c538c9565",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/segmentation/runtime.py": "a121c99d0864e761393521cf5ced7a3851ab3a7916843421a1f56e26c0faaa80",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/metrics.py": "09db72af9f7027f9a39402782352c77f70d2749c6e565dbf23c886a438526827",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/policy_metrics.py": "425ba9823b8fc8813a8f089d6399c8dbcc6402582d5bdb314d5d48ed54cebd3e",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/gateway_metrics.py": "549c9e71c296549eb7eb59aa2fb266c34156b5fcf521549444889f29510177d0",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/evaluation/experiment_record.py": "ec6ebcf1e6f0625d0ca0c00126ff336df5946881a2d031690046b509360597fe",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/model/segmentation/coverage_backend.py": "5a4ffe7f958dea90ae6ffb21a69e3c14338ce7a5bed143850d5f91ee046645d9",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/dev/detector/gliner_backend.py": "48619e8444815f9b8caa2a03e53941fee37b1ba50d3fdb496f30ecc97082099f",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/dev/gateway/policy.py": "1ac171985129d045c107751811759abafc279200dd7f34584e411e7e1f4f9710",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/dev/gateway/engine.py": "59d57101e79b7b993a4298898465c565b92e526c0535bd0321eb181264276e3c",
+          "/home1/ncloud/stage7_5_20261031_codex_v5/dev/gateway/secret_rules.py": "575ccb2ce9301addb2168339233dd81c14ee215c2dd5e3afa09069bd233156fd"
+        },
+        "report_mode": "model_plus_same_rules"
+      },
+      "label_mapping_version": "condition-sha256:9a1f3922132beec47fb5d33ded1e0b89d10db25df3894cd298382057ee292626",
+      "metrics_protocol_version": "char_span_exact_v1+B-gateway-one-reinspection-v1",
+      "threshold_version": "condition-sha256:2921c30959aa85f08f666fdd1e5416917c3a269c8f64475e0b64082f0bfe9ea0",
+      "rules_version": "b-secret-rules-v1",
+      "policy_version": "B-gateway-one-reinspection-v1",
+      "chunking_and_overlap_version": "gliner029-word-window-v1+ko_atomic_suffix_v3",
+      "span_postprocessing_version": "B-exact-char-dedup-v1",
+      "started_at_utc": "2026-10-31T15:33:35.102931+00:00",
+      "finished_at_utc": "2026-10-31T15:33:56.047882+00:00",
+      "delta_vs_parent": null,
+      "delta_vs_common_baseline": null,
+      "report_mode": "model_plus_same_rules",
+      "record_schema_version": "1.0",
+      "status": "executed",
+      "overall_precision_recall_f1": {
+        "tp": 383,
+        "fp": 51,
+        "fn": 27,
+        "precision": 0.8824884792626728,
+        "recall": 0.9341463414634147,
+        "f1": 0.9075829383886256
+      },
+      "per_type_precision_recall_f1_and_denominators": {
+        "CREDIT_CARD": {
+          "tp": 46,
+          "fp": 9,
+          "fn": 4,
+          "gold": 50,
+          "predicted": 55,
+          "precision": 0.8363636363636363,
+          "recall": 0.92,
+          "f1": 0.8761904761904762
+        },
+        "DATE_OF_BIRTH": {
+          "tp": 15,
+          "fp": 1,
+          "fn": 1,
+          "gold": 16,
+          "predicted": 16,
+          "precision": 0.9375,
+          "recall": 0.9375,
+          "f1": 0.9375
+        },
+        "EMAIL_ADDRESS": {
+          "tp": 40,
+          "fp": 0,
+          "fn": 0,
+          "gold": 40,
+          "predicted": 40,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "IP_ADDRESS": {
+          "tp": 14,
+          "fp": 0,
+          "fn": 0,
+          "gold": 14,
+          "predicted": 14,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "KR_BANK_ACCOUNT": {
+          "tp": 36,
+          "fp": 0,
+          "fn": 4,
+          "gold": 40,
+          "predicted": 36,
+          "precision": 1.0,
+          "recall": 0.9,
+          "f1": 0.9473684210526315
+        },
+        "KR_DRIVER_LICENSE": {
+          "tp": 13,
+          "fp": 0,
+          "fn": 1,
+          "gold": 14,
+          "predicted": 13,
+          "precision": 1.0,
+          "recall": 0.9285714285714286,
+          "f1": 0.9629629629629629
+        },
+        "KR_LOCATION": {
+          "tp": 14,
+          "fp": 2,
+          "fn": 3,
+          "gold": 17,
+          "predicted": 16,
+          "precision": 0.875,
+          "recall": 0.8235294117647058,
+          "f1": 0.8484848484848485
+        },
+        "KR_NHIS": {
+          "tp": 14,
+          "fp": 2,
+          "fn": 0,
+          "gold": 14,
+          "predicted": 16,
+          "precision": 0.875,
+          "recall": 1.0,
+          "f1": 0.9333333333333333
+        },
+        "KR_PASSPORT": {
+          "tp": 14,
+          "fp": 0,
+          "fn": 0,
+          "gold": 14,
+          "predicted": 14,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "KR_PHONE_NUMBER": {
+          "tp": 38,
+          "fp": 1,
+          "fn": 2,
+          "gold": 40,
+          "predicted": 39,
+          "precision": 0.9743589743589743,
+          "recall": 0.95,
+          "f1": 0.9620253164556962
+        },
+        "KR_RRN": {
+          "tp": 39,
+          "fp": 0,
+          "fn": 1,
+          "gold": 40,
+          "predicted": 39,
+          "precision": 1.0,
+          "recall": 0.975,
+          "f1": 0.9873417721518988
+        },
+        "KR_VEHICLE_PLATE": {
+          "tp": 15,
+          "fp": 1,
+          "fn": 1,
+          "gold": 16,
+          "predicted": 16,
+          "precision": 0.9375,
+          "recall": 0.9375,
+          "f1": 0.9375
+        },
+        "NRP": {
+          "tp": 15,
+          "fp": 3,
+          "fn": 0,
+          "gold": 15,
+          "predicted": 18,
+          "precision": 0.8333333333333334,
+          "recall": 1.0,
+          "f1": 0.9090909090909091
+        },
+        "ORGANIZATION": {
+          "tp": 14,
+          "fp": 18,
+          "fn": 1,
+          "gold": 15,
+          "predicted": 32,
+          "precision": 0.4375,
+          "recall": 0.9333333333333333,
+          "f1": 0.5957446808510638
+        },
+        "PERSON": {
+          "tp": 17,
+          "fp": 13,
+          "fn": 0,
+          "gold": 17,
+          "predicted": 30,
+          "precision": 0.5666666666666667,
+          "recall": 1.0,
+          "f1": 0.723404255319149
+        },
+        "PERSONAL_ATTRIBUTE": {
+          "tp": 8,
+          "fp": 1,
+          "fn": 9,
+          "gold": 17,
+          "predicted": 9,
+          "precision": 0.8888888888888888,
+          "recall": 0.47058823529411764,
+          "f1": 0.6153846153846154
+        },
+        "URL": {
+          "tp": 14,
+          "fp": 0,
+          "fn": 0,
+          "gold": 14,
+          "predicted": 14,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "USERNAME": {
+          "tp": 17,
+          "fp": 0,
+          "fn": 0,
+          "gold": 17,
+          "predicted": 17,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        }
+      },
+      "critical_type_false_negatives_and_gold_counts": {
+        "KR_RRN": {
+          "false_negatives": 1,
+          "gold": 40
+        },
+        "KR_BANK_ACCOUNT": {
+          "false_negatives": 4,
+          "gold": 40
+        },
+        "CREDIT_CARD": {
+          "false_negatives": 4,
+          "gold": 50
+        },
+        "KR_PHONE_NUMBER": {
+          "false_negatives": 2,
+          "gold": 40
+        },
+        "EMAIL_ADDRESS": {
+          "false_negatives": 0,
+          "gold": 40
+        }
+      },
+      "normal_false_block_rate_and_denominator": {
+        "false_blocks": 0,
+        "normal_documents": 100,
+        "rate": 0.0
+      },
+      "execution_evidence": {
+        "purpose": "final",
+        "dataset_sha256": "26c21a0293ff71c49be9d36ee9749c3d85249f545713c24dcb49027758f7db87",
+        "inference_status_counts": {
+          "complete": 300,
+          "incomplete": 0,
+          "error": 0
+        },
+        "runtime_acceptance": true,
+        "b_splitter_adoption": true,
+        "scope": "Stage 8 integrated B-runtime evaluation (ko_atomic_suffix_v3 + KR_RRN & REDACTED guardrails)."
+      }
+    }
+  },
+  "stage8_runtime_acceptance": {
+    "device": "cuda",
+    "gpu_name": "NVIDIA L4",
+    "lifecycle": {
+      "m0_init_ms": 17743.048,
+      "m0_to_m1_replace_ms": 10161.852,
+      "m1_to_m0_rollback_ms": 11988.529,
+      "m0_to_m1_reactivate_ms": 9849.115,
+      "rollback_verified": true,
+      "reactivate_verified": true,
+      "active_model_version": "M1-gliner_multi_pii-ko-v1-ckpt1262"
+    },
+    "memory": {
+      "rss_mb": 4166.15,
+      "m0_gpu": {
+        "allocated_mb": 1112.38,
+        "reserved_mb": 1186.0,
+        "max_allocated_mb": 1134.61
+      },
+      "m1_gpu_after_replace": {
+        "allocated_mb": 1112.37,
+        "reserved_mb": 2324.0,
+        "max_allocated_mb": 2237.86
+      },
+      "m1_gpu_post_benchmark": {
+        "allocated_mb": 1122.49,
+        "reserved_mb": 2332.0,
+        "max_allocated_mb": 2240.34
+      }
+    },
+    "gateway_latency_concurrency_1": {
+      "le_2000_codepoints": {
+        "count": 300,
+        "mean_ms": 42.273,
+        "p50_ms": 28.468,
+        "p90_ms": 51.148,
+        "p95_ms": 98.456,
+        "p99_ms": 194.195,
+        "max_ms": 194.716
+      },
+      "all_300_holdout_docs": {
+        "count": 300,
+        "mean_ms": 42.273,
+        "p50_ms": 28.468,
+        "p90_ms": 51.148,
+        "p95_ms": 98.456,
+        "p99_ms": 194.195,
+        "max_ms": 194.716
+      },
+      "sla_p95_limit_ms": 500.0,
+      "sla_p95_passed": true
+    },
+    "gateway_actions_on_holdout": {
+      "block": 81,
+      "mask": 120,
+      "allow": 98,
+      "error": 1
+    },
+    "audit_journal_verification": {
+      "journal_file_bytes": 442368,
+      "raw_pii_leak_count": 0,
+      "zero_leak_verified": true
+    },
+    "runtime_acceptance": true,
+    "b_splitter_adoption": true
+  }
+}

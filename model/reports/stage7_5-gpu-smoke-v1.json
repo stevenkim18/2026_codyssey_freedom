@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0",
+  "scope": "Actual GPU loading and complete coverage on 8 synthetic fixtures, no quality score or model selection.",
+  "runs": [
+    {
+      "experiment_id": "m0-smoke-v1",
+      "status": "executed",
+      "condition_id": "condition-sha256:46addbb88f575979e8a8c73df49e97c20ade6688a16c216de135ee0fa6d9f704",
+      "inference_status_counts": {
+        "complete": 8,
+        "incomplete": 0,
+        "error": 0
+      },
+      "artifacts_sha256": {
+        "pytorch_model.bin": "3003753fba99e40645cf088c7367a2c6211fc174897dc64f1f9c147c29d18d2d",
+        "gliner_config.json": "05b9a8b4e474e519fd0e57648a6c9fab2403fea936003af4993a2d15c3135370",
+        "tokenizer_config.json": "5249d6f991d952e10fe49794576e8566aa5f5c82226ab4c9d8f3f78462a8d007",
+        "spm.model": "13c8d666d62a7bc4ac8f040aab68e942c861f93303156cc28f5c7e885d86d6e3",
+        "config.json": "bcffcd343dc5efa5ef2d5a58d2b405eed108f01cc45b48d0a907b333ec41801f"
+      },
+      "scope": "Actual pipeline loading/coverage only; no gold and no quality score."
+    },
+    {
+      "experiment_id": "m1-epoch1-smoke-v1",
+      "status": "executed",
+      "condition_id": "condition-sha256:46addbb88f575979e8a8c73df49e97c20ade6688a16c216de135ee0fa6d9f704",
+      "inference_status_counts": {
+        "complete": 8,
+        "incomplete": 0,
+        "error": 0
+      },
+      "artifacts_sha256": {
+        "model.safetensors": "11d9c46e79d9198d55b276c9a511cd3b349717897f9c43eb018484f425c3e763",
+        "gliner_config.json": "5933c2407deaf51bdf7cbdebff5a0fceb014ec223e50019e67b6f69000444f96",
+        "tokenizer_config.json": "9d3a9e5b184d44b2cb2f14af3e7cf57b788e674ce17768b688c4473a1c2e71f5",
+        "spm.model": "13c8d666d62a7bc4ac8f040aab68e942c861f93303156cc28f5c7e885d86d6e3",
+        "tokenizer.json": "87208f39b9e81f180629d45da55d7a24cf1e011884552d6d5096c92e0a639d39",
+        "added_tokens.json": "030e747c4ca7992a3ac794c6fda9919352c88ae722e85178217cd083b450078d",
+        "special_tokens_map.json": "9463f61e1b109a8eb4688b829260d7c6b1e6dff04c98ff7269bb89e2b92369b9"
+      },
+      "scope": "Actual pipeline loading/coverage only; no gold and no quality score."
+    },
+    {
+      "experiment_id": "m1-epoch2-smoke-v1",
+      "status": "executed",
+      "condition_id": "condition-sha256:46addbb88f575979e8a8c73df49e97c20ade6688a16c216de135ee0fa6d9f704",
+      "inference_status_counts": {
+        "complete": 8,
+        "incomplete": 0,
+        "error": 0
+      },
+      "artifacts_sha256": {
+        "model.safetensors": "ed2546b8b6a721be18a6a9e644fe6fd423016c7a457b5e30521d85c3d86228a2",
+        "gliner_config.json": "5933c2407deaf51bdf7cbdebff5a0fceb014ec223e50019e67b6f69000444f96",
+        "tokenizer_config.json": "9d3a9e5b184d44b2cb2f14af3e7cf57b788e674ce17768b688c4473a1c2e71f5",
+        "spm.model": "13c8d666d62a7bc4ac8f040aab68e942c861f93303156cc28f5c7e885d86d6e3",
+        "tokenizer.json": "87208f39b9e81f180629d45da55d7a24cf1e011884552d6d5096c92e0a639d39",
+        "added_tokens.json": "030e747c4ca7992a3ac794c6fda9919352c88ae722e85178217cd083b450078d",
+        "special_tokens_map.json": "9463f61e1b109a8eb4688b829260d7c6b1e6dff04c98ff7269bb89e2b92369b9"
+      },
+      "scope": "Actual pipeline loading/coverage only; no gold and no quality score."
+    },
+    {
+      "experiment_id": "m1-final-smoke-v1",
+      "status": "executed",
+      "condition_id": "condition-sha256:46addbb88f575979e8a8c73df49e97c20ade6688a16c216de135ee0fa6d9f704",
+      "inference_status_counts": {
+        "complete": 8,
+        "incomplete": 0,
+        "error": 0
+      },
+      "artifacts_sha256": {
+        "pytorch_model.bin": "099ac5d30880b52abaf26d0bbffc6e868e55f1f8b64d1e437ee793f9a5865fba",
+        "gliner_config.json": "5933c2407deaf51bdf7cbdebff5a0fceb014ec223e50019e67b6f69000444f96",
+        "tokenizer_config.json": "5249d6f991d952e10fe49794576e8566aa5f5c82226ab4c9d8f3f78462a8d007",
+        "spm.model": "13c8d666d62a7bc4ac8f040aab68e942c861f93303156cc28f5c7e885d86d6e3",
+        "tokenizer.json": "87208f39b9e81f180629d45da55d7a24cf1e011884552d6d5096c92e0a639d39",
+        "added_tokens.json": "030e747c4ca7992a3ac794c6fda9919352c88ae722e85178217cd083b450078d",
+        "special_tokens_map.json": "9463f61e1b109a8eb4688b829260d7c6b1e6dff04c98ff7269bb89e2b92369b9"
+      },
+      "scope": "Actual pipeline loading/coverage only; no gold and no quality score."
+    }
+  ],
+  "same_controlled_conditions": true,
+  "B_adoption": false,
+  "runtime_acceptance": null,
+  "final_test_used": false,
+  "dev_selection_performed": false
+}

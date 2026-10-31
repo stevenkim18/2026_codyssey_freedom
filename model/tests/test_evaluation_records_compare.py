@@ -120,6 +120,14 @@ class CompareTest(unittest.TestCase):
 
 
 class ReplacementTest(unittest.TestCase):
+    def test_measured_dev_or_regression_is_not_promoted_to_final(self):
+        candidate,baseline=make('m1',hits=27),make('m0',hits=24)
+        candidate['execution_evidence']={'purpose':'dev'}
+        baseline['execution_evidence']={'purpose':'dev'}
+        result=replacement_decision(candidate,baseline,runtime_acceptance=True)
+        self.assertEqual(result['verdict'],'pending')
+        self.assertIn('final_evaluation_not_recorded',result['reasons'])
+
     def test_all_gates_but_runtime_acceptance_pending(self):
         d = replacement_decision(make('m1', hits=27), make('m0', hits=24))
         self.assertEqual(d['verdict'], 'pending_runtime_acceptance')

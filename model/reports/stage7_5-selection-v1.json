@@ -1,0 +1,2260 @@
+{
+  "schema_version": "1.0",
+  "selected_at_utc": "2026-10-31T15:27:00.492191+00:00",
+  "selection_split": "dev_only",
+  "holdout_sha256": "26c21a0293ff71c49be9d36ee9749c3d85249f545713c24dcb49027758f7db87",
+  "plan_sha256": "541b9f72bbf4fbad0381602f1197cb4360892b6d7b2ec28edbb7abf907171f24",
+  "source_result_sha256": {
+    "/home1/ncloud/stage7_5_20261031_codex_v3/runs/dev-m0-v1/result.json": "1e7ca80584d30f2bbb10dcea2f721b518f7fa0b1ddc0b1c5881e2f7e51bbee22",
+    "/home1/ncloud/stage7_5_20261031_codex_v3/runs/dev-m1-epoch1-v1/result.json": "5fbad316f56ccc13dc27f1ef299cf9e9c7a0238ef629de354f6d7e1a323ec880",
+    "/home1/ncloud/stage7_5_20261031_codex_v3/runs/dev-m1-epoch2-v1/result.json": "a650405b8d4733f12c14db9d7a508e974008bc8c188691e9ed55df99ef2f62f7"
+  },
+  "selected": {
+    "threshold": 0.5,
+    "m0_model_dir": "/home1/ncloud/b-gpu-trial-3c76ce4d6f8a4525a2f4bb3072ccd671/models/49a065fb3f08ca1291b56c514ec0dd6f11d906890d2d60d1d8c79b22800775c0",
+    "m0_weights_sha256": "3003753fba99e40645cf088c7367a2c6211fc174897dc64f1f9c147c29d18d2d",
+    "m1_model_dir": "/home1/ncloud/m1_checkpoints/checkpoint-1262",
+    "m1_weights_sha256": "ed2546b8b6a721be18a6a9e644fe6fd423016c7a457b5e30521d85c3d86228a2",
+    "m1_experiment_id": "dev-m1-epoch2-v1",
+    "epoch_index": 2,
+    "dev_eligible": false,
+    "dev_gates": {
+      "overall_f1": true,
+      "critical_recall": true,
+      "normal_failure_increase": false,
+      "recall:KR_RRN": true,
+      "recall:KR_BANK_ACCOUNT": true,
+      "recall:CREDIT_CARD": true,
+      "recall:KR_PHONE_NUMBER": true,
+      "recall:EMAIL_ADDRESS": true
+    }
+  },
+  "pairs": [
+    {
+      "candidate_experiment_id": "dev-m1-epoch1-v1",
+      "epoch_index": 1,
+      "threshold": 0.35,
+      "gates": {
+        "overall_f1": true,
+        "critical_recall": true,
+        "normal_failure_increase": false,
+        "recall:KR_RRN": true,
+        "recall:KR_BANK_ACCOUNT": true,
+        "recall:CREDIT_CARD": true,
+        "recall:KR_PHONE_NUMBER": true,
+        "recall:EMAIL_ADDRESS": true
+      },
+      "eligible": false,
+      "rank": [
+        0.6104466925187333,
+        0.9610761237034953,
+        0.9999782651220414,
+        -0.05,
+        -0.35,
+        -1
+      ],
+      "m0": {
+        "threshold": 0.35,
+        "overall": {
+          "tp": 86109,
+          "fp": 72490,
+          "fn": 37410,
+          "gold": 123519,
+          "predicted": 158599,
+          "precision": 0.5429353274610811,
+          "recall": 0.6971316153790105,
+          "f1": 0.6104466925187333
+        },
+        "critical": {
+          "tp": 35744,
+          "fp": 6357,
+          "fn": 10265,
+          "gold": 46009,
+          "predicted": 42101,
+          "types": [
+            "KR_RRN",
+            "KR_BANK_ACCOUNT",
+            "CREDIT_CARD",
+            "KR_PHONE_NUMBER",
+            "EMAIL_ADDRESS"
+          ],
+          "precision": 0.8490059618536376,
+          "recall": 0.7768914777543524,
+          "f1": 0.8113494495516967
+        },
+        "normal_failure": {
+          "false_blocks": 0,
+          "normal_documents": 200,
+          "explicit_blocks": 0,
+          "fail_closed_errors": 0,
+          "reinspection_failures": 0,
+          "rate": 0.0,
+          "wilson_95": {
+            "low": 0.0,
+            "high": 0.018845326668962936,
+            "method": "wilson",
+            "z": 1.959964
+          },
+          "definition": "normal documents not forwarded due to block OR error; differs from v1 block-only"
+        },
+        "per_critical": {
+          "KR_RRN": {
+            "tp": 9854,
+            "fp": 2642,
+            "fn": 9079,
+            "gold": 18933,
+            "predicted": 12496,
+            "precision": 0.788572343149808,
+            "recall": 0.5204669096286907,
+            "f1": 0.6270641763975946,
+            "recall_wilson_95": {
+              "low": 0.5133473425579508,
+              "high": 0.5275781730135244,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_BANK_ACCOUNT": {
+            "tp": 5144,
+            "fp": 1317,
+            "fn": 1149,
+            "gold": 6293,
+            "predicted": 6461,
+            "precision": 0.7961615848939793,
+            "recall": 0.8174161767042746,
+            "f1": 0.8066488944644817,
+            "recall_wilson_95": {
+              "low": 0.8076785672878095,
+              "high": 0.8267664995107686,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "CREDIT_CARD": {
+            "tp": 2909,
+            "fp": 590,
+            "fn": 7,
+            "gold": 2916,
+            "predicted": 3499,
+            "precision": 0.8313803943983995,
+            "recall": 0.997599451303155,
+            "f1": 0.9069368667186282,
+            "recall_wilson_95": {
+              "low": 0.9950528973660565,
+              "high": 0.9988366822112772,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_PHONE_NUMBER": {
+            "tp": 8048,
+            "fp": 1151,
+            "fn": 15,
+            "gold": 8063,
+            "predicted": 9199,
+            "precision": 0.8748777040982716,
+            "recall": 0.9981396502542478,
+            "f1": 0.932452786467385,
+            "recall_wilson_95": {
+              "low": 0.9969326258682047,
+              "high": 0.9988722428584469,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "EMAIL_ADDRESS": {
+            "tp": 9789,
+            "fp": 657,
+            "fn": 15,
+            "gold": 9804,
+            "predicted": 10446,
+            "precision": 0.937105112004595,
+            "recall": 0.9984700122399021,
+            "f1": 0.9668148148148148,
+            "recall_wilson_95": {
+              "low": 0.9974769945605256,
+              "high": 0.9990725562225723,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          }
+        }
+      },
+      "m1": {
+        "threshold": 0.35,
+        "overall": {
+          "tp": 121246,
+          "fp": 7548,
+          "fn": 2273,
+          "gold": 123519,
+          "predicted": 128794,
+          "precision": 0.9413947854713729,
+          "recall": 0.9815979727815154,
+          "f1": 0.9610761237034953
+        },
+        "critical": {
+          "tp": 46008,
+          "fp": 1840,
+          "fn": 1,
+          "gold": 46009,
+          "predicted": 47848,
+          "types": [
+            "KR_RRN",
+            "KR_BANK_ACCOUNT",
+            "CREDIT_CARD",
+            "KR_PHONE_NUMBER",
+            "EMAIL_ADDRESS"
+          ],
+          "precision": 0.9615448921585019,
+          "recall": 0.9999782651220414,
+          "f1": 0.9803850538585295
+        },
+        "normal_failure": {
+          "false_blocks": 10,
+          "normal_documents": 200,
+          "explicit_blocks": 10,
+          "fail_closed_errors": 0,
+          "reinspection_failures": 0,
+          "rate": 0.05,
+          "wilson_95": {
+            "low": 0.027382645473457017,
+            "high": 0.08957814852860962,
+            "method": "wilson",
+            "z": 1.959964
+          },
+          "definition": "normal documents not forwarded due to block OR error; differs from v1 block-only"
+        },
+        "per_critical": {
+          "KR_RRN": {
+            "tp": 18932,
+            "fp": 361,
+            "fn": 1,
+            "gold": 18933,
+            "predicted": 19293,
+            "precision": 0.9812885502513865,
+            "recall": 0.9999471821687002,
+            "f1": 0.9905300057552451,
+            "recall_wilson_95": {
+              "low": 0.9997008531030903,
+              "high": 0.9999906762950949,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_BANK_ACCOUNT": {
+            "tp": 6293,
+            "fp": 928,
+            "fn": 0,
+            "gold": 6293,
+            "predicted": 7221,
+            "precision": 0.8714859437751004,
+            "recall": 1.0,
+            "f1": 0.9313304721030042,
+            "recall_wilson_95": {
+              "low": 0.9993899387643186,
+              "high": 1.0,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "CREDIT_CARD": {
+            "tp": 2916,
+            "fp": 0,
+            "fn": 0,
+            "gold": 2916,
+            "predicted": 2916,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "recall_wilson_95": {
+              "low": 0.998684360457445,
+              "high": 1.0,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_PHONE_NUMBER": {
+            "tp": 8063,
+            "fp": 551,
+            "fn": 0,
+            "gold": 8063,
+            "predicted": 8614,
+            "precision": 0.9360343626654284,
+            "recall": 1.0,
+            "f1": 0.9669604844996103,
+            "recall_wilson_95": {
+              "low": 0.9995237964076923,
+              "high": 0.9999999999999999,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "EMAIL_ADDRESS": {
+            "tp": 9804,
+            "fp": 0,
+            "fn": 0,
+            "gold": 9804,
+            "predicted": 9804,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "recall_wilson_95": {
+              "low": 0.9996083277959374,
+              "high": 0.9999999999999999,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          }
+        }
+      }
+    },
+    {
+      "candidate_experiment_id": "dev-m1-epoch1-v1",
+      "epoch_index": 1,
+      "threshold": 0.5,
+      "gates": {
+        "overall_f1": true,
+        "critical_recall": true,
+        "normal_failure_increase": false,
+        "recall:KR_RRN": true,
+        "recall:KR_BANK_ACCOUNT": true,
+        "recall:CREDIT_CARD": true,
+        "recall:KR_PHONE_NUMBER": true,
+        "recall:EMAIL_ADDRESS": true
+      },
+      "eligible": false,
+      "rank": [
+        0.6300469989154096,
+        0.9632361122148931,
+        0.9999565302440827,
+        -0.05,
+        -0.5,
+        -1
+      ],
+      "m0": {
+        "threshold": 0.5,
+        "overall": {
+          "tp": 81908,
+          "fp": 54579,
+          "fn": 41611,
+          "gold": 123519,
+          "predicted": 136487,
+          "precision": 0.6001157619406976,
+          "recall": 0.6631206535027,
+          "f1": 0.6300469989154096
+        },
+        "critical": {
+          "tp": 34373,
+          "fp": 2886,
+          "fn": 11636,
+          "gold": 46009,
+          "predicted": 37259,
+          "types": [
+            "KR_RRN",
+            "KR_BANK_ACCOUNT",
+            "CREDIT_CARD",
+            "KR_PHONE_NUMBER",
+            "EMAIL_ADDRESS"
+          ],
+          "precision": 0.9225422045680238,
+          "recall": 0.7470929600730292,
+          "f1": 0.8255992698275448
+        },
+        "normal_failure": {
+          "false_blocks": 0,
+          "normal_documents": 200,
+          "explicit_blocks": 0,
+          "fail_closed_errors": 0,
+          "reinspection_failures": 0,
+          "rate": 0.0,
+          "wilson_95": {
+            "low": 0.0,
+            "high": 0.018845326668962936,
+            "method": "wilson",
+            "z": 1.959964
+          },
+          "definition": "normal documents not forwarded due to block OR error; differs from v1 block-only"
+        },
+        "per_critical": {
+          "KR_RRN": {
+            "tp": 8632,
+            "fp": 162,
+            "fn": 10301,
+            "gold": 18933,
+            "predicted": 8794,
+            "precision": 0.9815783488742325,
+            "recall": 0.45592351978027784,
+            "f1": 0.6226421899231795,
+            "recall_wilson_95": {
+              "low": 0.44883879650769143,
+              "high": 0.46302612544225463,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_BANK_ACCOUNT": {
+            "tp": 5144,
+            "fp": 634,
+            "fn": 1149,
+            "gold": 6293,
+            "predicted": 5778,
+            "precision": 0.8902734510211145,
+            "recall": 0.8174161767042746,
+            "f1": 0.852290613867948,
+            "recall_wilson_95": {
+              "low": 0.8076785672878095,
+              "high": 0.8267664995107686,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "CREDIT_CARD": {
+            "tp": 2898,
+            "fp": 589,
+            "fn": 18,
+            "gold": 2916,
+            "predicted": 3487,
+            "precision": 0.8310868941783768,
+            "recall": 0.9938271604938271,
+            "f1": 0.9052006871778854,
+            "recall_wilson_95": {
+              "low": 0.9902631509077015,
+              "high": 0.9960917730008861,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_PHONE_NUMBER": {
+            "tp": 8028,
+            "fp": 922,
+            "fn": 35,
+            "gold": 8063,
+            "predicted": 8950,
+            "precision": 0.8969832402234637,
+            "recall": 0.9956591839265782,
+            "f1": 0.9437488979016047,
+            "recall_wilson_95": {
+              "low": 0.9939692401581843,
+              "high": 0.9968770583270796,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "EMAIL_ADDRESS": {
+            "tp": 9671,
+            "fp": 579,
+            "fn": 133,
+            "gold": 9804,
+            "predicted": 10250,
+            "precision": 0.9435121951219512,
+            "recall": 0.9864341085271318,
+            "f1": 0.964495861174828,
+            "recall_wilson_95": {
+              "low": 0.9839462828786291,
+              "high": 0.9885408887367982,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          }
+        }
+      },
+      "m1": {
+        "threshold": 0.5,
+        "overall": {
+          "tp": 121204,
+          "fp": 6937,
+          "fn": 2315,
+          "gold": 123519,
+          "predicted": 128141,
+          "precision": 0.945864321333531,
+          "recall": 0.981257944121957,
+          "f1": 0.9632361122148931
+        },
+        "critical": {
+          "tp": 46007,
+          "fp": 1737,
+          "fn": 2,
+          "gold": 46009,
+          "predicted": 47744,
+          "types": [
+            "KR_RRN",
+            "KR_BANK_ACCOUNT",
+            "CREDIT_CARD",
+            "KR_PHONE_NUMBER",
+            "EMAIL_ADDRESS"
+          ],
+          "precision": 0.9636184651474531,
+          "recall": 0.9999565302440827,
+          "f1": 0.9814512602263394
+        },
+        "normal_failure": {
+          "false_blocks": 10,
+          "normal_documents": 200,
+          "explicit_blocks": 10,
+          "fail_closed_errors": 0,
+          "reinspection_failures": 0,
+          "rate": 0.05,
+          "wilson_95": {
+            "low": 0.027382645473457017,
+            "high": 0.08957814852860962,
+            "method": "wilson",
+            "z": 1.959964
+          },
+          "definition": "normal documents not forwarded due to block OR error; differs from v1 block-only"
+        },
+        "per_critical": {
+          "KR_RRN": {
+            "tp": 18931,
+            "fp": 316,
+            "fn": 2,
+            "gold": 18933,
+            "predicted": 19247,
+            "precision": 0.9835818569127657,
+            "recall": 0.9998943643374003,
+            "f1": 0.9916710319539026,
+            "recall_wilson_95": {
+              "low": 0.9996148847510661,
+              "high": 0.9999710304133861,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_BANK_ACCOUNT": {
+            "tp": 6293,
+            "fp": 891,
+            "fn": 0,
+            "gold": 6293,
+            "predicted": 7184,
+            "precision": 0.8759743875278396,
+            "recall": 1.0,
+            "f1": 0.9338873636566002,
+            "recall_wilson_95": {
+              "low": 0.9993899387643186,
+              "high": 1.0,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "CREDIT_CARD": {
+            "tp": 2916,
+            "fp": 0,
+            "fn": 0,
+            "gold": 2916,
+            "predicted": 2916,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "recall_wilson_95": {
+              "low": 0.998684360457445,
+              "high": 1.0,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_PHONE_NUMBER": {
+            "tp": 8063,
+            "fp": 530,
+            "fn": 0,
+            "gold": 8063,
+            "predicted": 8593,
+            "precision": 0.9383218899103922,
+            "recall": 1.0,
+            "f1": 0.9681796349663785,
+            "recall_wilson_95": {
+              "low": 0.9995237964076923,
+              "high": 0.9999999999999999,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "EMAIL_ADDRESS": {
+            "tp": 9804,
+            "fp": 0,
+            "fn": 0,
+            "gold": 9804,
+            "predicted": 9804,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "recall_wilson_95": {
+              "low": 0.9996083277959374,
+              "high": 0.9999999999999999,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          }
+        }
+      }
+    },
+    {
+      "candidate_experiment_id": "dev-m1-epoch1-v1",
+      "epoch_index": 1,
+      "threshold": 0.65,
+      "gates": {
+        "overall_f1": true,
+        "critical_recall": true,
+        "normal_failure_increase": false,
+        "recall:KR_RRN": true,
+        "recall:KR_BANK_ACCOUNT": true,
+        "recall:CREDIT_CARD": true,
+        "recall:KR_PHONE_NUMBER": true,
+        "recall:EMAIL_ADDRESS": true
+      },
+      "eligible": false,
+      "rank": [
+        0.6190119328990603,
+        0.9644837344817841,
+        0.9999130604881653,
+        -0.05,
+        -0.65,
+        -1
+      ],
+      "m0": {
+        "threshold": 0.65,
+        "overall": {
+          "tp": 75166,
+          "fp": 44173,
+          "fn": 48353,
+          "gold": 123519,
+          "predicted": 119339,
+          "precision": 0.6298527723543854,
+          "recall": 0.6085379577231034,
+          "f1": 0.6190119328990603
+        },
+        "critical": {
+          "tp": 31089,
+          "fp": 2389,
+          "fn": 14920,
+          "gold": 46009,
+          "predicted": 33478,
+          "types": [
+            "KR_RRN",
+            "KR_BANK_ACCOUNT",
+            "CREDIT_CARD",
+            "KR_PHONE_NUMBER",
+            "EMAIL_ADDRESS"
+          ],
+          "precision": 0.9286397036860028,
+          "recall": 0.6757156208567889,
+          "f1": 0.7822411211896285
+        },
+        "normal_failure": {
+          "false_blocks": 0,
+          "normal_documents": 200,
+          "explicit_blocks": 0,
+          "fail_closed_errors": 0,
+          "reinspection_failures": 0,
+          "rate": 0.0,
+          "wilson_95": {
+            "low": 0.0,
+            "high": 0.018845326668962936,
+            "method": "wilson",
+            "z": 1.959964
+          },
+          "definition": "normal documents not forwarded due to block OR error; differs from v1 block-only"
+        },
+        "per_critical": {
+          "KR_RRN": {
+            "tp": 5586,
+            "fp": 57,
+            "fn": 13347,
+            "gold": 18933,
+            "predicted": 5643,
+            "precision": 0.98989898989899,
+            "recall": 0.29504040564094436,
+            "f1": 0.45458984375,
+            "recall_wilson_95": {
+              "low": 0.2885862811840805,
+              "high": 0.30157768481563874,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_BANK_ACCOUNT": {
+            "tp": 5143,
+            "fp": 413,
+            "fn": 1150,
+            "gold": 6293,
+            "predicted": 5556,
+            "precision": 0.9256659467242621,
+            "recall": 0.8172572699825202,
+            "f1": 0.8680901341885391,
+            "recall_wilson_95": {
+              "low": 0.80751653667119,
+              "high": 0.8266109105695414,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "CREDIT_CARD": {
+            "tp": 2872,
+            "fp": 588,
+            "fn": 44,
+            "gold": 2916,
+            "predicted": 3460,
+            "precision": 0.8300578034682081,
+            "recall": 0.9849108367626886,
+            "f1": 0.9008782936010038,
+            "recall_wilson_95": {
+              "low": 0.9798052795785082,
+              "high": 0.9887404582039523,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_PHONE_NUMBER": {
+            "tp": 8002,
+            "fp": 761,
+            "fn": 61,
+            "gold": 8063,
+            "predicted": 8763,
+            "precision": 0.9131575944311309,
+            "recall": 0.9924345777006077,
+            "f1": 0.9511470343515988,
+            "recall_wilson_95": {
+              "low": 0.9902947137109861,
+              "high": 0.9941054434604741,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "EMAIL_ADDRESS": {
+            "tp": 9486,
+            "fp": 570,
+            "fn": 318,
+            "gold": 9804,
+            "predicted": 10056,
+            "precision": 0.9433174224343676,
+            "recall": 0.9675642594859241,
+            "f1": 0.9552870090634441,
+            "recall_wilson_95": {
+              "low": 0.9638703376423747,
+              "high": 0.9708919174813659,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          }
+        }
+      },
+      "m1": {
+        "threshold": 0.65,
+        "overall": {
+          "tp": 121157,
+          "fp": 6561,
+          "fn": 2362,
+          "gold": 123519,
+          "predicted": 127718,
+          "precision": 0.9486290107893954,
+          "recall": 0.9808774358600701,
+          "f1": 0.9644837344817841
+        },
+        "critical": {
+          "tp": 46005,
+          "fp": 1626,
+          "fn": 4,
+          "gold": 46009,
+          "predicted": 47631,
+          "types": [
+            "KR_RRN",
+            "KR_BANK_ACCOUNT",
+            "CREDIT_CARD",
+            "KR_PHONE_NUMBER",
+            "EMAIL_ADDRESS"
+          ],
+          "precision": 0.9658625684953077,
+          "recall": 0.9999130604881653,
+          "f1": 0.9825929090132423
+        },
+        "normal_failure": {
+          "false_blocks": 10,
+          "normal_documents": 200,
+          "explicit_blocks": 10,
+          "fail_closed_errors": 0,
+          "reinspection_failures": 0,
+          "rate": 0.05,
+          "wilson_95": {
+            "low": 0.027382645473457017,
+            "high": 0.08957814852860962,
+            "method": "wilson",
+            "z": 1.959964
+          },
+          "definition": "normal documents not forwarded due to block OR error; differs from v1 block-only"
+        },
+        "per_critical": {
+          "KR_RRN": {
+            "tp": 18929,
+            "fp": 268,
+            "fn": 4,
+            "gold": 18933,
+            "predicted": 19197,
+            "precision": 0.9860394853362504,
+            "recall": 0.9997887286748006,
+            "f1": 0.9928665093102544,
+            "recall_wilson_95": {
+              "low": 0.9994568489592122,
+              "high": 0.9999178377377744,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_BANK_ACCOUNT": {
+            "tp": 6293,
+            "fp": 867,
+            "fn": 0,
+            "gold": 6293,
+            "predicted": 7160,
+            "precision": 0.8789106145251396,
+            "recall": 1.0,
+            "f1": 0.9355534081617483,
+            "recall_wilson_95": {
+              "low": 0.9993899387643186,
+              "high": 1.0,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "CREDIT_CARD": {
+            "tp": 2916,
+            "fp": 0,
+            "fn": 0,
+            "gold": 2916,
+            "predicted": 2916,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "recall_wilson_95": {
+              "low": 0.998684360457445,
+              "high": 1.0,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_PHONE_NUMBER": {
+            "tp": 8063,
+            "fp": 491,
+            "fn": 0,
+            "gold": 8063,
+            "predicted": 8554,
+            "precision": 0.9425999532382511,
+            "recall": 1.0,
+            "f1": 0.9704519468014684,
+            "recall_wilson_95": {
+              "low": 0.9995237964076923,
+              "high": 0.9999999999999999,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "EMAIL_ADDRESS": {
+            "tp": 9804,
+            "fp": 0,
+            "fn": 0,
+            "gold": 9804,
+            "predicted": 9804,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "recall_wilson_95": {
+              "low": 0.9996083277959374,
+              "high": 0.9999999999999999,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          }
+        }
+      }
+    },
+    {
+      "candidate_experiment_id": "dev-m1-epoch1-v1",
+      "epoch_index": 1,
+      "threshold": 0.8,
+      "gates": {
+        "overall_f1": true,
+        "critical_recall": true,
+        "normal_failure_increase": false,
+        "recall:KR_RRN": true,
+        "recall:KR_BANK_ACCOUNT": true,
+        "recall:CREDIT_CARD": true,
+        "recall:KR_PHONE_NUMBER": true,
+        "recall:EMAIL_ADDRESS": true
+      },
+      "eligible": false,
+      "rank": [
+        0.5969956245239234,
+        0.9656167654644826,
+        0.9998261209763307,
+        -0.05,
+        -0.8,
+        -1
+      ],
+      "m0": {
+        "threshold": 0.8,
+        "overall": {
+          "tp": 67402,
+          "fp": 34883,
+          "fn": 56117,
+          "gold": 123519,
+          "predicted": 102285,
+          "precision": 0.6589627022535074,
+          "recall": 0.5456812312275844,
+          "f1": 0.5969956245239234
+        },
+        "critical": {
+          "tp": 27454,
+          "fp": 1965,
+          "fn": 18555,
+          "gold": 46009,
+          "predicted": 29419,
+          "types": [
+            "KR_RRN",
+            "KR_BANK_ACCOUNT",
+            "CREDIT_CARD",
+            "KR_PHONE_NUMBER",
+            "EMAIL_ADDRESS"
+          ],
+          "precision": 0.9332064312179204,
+          "recall": 0.5967093394770588,
+          "f1": 0.7279524844885189
+        },
+        "normal_failure": {
+          "false_blocks": 0,
+          "normal_documents": 200,
+          "explicit_blocks": 0,
+          "fail_closed_errors": 0,
+          "reinspection_failures": 0,
+          "rate": 0.0,
+          "wilson_95": {
+            "low": 0.0,
+            "high": 0.018845326668962936,
+            "method": "wilson",
+            "z": 1.959964
+          },
+          "definition": "normal documents not forwarded due to block OR error; differs from v1 block-only"
+        },
+        "per_critical": {
+          "KR_RRN": {
+            "tp": 2482,
+            "fp": 31,
+            "fn": 16451,
+            "gold": 18933,
+            "predicted": 2513,
+            "precision": 0.9876641464385197,
+            "recall": 0.13109385728621983,
+            "f1": 0.23146507507227454,
+            "recall_wilson_95": {
+              "low": 0.12636113405579527,
+              "high": 0.1359762504371926,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_BANK_ACCOUNT": {
+            "tp": 5136,
+            "fp": 159,
+            "fn": 1157,
+            "gold": 6293,
+            "predicted": 5295,
+            "precision": 0.969971671388102,
+            "recall": 0.81614492293024,
+            "f1": 0.886434242319641,
+            "recall_wilson_95": {
+              "low": 0.8063823977532251,
+              "high": 0.8255217125825803,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "CREDIT_CARD": {
+            "tp": 2769,
+            "fp": 556,
+            "fn": 147,
+            "gold": 2916,
+            "predicted": 3325,
+            "precision": 0.8327819548872181,
+            "recall": 0.9495884773662552,
+            "f1": 0.8873577952251241,
+            "recall_wilson_95": {
+              "low": 0.9410389788929762,
+              "high": 0.9569549830821339,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_PHONE_NUMBER": {
+            "tp": 7955,
+            "fp": 649,
+            "fn": 108,
+            "gold": 8063,
+            "predicted": 8604,
+            "precision": 0.9245699674569967,
+            "recall": 0.9866054818305842,
+            "f1": 0.9545809083818324,
+            "recall_wilson_95": {
+              "low": 0.9838544776673074,
+              "high": 0.9888930394368921,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "EMAIL_ADDRESS": {
+            "tp": 9112,
+            "fp": 570,
+            "fn": 692,
+            "gold": 9804,
+            "predicted": 9682,
+            "precision": 0.9411278661433589,
+            "recall": 0.9294165646674827,
+            "f1": 0.9352355537308837,
+            "recall_wilson_95": {
+              "low": 0.924176634940155,
+              "high": 0.9343201133301218,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          }
+        }
+      },
+      "m1": {
+        "threshold": 0.8,
+        "overall": {
+          "tp": 121112,
+          "fp": 6218,
+          "fn": 2407,
+          "gold": 123519,
+          "predicted": 127330,
+          "precision": 0.9511662608968822,
+          "recall": 0.9805131194391147,
+          "f1": 0.9656167654644826
+        },
+        "critical": {
+          "tp": 46001,
+          "fp": 1477,
+          "fn": 8,
+          "gold": 46009,
+          "predicted": 47478,
+          "types": [
+            "KR_RRN",
+            "KR_BANK_ACCOUNT",
+            "CREDIT_CARD",
+            "KR_PHONE_NUMBER",
+            "EMAIL_ADDRESS"
+          ],
+          "precision": 0.9688908547116559,
+          "recall": 0.9998261209763307,
+          "f1": 0.9841154385101671
+        },
+        "normal_failure": {
+          "false_blocks": 10,
+          "normal_documents": 200,
+          "explicit_blocks": 10,
+          "fail_closed_errors": 0,
+          "reinspection_failures": 0,
+          "rate": 0.05,
+          "wilson_95": {
+            "low": 0.027382645473457017,
+            "high": 0.08957814852860962,
+            "method": "wilson",
+            "z": 1.959964
+          },
+          "definition": "normal documents not forwarded due to block OR error; differs from v1 block-only"
+        },
+        "per_critical": {
+          "KR_RRN": {
+            "tp": 18925,
+            "fp": 208,
+            "fn": 8,
+            "gold": 18933,
+            "predicted": 19133,
+            "precision": 0.9891287304656875,
+            "recall": 0.9995774573496012,
+            "f1": 0.9943256449324857,
+            "recall_wilson_95": {
+              "low": 0.9991663576455746,
+              "high": 0.9997858721164806,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_BANK_ACCOUNT": {
+            "tp": 6293,
+            "fp": 847,
+            "fn": 0,
+            "gold": 6293,
+            "predicted": 7140,
+            "precision": 0.8813725490196078,
+            "recall": 1.0,
+            "f1": 0.9369463262115685,
+            "recall_wilson_95": {
+              "low": 0.9993899387643186,
+              "high": 1.0,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "CREDIT_CARD": {
+            "tp": 2916,
+            "fp": 0,
+            "fn": 0,
+            "gold": 2916,
+            "predicted": 2916,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "recall_wilson_95": {
+              "low": 0.998684360457445,
+              "high": 1.0,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_PHONE_NUMBER": {
+            "tp": 8063,
+            "fp": 422,
+            "fn": 0,
+            "gold": 8063,
+            "predicted": 8485,
+            "precision": 0.9502651738361815,
+            "recall": 1.0,
+            "f1": 0.9744984288131496,
+            "recall_wilson_95": {
+              "low": 0.9995237964076923,
+              "high": 0.9999999999999999,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "EMAIL_ADDRESS": {
+            "tp": 9804,
+            "fp": 0,
+            "fn": 0,
+            "gold": 9804,
+            "predicted": 9804,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "recall_wilson_95": {
+              "low": 0.9996083277959374,
+              "high": 0.9999999999999999,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          }
+        }
+      }
+    },
+    {
+      "candidate_experiment_id": "dev-m1-epoch2-v1",
+      "epoch_index": 2,
+      "threshold": 0.35,
+      "gates": {
+        "overall_f1": true,
+        "critical_recall": true,
+        "normal_failure_increase": false,
+        "recall:KR_RRN": true,
+        "recall:KR_BANK_ACCOUNT": true,
+        "recall:CREDIT_CARD": true,
+        "recall:KR_PHONE_NUMBER": true,
+        "recall:EMAIL_ADDRESS": true
+      },
+      "eligible": false,
+      "rank": [
+        0.6104466925187333,
+        0.9770597634513936,
+        0.9999565302440827,
+        -0.05,
+        -0.35,
+        -2
+      ],
+      "m0": {
+        "threshold": 0.35,
+        "overall": {
+          "tp": 86109,
+          "fp": 72490,
+          "fn": 37410,
+          "gold": 123519,
+          "predicted": 158599,
+          "precision": 0.5429353274610811,
+          "recall": 0.6971316153790105,
+          "f1": 0.6104466925187333
+        },
+        "critical": {
+          "tp": 35744,
+          "fp": 6357,
+          "fn": 10265,
+          "gold": 46009,
+          "predicted": 42101,
+          "types": [
+            "KR_RRN",
+            "KR_BANK_ACCOUNT",
+            "CREDIT_CARD",
+            "KR_PHONE_NUMBER",
+            "EMAIL_ADDRESS"
+          ],
+          "precision": 0.8490059618536376,
+          "recall": 0.7768914777543524,
+          "f1": 0.8113494495516967
+        },
+        "normal_failure": {
+          "false_blocks": 0,
+          "normal_documents": 200,
+          "explicit_blocks": 0,
+          "fail_closed_errors": 0,
+          "reinspection_failures": 0,
+          "rate": 0.0,
+          "wilson_95": {
+            "low": 0.0,
+            "high": 0.018845326668962936,
+            "method": "wilson",
+            "z": 1.959964
+          },
+          "definition": "normal documents not forwarded due to block OR error; differs from v1 block-only"
+        },
+        "per_critical": {
+          "KR_RRN": {
+            "tp": 9854,
+            "fp": 2642,
+            "fn": 9079,
+            "gold": 18933,
+            "predicted": 12496,
+            "precision": 0.788572343149808,
+            "recall": 0.5204669096286907,
+            "f1": 0.6270641763975946,
+            "recall_wilson_95": {
+              "low": 0.5133473425579508,
+              "high": 0.5275781730135244,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_BANK_ACCOUNT": {
+            "tp": 5144,
+            "fp": 1317,
+            "fn": 1149,
+            "gold": 6293,
+            "predicted": 6461,
+            "precision": 0.7961615848939793,
+            "recall": 0.8174161767042746,
+            "f1": 0.8066488944644817,
+            "recall_wilson_95": {
+              "low": 0.8076785672878095,
+              "high": 0.8267664995107686,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "CREDIT_CARD": {
+            "tp": 2909,
+            "fp": 590,
+            "fn": 7,
+            "gold": 2916,
+            "predicted": 3499,
+            "precision": 0.8313803943983995,
+            "recall": 0.997599451303155,
+            "f1": 0.9069368667186282,
+            "recall_wilson_95": {
+              "low": 0.9950528973660565,
+              "high": 0.9988366822112772,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_PHONE_NUMBER": {
+            "tp": 8048,
+            "fp": 1151,
+            "fn": 15,
+            "gold": 8063,
+            "predicted": 9199,
+            "precision": 0.8748777040982716,
+            "recall": 0.9981396502542478,
+            "f1": 0.932452786467385,
+            "recall_wilson_95": {
+              "low": 0.9969326258682047,
+              "high": 0.9988722428584469,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "EMAIL_ADDRESS": {
+            "tp": 9789,
+            "fp": 657,
+            "fn": 15,
+            "gold": 9804,
+            "predicted": 10446,
+            "precision": 0.937105112004595,
+            "recall": 0.9984700122399021,
+            "f1": 0.9668148148148148,
+            "recall_wilson_95": {
+              "low": 0.9974769945605256,
+              "high": 0.9990725562225723,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          }
+        }
+      },
+      "m1": {
+        "threshold": 0.35,
+        "overall": {
+          "tp": 121684,
+          "fp": 3879,
+          "fn": 1835,
+          "gold": 123519,
+          "predicted": 125563,
+          "precision": 0.9691071414349769,
+          "recall": 0.985143985945482,
+          "f1": 0.9770597634513936
+        },
+        "critical": {
+          "tp": 46007,
+          "fp": 887,
+          "fn": 2,
+          "gold": 46009,
+          "predicted": 46894,
+          "types": [
+            "KR_RRN",
+            "KR_BANK_ACCOUNT",
+            "CREDIT_CARD",
+            "KR_PHONE_NUMBER",
+            "EMAIL_ADDRESS"
+          ],
+          "precision": 0.9810850002132468,
+          "recall": 0.9999565302440827,
+          "f1": 0.9904308795194988
+        },
+        "normal_failure": {
+          "false_blocks": 10,
+          "normal_documents": 200,
+          "explicit_blocks": 10,
+          "fail_closed_errors": 0,
+          "reinspection_failures": 0,
+          "rate": 0.05,
+          "wilson_95": {
+            "low": 0.027382645473457017,
+            "high": 0.08957814852860962,
+            "method": "wilson",
+            "z": 1.959964
+          },
+          "definition": "normal documents not forwarded due to block OR error; differs from v1 block-only"
+        },
+        "per_critical": {
+          "KR_RRN": {
+            "tp": 18933,
+            "fp": 262,
+            "fn": 0,
+            "gold": 18933,
+            "predicted": 19195,
+            "precision": 0.9863506121385778,
+            "recall": 1.0,
+            "f1": 0.9931284095677717,
+            "recall_wilson_95": {
+              "low": 0.9997971436319181,
+              "high": 1.0,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_BANK_ACCOUNT": {
+            "tp": 6291,
+            "fp": 578,
+            "fn": 2,
+            "gold": 6293,
+            "predicted": 6869,
+            "precision": 0.91585383607512,
+            "recall": 0.9996821865564913,
+            "f1": 0.9559337486704148,
+            "recall_wilson_95": {
+              "low": 0.9988418598842778,
+              "high": 0.9999128397643476,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "CREDIT_CARD": {
+            "tp": 2916,
+            "fp": 35,
+            "fn": 0,
+            "gold": 2916,
+            "predicted": 2951,
+            "precision": 0.9881396136902745,
+            "recall": 1.0,
+            "f1": 0.9940344298619397,
+            "recall_wilson_95": {
+              "low": 0.998684360457445,
+              "high": 1.0,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_PHONE_NUMBER": {
+            "tp": 8063,
+            "fp": 12,
+            "fn": 0,
+            "gold": 8063,
+            "predicted": 8075,
+            "precision": 0.9985139318885449,
+            "recall": 1.0,
+            "f1": 0.9992564134341306,
+            "recall_wilson_95": {
+              "low": 0.9995237964076923,
+              "high": 0.9999999999999999,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "EMAIL_ADDRESS": {
+            "tp": 9804,
+            "fp": 0,
+            "fn": 0,
+            "gold": 9804,
+            "predicted": 9804,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "recall_wilson_95": {
+              "low": 0.9996083277959374,
+              "high": 0.9999999999999999,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          }
+        }
+      }
+    },
+    {
+      "candidate_experiment_id": "dev-m1-epoch2-v1",
+      "epoch_index": 2,
+      "threshold": 0.5,
+      "gates": {
+        "overall_f1": true,
+        "critical_recall": true,
+        "normal_failure_increase": false,
+        "recall:KR_RRN": true,
+        "recall:KR_BANK_ACCOUNT": true,
+        "recall:CREDIT_CARD": true,
+        "recall:KR_PHONE_NUMBER": true,
+        "recall:EMAIL_ADDRESS": true
+      },
+      "eligible": false,
+      "rank": [
+        0.6300469989154096,
+        0.9777458087537975,
+        0.9999565302440827,
+        -0.05,
+        -0.5,
+        -2
+      ],
+      "m0": {
+        "threshold": 0.5,
+        "overall": {
+          "tp": 81908,
+          "fp": 54579,
+          "fn": 41611,
+          "gold": 123519,
+          "predicted": 136487,
+          "precision": 0.6001157619406976,
+          "recall": 0.6631206535027,
+          "f1": 0.6300469989154096
+        },
+        "critical": {
+          "tp": 34373,
+          "fp": 2886,
+          "fn": 11636,
+          "gold": 46009,
+          "predicted": 37259,
+          "types": [
+            "KR_RRN",
+            "KR_BANK_ACCOUNT",
+            "CREDIT_CARD",
+            "KR_PHONE_NUMBER",
+            "EMAIL_ADDRESS"
+          ],
+          "precision": 0.9225422045680238,
+          "recall": 0.7470929600730292,
+          "f1": 0.8255992698275448
+        },
+        "normal_failure": {
+          "false_blocks": 0,
+          "normal_documents": 200,
+          "explicit_blocks": 0,
+          "fail_closed_errors": 0,
+          "reinspection_failures": 0,
+          "rate": 0.0,
+          "wilson_95": {
+            "low": 0.0,
+            "high": 0.018845326668962936,
+            "method": "wilson",
+            "z": 1.959964
+          },
+          "definition": "normal documents not forwarded due to block OR error; differs from v1 block-only"
+        },
+        "per_critical": {
+          "KR_RRN": {
+            "tp": 8632,
+            "fp": 162,
+            "fn": 10301,
+            "gold": 18933,
+            "predicted": 8794,
+            "precision": 0.9815783488742325,
+            "recall": 0.45592351978027784,
+            "f1": 0.6226421899231795,
+            "recall_wilson_95": {
+              "low": 0.44883879650769143,
+              "high": 0.46302612544225463,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_BANK_ACCOUNT": {
+            "tp": 5144,
+            "fp": 634,
+            "fn": 1149,
+            "gold": 6293,
+            "predicted": 5778,
+            "precision": 0.8902734510211145,
+            "recall": 0.8174161767042746,
+            "f1": 0.852290613867948,
+            "recall_wilson_95": {
+              "low": 0.8076785672878095,
+              "high": 0.8267664995107686,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "CREDIT_CARD": {
+            "tp": 2898,
+            "fp": 589,
+            "fn": 18,
+            "gold": 2916,
+            "predicted": 3487,
+            "precision": 0.8310868941783768,
+            "recall": 0.9938271604938271,
+            "f1": 0.9052006871778854,
+            "recall_wilson_95": {
+              "low": 0.9902631509077015,
+              "high": 0.9960917730008861,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_PHONE_NUMBER": {
+            "tp": 8028,
+            "fp": 922,
+            "fn": 35,
+            "gold": 8063,
+            "predicted": 8950,
+            "precision": 0.8969832402234637,
+            "recall": 0.9956591839265782,
+            "f1": 0.9437488979016047,
+            "recall_wilson_95": {
+              "low": 0.9939692401581843,
+              "high": 0.9968770583270796,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "EMAIL_ADDRESS": {
+            "tp": 9671,
+            "fp": 579,
+            "fn": 133,
+            "gold": 9804,
+            "predicted": 10250,
+            "precision": 0.9435121951219512,
+            "recall": 0.9864341085271318,
+            "f1": 0.964495861174828,
+            "recall_wilson_95": {
+              "low": 0.9839462828786291,
+              "high": 0.9885408887367982,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          }
+        }
+      },
+      "m1": {
+        "threshold": 0.5,
+        "overall": {
+          "tp": 121657,
+          "fp": 3676,
+          "fn": 1862,
+          "gold": 123519,
+          "predicted": 125333,
+          "precision": 0.9706701347609967,
+          "recall": 0.9849253960929087,
+          "f1": 0.9777458087537975
+        },
+        "critical": {
+          "tp": 46007,
+          "fp": 849,
+          "fn": 2,
+          "gold": 46009,
+          "predicted": 46856,
+          "types": [
+            "KR_RRN",
+            "KR_BANK_ACCOUNT",
+            "CREDIT_CARD",
+            "KR_PHONE_NUMBER",
+            "EMAIL_ADDRESS"
+          ],
+          "precision": 0.981880655625747,
+          "recall": 0.9999565302440827,
+          "f1": 0.9908361600172293
+        },
+        "normal_failure": {
+          "false_blocks": 10,
+          "normal_documents": 200,
+          "explicit_blocks": 10,
+          "fail_closed_errors": 0,
+          "reinspection_failures": 0,
+          "rate": 0.05,
+          "wilson_95": {
+            "low": 0.027382645473457017,
+            "high": 0.08957814852860962,
+            "method": "wilson",
+            "z": 1.959964
+          },
+          "definition": "normal documents not forwarded due to block OR error; differs from v1 block-only"
+        },
+        "per_critical": {
+          "KR_RRN": {
+            "tp": 18933,
+            "fp": 245,
+            "fn": 0,
+            "gold": 18933,
+            "predicted": 19178,
+            "precision": 0.9872249452497653,
+            "recall": 1.0,
+            "f1": 0.9935714098291831,
+            "recall_wilson_95": {
+              "low": 0.9997971436319181,
+              "high": 1.0,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_BANK_ACCOUNT": {
+            "tp": 6291,
+            "fp": 578,
+            "fn": 2,
+            "gold": 6293,
+            "predicted": 6869,
+            "precision": 0.91585383607512,
+            "recall": 0.9996821865564913,
+            "f1": 0.9559337486704148,
+            "recall_wilson_95": {
+              "low": 0.9988418598842778,
+              "high": 0.9999128397643476,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "CREDIT_CARD": {
+            "tp": 2916,
+            "fp": 14,
+            "fn": 0,
+            "gold": 2916,
+            "predicted": 2930,
+            "precision": 0.995221843003413,
+            "recall": 1.0,
+            "f1": 0.9976052001368457,
+            "recall_wilson_95": {
+              "low": 0.998684360457445,
+              "high": 1.0,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_PHONE_NUMBER": {
+            "tp": 8063,
+            "fp": 12,
+            "fn": 0,
+            "gold": 8063,
+            "predicted": 8075,
+            "precision": 0.9985139318885449,
+            "recall": 1.0,
+            "f1": 0.9992564134341306,
+            "recall_wilson_95": {
+              "low": 0.9995237964076923,
+              "high": 0.9999999999999999,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "EMAIL_ADDRESS": {
+            "tp": 9804,
+            "fp": 0,
+            "fn": 0,
+            "gold": 9804,
+            "predicted": 9804,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "recall_wilson_95": {
+              "low": 0.9996083277959374,
+              "high": 0.9999999999999999,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          }
+        }
+      }
+    },
+    {
+      "candidate_experiment_id": "dev-m1-epoch2-v1",
+      "epoch_index": 2,
+      "threshold": 0.65,
+      "gates": {
+        "overall_f1": true,
+        "critical_recall": true,
+        "normal_failure_increase": false,
+        "recall:KR_RRN": true,
+        "recall:KR_BANK_ACCOUNT": true,
+        "recall:CREDIT_CARD": true,
+        "recall:KR_PHONE_NUMBER": true,
+        "recall:EMAIL_ADDRESS": true
+      },
+      "eligible": false,
+      "rank": [
+        0.6190119328990603,
+        0.9784880493632495,
+        0.9999347953661241,
+        -0.05,
+        -0.65,
+        -2
+      ],
+      "m0": {
+        "threshold": 0.65,
+        "overall": {
+          "tp": 75166,
+          "fp": 44173,
+          "fn": 48353,
+          "gold": 123519,
+          "predicted": 119339,
+          "precision": 0.6298527723543854,
+          "recall": 0.6085379577231034,
+          "f1": 0.6190119328990603
+        },
+        "critical": {
+          "tp": 31089,
+          "fp": 2389,
+          "fn": 14920,
+          "gold": 46009,
+          "predicted": 33478,
+          "types": [
+            "KR_RRN",
+            "KR_BANK_ACCOUNT",
+            "CREDIT_CARD",
+            "KR_PHONE_NUMBER",
+            "EMAIL_ADDRESS"
+          ],
+          "precision": 0.9286397036860028,
+          "recall": 0.6757156208567889,
+          "f1": 0.7822411211896285
+        },
+        "normal_failure": {
+          "false_blocks": 0,
+          "normal_documents": 200,
+          "explicit_blocks": 0,
+          "fail_closed_errors": 0,
+          "reinspection_failures": 0,
+          "rate": 0.0,
+          "wilson_95": {
+            "low": 0.0,
+            "high": 0.018845326668962936,
+            "method": "wilson",
+            "z": 1.959964
+          },
+          "definition": "normal documents not forwarded due to block OR error; differs from v1 block-only"
+        },
+        "per_critical": {
+          "KR_RRN": {
+            "tp": 5586,
+            "fp": 57,
+            "fn": 13347,
+            "gold": 18933,
+            "predicted": 5643,
+            "precision": 0.98989898989899,
+            "recall": 0.29504040564094436,
+            "f1": 0.45458984375,
+            "recall_wilson_95": {
+              "low": 0.2885862811840805,
+              "high": 0.30157768481563874,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_BANK_ACCOUNT": {
+            "tp": 5143,
+            "fp": 413,
+            "fn": 1150,
+            "gold": 6293,
+            "predicted": 5556,
+            "precision": 0.9256659467242621,
+            "recall": 0.8172572699825202,
+            "f1": 0.8680901341885391,
+            "recall_wilson_95": {
+              "low": 0.80751653667119,
+              "high": 0.8266109105695414,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "CREDIT_CARD": {
+            "tp": 2872,
+            "fp": 588,
+            "fn": 44,
+            "gold": 2916,
+            "predicted": 3460,
+            "precision": 0.8300578034682081,
+            "recall": 0.9849108367626886,
+            "f1": 0.9008782936010038,
+            "recall_wilson_95": {
+              "low": 0.9798052795785082,
+              "high": 0.9887404582039523,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_PHONE_NUMBER": {
+            "tp": 8002,
+            "fp": 761,
+            "fn": 61,
+            "gold": 8063,
+            "predicted": 8763,
+            "precision": 0.9131575944311309,
+            "recall": 0.9924345777006077,
+            "f1": 0.9511470343515988,
+            "recall_wilson_95": {
+              "low": 0.9902947137109861,
+              "high": 0.9941054434604741,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "EMAIL_ADDRESS": {
+            "tp": 9486,
+            "fp": 570,
+            "fn": 318,
+            "gold": 9804,
+            "predicted": 10056,
+            "precision": 0.9433174224343676,
+            "recall": 0.9675642594859241,
+            "f1": 0.9552870090634441,
+            "recall_wilson_95": {
+              "low": 0.9638703376423747,
+              "high": 0.9708919174813659,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          }
+        }
+      },
+      "m1": {
+        "threshold": 0.65,
+        "overall": {
+          "tp": 121629,
+          "fp": 3458,
+          "fn": 1890,
+          "gold": 123519,
+          "predicted": 125087,
+          "precision": 0.9723552407524363,
+          "recall": 0.9846987103198698,
+          "f1": 0.9784880493632495
+        },
+        "critical": {
+          "tp": 46006,
+          "fp": 819,
+          "fn": 3,
+          "gold": 46009,
+          "predicted": 46825,
+          "types": [
+            "KR_RRN",
+            "KR_BANK_ACCOUNT",
+            "CREDIT_CARD",
+            "KR_PHONE_NUMBER",
+            "EMAIL_ADDRESS"
+          ],
+          "precision": 0.9825093432995194,
+          "recall": 0.9999347953661241,
+          "f1": 0.9911454854902298
+        },
+        "normal_failure": {
+          "false_blocks": 10,
+          "normal_documents": 200,
+          "explicit_blocks": 10,
+          "fail_closed_errors": 0,
+          "reinspection_failures": 0,
+          "rate": 0.05,
+          "wilson_95": {
+            "low": 0.027382645473457017,
+            "high": 0.08957814852860962,
+            "method": "wilson",
+            "z": 1.959964
+          },
+          "definition": "normal documents not forwarded due to block OR error; differs from v1 block-only"
+        },
+        "per_critical": {
+          "KR_RRN": {
+            "tp": 18933,
+            "fp": 224,
+            "fn": 0,
+            "gold": 18933,
+            "predicted": 19157,
+            "precision": 0.9883071462128726,
+            "recall": 1.0,
+            "f1": 0.994119191388816,
+            "recall_wilson_95": {
+              "low": 0.9997971436319181,
+              "high": 1.0,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_BANK_ACCOUNT": {
+            "tp": 6290,
+            "fp": 578,
+            "fn": 3,
+            "gold": 6293,
+            "predicted": 6868,
+            "precision": 0.9158415841584159,
+            "recall": 0.999523279834737,
+            "f1": 0.9558544183572677,
+            "recall_wilson_95": {
+              "low": 0.9985992209123901,
+              "high": 0.9998378591783886,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "CREDIT_CARD": {
+            "tp": 2916,
+            "fp": 5,
+            "fn": 0,
+            "gold": 2916,
+            "predicted": 2921,
+            "precision": 0.9982882574460801,
+            "recall": 1.0,
+            "f1": 0.9991433955799212,
+            "recall_wilson_95": {
+              "low": 0.998684360457445,
+              "high": 1.0,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_PHONE_NUMBER": {
+            "tp": 8063,
+            "fp": 12,
+            "fn": 0,
+            "gold": 8063,
+            "predicted": 8075,
+            "precision": 0.9985139318885449,
+            "recall": 1.0,
+            "f1": 0.9992564134341306,
+            "recall_wilson_95": {
+              "low": 0.9995237964076923,
+              "high": 0.9999999999999999,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "EMAIL_ADDRESS": {
+            "tp": 9804,
+            "fp": 0,
+            "fn": 0,
+            "gold": 9804,
+            "predicted": 9804,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "recall_wilson_95": {
+              "low": 0.9996083277959374,
+              "high": 0.9999999999999999,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          }
+        }
+      }
+    },
+    {
+      "candidate_experiment_id": "dev-m1-epoch2-v1",
+      "epoch_index": 2,
+      "threshold": 0.8,
+      "gates": {
+        "overall_f1": true,
+        "critical_recall": true,
+        "normal_failure_increase": false,
+        "recall:KR_RRN": true,
+        "recall:KR_BANK_ACCOUNT": true,
+        "recall:CREDIT_CARD": true,
+        "recall:KR_PHONE_NUMBER": true,
+        "recall:EMAIL_ADDRESS": true
+      },
+      "eligible": false,
+      "rank": [
+        0.5969956245239234,
+        0.9792894046962272,
+        0.9999347953661241,
+        -0.05,
+        -0.8,
+        -2
+      ],
+      "m0": {
+        "threshold": 0.8,
+        "overall": {
+          "tp": 67402,
+          "fp": 34883,
+          "fn": 56117,
+          "gold": 123519,
+          "predicted": 102285,
+          "precision": 0.6589627022535074,
+          "recall": 0.5456812312275844,
+          "f1": 0.5969956245239234
+        },
+        "critical": {
+          "tp": 27454,
+          "fp": 1965,
+          "fn": 18555,
+          "gold": 46009,
+          "predicted": 29419,
+          "types": [
+            "KR_RRN",
+            "KR_BANK_ACCOUNT",
+            "CREDIT_CARD",
+            "KR_PHONE_NUMBER",
+            "EMAIL_ADDRESS"
+          ],
+          "precision": 0.9332064312179204,
+          "recall": 0.5967093394770588,
+          "f1": 0.7279524844885189
+        },
+        "normal_failure": {
+          "false_blocks": 0,
+          "normal_documents": 200,
+          "explicit_blocks": 0,
+          "fail_closed_errors": 0,
+          "reinspection_failures": 0,
+          "rate": 0.0,
+          "wilson_95": {
+            "low": 0.0,
+            "high": 0.018845326668962936,
+            "method": "wilson",
+            "z": 1.959964
+          },
+          "definition": "normal documents not forwarded due to block OR error; differs from v1 block-only"
+        },
+        "per_critical": {
+          "KR_RRN": {
+            "tp": 2482,
+            "fp": 31,
+            "fn": 16451,
+            "gold": 18933,
+            "predicted": 2513,
+            "precision": 0.9876641464385197,
+            "recall": 0.13109385728621983,
+            "f1": 0.23146507507227454,
+            "recall_wilson_95": {
+              "low": 0.12636113405579527,
+              "high": 0.1359762504371926,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_BANK_ACCOUNT": {
+            "tp": 5136,
+            "fp": 159,
+            "fn": 1157,
+            "gold": 6293,
+            "predicted": 5295,
+            "precision": 0.969971671388102,
+            "recall": 0.81614492293024,
+            "f1": 0.886434242319641,
+            "recall_wilson_95": {
+              "low": 0.8063823977532251,
+              "high": 0.8255217125825803,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "CREDIT_CARD": {
+            "tp": 2769,
+            "fp": 556,
+            "fn": 147,
+            "gold": 2916,
+            "predicted": 3325,
+            "precision": 0.8327819548872181,
+            "recall": 0.9495884773662552,
+            "f1": 0.8873577952251241,
+            "recall_wilson_95": {
+              "low": 0.9410389788929762,
+              "high": 0.9569549830821339,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_PHONE_NUMBER": {
+            "tp": 7955,
+            "fp": 649,
+            "fn": 108,
+            "gold": 8063,
+            "predicted": 8604,
+            "precision": 0.9245699674569967,
+            "recall": 0.9866054818305842,
+            "f1": 0.9545809083818324,
+            "recall_wilson_95": {
+              "low": 0.9838544776673074,
+              "high": 0.9888930394368921,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "EMAIL_ADDRESS": {
+            "tp": 9112,
+            "fp": 570,
+            "fn": 692,
+            "gold": 9804,
+            "predicted": 9682,
+            "precision": 0.9411278661433589,
+            "recall": 0.9294165646674827,
+            "f1": 0.9352355537308837,
+            "recall_wilson_95": {
+              "low": 0.924176634940155,
+              "high": 0.9343201133301218,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          }
+        }
+      },
+      "m1": {
+        "threshold": 0.8,
+        "overall": {
+          "tp": 121592,
+          "fp": 3216,
+          "fn": 1927,
+          "gold": 123519,
+          "predicted": 124808,
+          "precision": 0.9742324209986539,
+          "recall": 0.9843991612626397,
+          "f1": 0.9792894046962272
+        },
+        "critical": {
+          "tp": 46006,
+          "fp": 782,
+          "fn": 3,
+          "gold": 46009,
+          "predicted": 46788,
+          "types": [
+            "KR_RRN",
+            "KR_BANK_ACCOUNT",
+            "CREDIT_CARD",
+            "KR_PHONE_NUMBER",
+            "EMAIL_ADDRESS"
+          ],
+          "precision": 0.9832863127297597,
+          "recall": 0.9999347953661241,
+          "f1": 0.9915406748062976
+        },
+        "normal_failure": {
+          "false_blocks": 10,
+          "normal_documents": 200,
+          "explicit_blocks": 10,
+          "fail_closed_errors": 0,
+          "reinspection_failures": 0,
+          "rate": 0.05,
+          "wilson_95": {
+            "low": 0.027382645473457017,
+            "high": 0.08957814852860962,
+            "method": "wilson",
+            "z": 1.959964
+          },
+          "definition": "normal documents not forwarded due to block OR error; differs from v1 block-only"
+        },
+        "per_critical": {
+          "KR_RRN": {
+            "tp": 18933,
+            "fp": 192,
+            "fn": 0,
+            "gold": 18933,
+            "predicted": 19125,
+            "precision": 0.9899607843137255,
+            "recall": 1.0,
+            "f1": 0.9949550685795365,
+            "recall_wilson_95": {
+              "low": 0.9997971436319181,
+              "high": 1.0,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_BANK_ACCOUNT": {
+            "tp": 6290,
+            "fp": 578,
+            "fn": 3,
+            "gold": 6293,
+            "predicted": 6868,
+            "precision": 0.9158415841584159,
+            "recall": 0.999523279834737,
+            "f1": 0.9558544183572677,
+            "recall_wilson_95": {
+              "low": 0.9985992209123901,
+              "high": 0.9998378591783886,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "CREDIT_CARD": {
+            "tp": 2916,
+            "fp": 0,
+            "fn": 0,
+            "gold": 2916,
+            "predicted": 2916,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "recall_wilson_95": {
+              "low": 0.998684360457445,
+              "high": 1.0,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "KR_PHONE_NUMBER": {
+            "tp": 8063,
+            "fp": 12,
+            "fn": 0,
+            "gold": 8063,
+            "predicted": 8075,
+            "precision": 0.9985139318885449,
+            "recall": 1.0,
+            "f1": 0.9992564134341306,
+            "recall_wilson_95": {
+              "low": 0.9995237964076923,
+              "high": 0.9999999999999999,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          },
+          "EMAIL_ADDRESS": {
+            "tp": 9804,
+            "fp": 0,
+            "fn": 0,
+            "gold": 9804,
+            "predicted": 9804,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "recall_wilson_95": {
+              "low": 0.9996083277959374,
+              "high": 0.9999999999999999,
+              "method": "wilson",
+              "z": 1.959964
+            }
+          }
+        }
+      }
+    }
+  ],
+  "scope": "Dev selection only. No final-test result read; B runtime acceptance pending.",
+  "training_scope": "Existing M1 checkpoints used; new unique 5k sample is prepared but not trained."
+}

@@ -1,0 +1,94 @@
+{
+  "dataset_version": "service-holdout-v2-r2-draft",
+  "sha256": "8e32bcff5b5909fe54b55a226b10341a5dac7be14949b92be44533e3c69a62d3",
+  "builder_sha256": "027a28dccea19b79c6dd4bb40a4b0b00a864e2bd6384024c20ad5c7dcf8bbe25",
+  "frozen": false,
+  "reviewer": null,
+  "frozen_at_utc": null,
+  "validation": {
+    "validator_version": "service-cases-validator-v1",
+    "status": "draft_needs_review",
+    "errors": [],
+    "warnings": [],
+    "counts": {
+      "documents": 300,
+      "by_direction": {
+        "request": 150,
+        "response": 150
+      },
+      "normal_documents": 100,
+      "documents_with_gold": 200,
+      "entities_by_type": {
+        "KR_RRN": 40,
+        "CREDIT_CARD": 50,
+        "PERSON": 17,
+        "EMAIL_ADDRESS": 40,
+        "KR_PHONE_NUMBER": 40,
+        "KR_BANK_ACCOUNT": 40,
+        "KR_LOCATION": 17,
+        "DATE_OF_BIRTH": 16,
+        "KR_DRIVER_LICENSE": 14,
+        "KR_PASSPORT": 14,
+        "KR_NHIS": 14,
+        "KR_VEHICLE_PLATE": 16,
+        "USERNAME": 17,
+        "PERSONAL_ATTRIBUTE": 17,
+        "ORGANIZATION": 15,
+        "URL": 14,
+        "IP_ADDRESS": 14,
+        "NRP": 15
+      },
+      "tags": {
+        "amounts_and_quantities": 10,
+        "boundary": 30,
+        "business_calendar": 10,
+        "chunk_boundary": 10,
+        "code": 30,
+        "csv": 20,
+        "daily_and_work_prose": 10,
+        "hard_digits": 30,
+        "has_pii": 200,
+        "json": 20,
+        "long": 20,
+        "markdown": 30,
+        "mixed_language": 40,
+        "multi_entity": 200,
+        "normal": 100,
+        "numeric_lookalikes": 10,
+        "ordinary_korean_nouns": 10,
+        "organization_like_common_words": 10,
+        "particle": 40,
+        "plain": 20,
+        "source_code": 10,
+        "table": 20,
+        "tables_and_lists": 10,
+        "technical_configuration": 10,
+        "yaml": 20
+      },
+      "long_documents_ge_600_chars": 20,
+      "distinct_skeletons": 300,
+      "max_instances_per_skeleton": 1,
+      "review_status": {
+        "needs_review": 300
+      },
+      "unreviewed_documents": 300
+    },
+    "official_overlap": {
+      "exact_text": 0,
+      "long_surface": [],
+      "long_surface_entities": 0
+    },
+    "frozen": false
+  },
+  "v1_exact_text_overlap": 0,
+  "v1_templates_reused": false,
+  "supporting_source_sha256": {
+    "synthetic_values.py": "8e91ad3b38f5974e28ff1e6b98a260071618c1c96b1a8daf93a4224df747f849",
+    "holdout_scenarios.py": "dc031145d194e0934faee1189c03a80a1dd060e386007e92dfd50ed79585cde6",
+    "service_testset_builder.py": "8316c507d01cd255ed0ecf58661d7b7566ea20f3d162bf1dac46f4648094b032"
+  },
+  "feedback_sha256": "1c1ac6ec6e3c0de6dee7ac3f701c39dc3cbec9fda186d4c4bf109c2d7a5abcf6",
+  "chunk_boundary_probes": 10,
+  "limitations": "Revised natural authored synthetic scenarios; new human review required. Issuance/allocation of synthetic identifiers is not claimed. No model scores obtained.",
+  "use_policy": "No model selection or scoring before human review/freeze; v1 stays exploratory."
+}
