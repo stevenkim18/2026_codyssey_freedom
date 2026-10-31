@@ -1,7 +1,17 @@
 ---
 name: install-pii-gateway
-description: Install, configure, or diagnose the standalone macOS arm64 PII Gateway client from a trusted release archive. This skill does not process sensitive prompts in the current chat.
+description: Explain the PII plugin hooks, or install, configure, or diagnose the standalone macOS arm64 PII Gateway client from a trusted release archive. This skill does not process sensitive prompts in the current chat.
 ---
+
+This plugin has two parts. Its lifecycle hooks work in ordinary Codex sessions
+after the user trusts them at startup; the status line `PII 보호 켜짐` confirms
+they run. They check prompts and tool results before sending, and only warn about
+responses after display. They cannot rewrite a prompt. Without a detector setting
+they use local pattern rules, which do not detect names. Never claim that the
+hooks prevent a response from being displayed, and never trust hooks for the user.
+
+The separate gateway client below inspects responses before display. Use it when
+that is required.
 
 Install the bundled client using [the installer](../../scripts/install-macos.sh).
 The distribution includes Python and gateway dependencies. Do not run pip,
@@ -40,6 +50,6 @@ binary. It works without a Codex executable when the settings remain valid.
 
 Sensitive prompts must be entered by the user into the actual protected command
 `DESTINATION/pii-gateway run -- exec ...`, while `serve` is running. Do not accept,
-transform, or forward a sensitive prompt through the outer assistant chat. This
-plugin does not intercept the host assistant's requests. Doctor's local probe
+transform, or forward a sensitive prompt through the outer assistant chat. The
+gateway client does not intercept the host assistant's requests. Doctor's local probe
 does not verify remote detector quality, provider connectivity, or central events.

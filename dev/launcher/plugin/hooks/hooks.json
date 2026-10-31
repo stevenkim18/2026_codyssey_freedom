@@ -1,0 +1,8 @@
+{
+  "hooks": {
+    "SessionStart": [{"hooks": [{"type": "command", "command": "/bin/sh \"${PLUGIN_ROOT}/hook_runtime/run.sh\" observe", "timeout": 30}]}],
+    "UserPromptSubmit": [{"hooks": [{"type": "command", "command": "/bin/sh \"${PLUGIN_ROOT}/hook_runtime/run.sh\" guard", "timeout": 30}]}],
+    "PostToolUse": [{"hooks": [{"type": "command", "command": "/bin/sh \"${PLUGIN_ROOT}/hook_runtime/run.sh\" guard", "timeout": 30}]}],
+    "Stop": [{"hooks": [{"type": "command", "command": "/bin/sh \"${PLUGIN_ROOT}/hook_runtime/run.sh\" observe", "timeout": 30}]}]
+  }
+}
