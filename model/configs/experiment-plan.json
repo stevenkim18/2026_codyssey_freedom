@@ -131,5 +131,17 @@
       "7": "Evaluate selected models/settings on final tests and generate improvement-history tables",
       "8": "Hand off final settings, experiment history and reports"
     }
+  },
+  "preprocessing_compatibility_gate": {
+    "status": "blocked_before_training_sample_selection",
+    "report": "reports/conversion-v1.json",
+    "required_unique_train_documents": 5000,
+    "available_unique_train_documents": 2615,
+    "source_boundary_mismatch_not_gold_corruption": true,
+    "required_next_step": "Agree on a gold-independent shared A/B segmentation and offset protocol; revalidate conversion and M0 baseline under that same protocol.",
+    "existing_B_runtime_modified": false,
+    "diagnostic_subset_allowed_as_full_training_or_official_test": false,
+    "label_mapping_adopted": false,
+    "training_sample_selected": false
   }
 }

@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "status": "diagnostic_only_A_B_mapping_not_adopted",
+  "label_mapping": {
+    "KR_RRN": "Korean resident registration number",
+    "CREDIT_CARD": "credit card number",
+    "PERSON": "person",
+    "EMAIL_ADDRESS": "email address",
+    "KR_PHONE_NUMBER": "phone number",
+    "KR_BANK_ACCOUNT": "bank account number",
+    "KR_LOCATION": "address",
+    "DATE_OF_BIRTH": "date of birth",
+    "KR_DRIVER_LICENSE": "driver's license number",
+    "KR_PASSPORT": "passport number",
+    "KR_NHIS": "national health insurance number",
+    "KR_VEHICLE_PLATE": "license plate number",
+    "USERNAME": "username",
+    "PERSONAL_ATTRIBUTE": "personal attribute",
+    "ORGANIZATION": "organization",
+    "URL": "URL",
+    "IP_ADDRESS": "IP address",
+    "NRP": "nationality religious or political group"
+  },
+  "label_mapping_version": "b-engineering-descriptions-a-diagnostic-v1",
+  "normalization": "none",
+  "word_splitter": "B existing GLiNER whitespace splitter",
+  "partial_gold_policy": "reject_entire_document",
+  "unaligned_gold_policy": "reject_entire_document",
+  "duplicate_policy": "Preserve official splits and all diagnostic eligible rows; count unique eligible texts. No training sample selected.",
+  "required_unique_training_documents": 5000
+}
