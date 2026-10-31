@@ -74,7 +74,9 @@
 
 ## 5. 파일과 재현 방법
 
-- [상세 전체 변환 보고서](conversion-v1.json)
+- [상세 전체 변환 보고서 (초기 v1)](conversion-v1.json)
+- [후보 분할기 정밀 진단 보고서 (v2)](segmentation-diagnosis-v2.json)
+- [한국어 분할기 제안서 및 B 연동 규격](../segmentation/README.md)
 - [실제 tokenizer/collator 검증](conversion-runtime-v1.json)
 - [테스트·파일 확인 기록](stage3-checks.json)
 - [실행 안내와 출력 형식](../data/CONVERSION.md)
@@ -82,3 +84,25 @@
 - [로컬 Mac 전용 환경 기록](../metadata/conversion-local-environment.json)
 
 진단 예시와 원본 행별 거절/창 기록은 Git 제외 경로 `model/.cache/conversion-v1/`에 있습니다. 공개 보고서에는 원문·탐지 원문값·문서별 문장 해시를 저장하지 않았습니다. 모델의 정확도·재현율·F1은 아직 측정하지 않았습니다.
+
+---
+
+## 6. 후속 해결안: 한국어 분할기 후보군 진단 결과 (2026-10-31 갱신)
+
+A 파트는 원문만을 보고 결정하는 순수 한국어 분할기 후보 4종을 개발하고 K-PII-Bench 전체 train(243,711건) 및 dev(28,147건)에 대해 무손실 거절 정책 하에서 정밀 진단을 수행했습니다 ([상세 JSON](segmentation-diagnosis-v2.json)).
+
+### 분할기 후보별 Train(243,711건) 변환 결과 비교
+
+| 후보 ID | 변환 성공 문서 | 변환 비율 | 고유 문장 수 | 소실된 유형 (0개 보존) | 주요 거절 사유 |
+|---|---:|---:|---:|---|---|
+| `whitespace_default_v1` (기존) | 2,635 | 1.08% | **2,615** | 7종 (`URL`, `USERNAME`, `KR_PASSPORT` 등) | 조사 결합 경계불일치 (239,561건) |
+| `ko_script_particle_v1` | 147,405 | 60.48% | **145,511** | 1종 (`URL`) | 경계불일치 71,645, 12단어초과 24,465 |
+| `ko_script_suffix_v2` | 204,046 | 83.72% | **201,274** | 1종 (`URL`) | 12단어초과 33,068 (긴 URL 단어분할) |
+| **`ko_atomic_suffix_v3` (최종 권장)** | **236,900** | **97.21%** | **233,724** | **0종 (전 유형 보존)** | 경계불일치 6,230, 12단어초과 444 |
+
+- **권장안 `ko_atomic_suffix_v3`의 성과**:
+  - URL 및 이메일을 1개 원자적 단어(Atomic Word)로 보호하고 한글 조사/접미사를 분리하여, 12단어 스팬 한도 초과 문제를 해결했습니다.
+  - train 243,711건 중 **233,724건(95.9%)의 고유 문서**를 확보하여 PRD 5,000건 요건을 압도적으로 충족했습니다.
+  - 18개 전 유형 정답이 고르게 보존되었으며(`KR_RRN` 98.7%, `KR_PHONE_NUMBER` 98.2%, `URL` 99.8%), 역변환 위치 오류(`roundtrip_failures`)는 0건입니다.
+  - B 파트 운영 코드 연동 인터페이스 및 채택 제안을 [model/segmentation/README.md](../segmentation/README.md)에 정리 완료했습니다.
+

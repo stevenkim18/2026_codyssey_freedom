@@ -34,7 +34,27 @@
       "minimum_negative_documents": 100,
       "minimum_gold_entities_per_critical_type": 30,
       "must_be_fixed_before_training": true,
-      "status": "not_created"
+      "status": "draft_created_needs_human_review",
+      "manifest": "model/evaluation/service-test-v1.manifest.json",
+      "draft_path": "model/evaluation/service_testset/service-test-v1.draft.jsonl",
+      "actual_counts": {
+        "documents": 300,
+        "outbound": 150,
+        "inbound": 150,
+        "normal_documents": 100,
+        "critical_entities": {
+          "KR_RRN": 39,
+          "KR_BANK_ACCOUNT": 52,
+          "CREDIT_CARD": 40,
+          "KR_PHONE_NUMBER": 81,
+          "EMAIL_ADDRESS": 77
+        },
+        "missing_official_support_entities": {
+          "PERSONAL_ATTRIBUTE": 11
+        }
+      },
+      "overlap_with_k_pii_bench_exact_text": 0,
+      "overlap_with_k_pii_bench_long_surfaces": 0
     },
     "critical_types": [
       "KR_RRN",
@@ -89,8 +109,15 @@
     ]
   },
   "experiment_record_plan": {
-    "schema_version": "planned-1.0",
-    "status": "to_be_implemented_in_evaluation_stage",
+    "schema_version": "1.0",
+    "status": "implemented_in_stage4",
+    "modules": {
+      "metrics": "model/evaluation/metrics.py",
+      "policy_metrics": "model/evaluation/policy_metrics.py",
+      "records": "model/evaluation/records.py",
+      "compare": "model/evaluation/compare.py",
+      "cli": "model/evaluation/cli.py"
+    },
     "required_fields": [
       "experiment_id",
       "parent_experiment_id",
@@ -133,15 +160,30 @@
     }
   },
   "preprocessing_compatibility_gate": {
-    "status": "blocked_before_training_sample_selection",
-    "report": "reports/conversion-v1.json",
+    "status": "solution_candidate_ready_pending_A_B_agreement",
+    "initial_diagnostic_report": "reports/conversion-v1.json",
+    "solution_candidate_report": "reports/segmentation-diagnosis-v1.json",
+    "proposed_candidate": "ko_atomic_suffix_v3",
+    "initial_unique_train_documents": 2615,
+    "candidate_unique_train_documents": 233724,
+    "candidate_train_retention_rate": 0.959021,
     "required_unique_train_documents": 5000,
-    "available_unique_train_documents": 2615,
+    "minimum_train_count_met_by_candidate": true,
     "source_boundary_mismatch_not_gold_corruption": true,
-    "required_next_step": "Agree on a gold-independent shared A/B segmentation and offset protocol; revalidate conversion and M0 baseline under that same protocol.",
+    "a_b_coordination_status": "proposal_documented_pending_bilateral_adoption",
+    "proposal_document": "model/segmentation/README.md",
     "existing_B_runtime_modified": false,
     "diagnostic_subset_allowed_as_full_training_or_official_test": false,
     "label_mapping_adopted": false,
     "training_sample_selected": false
+  },
+  "supplementary_dataset_candidate": {
+    "repo_id": "townboy/korean-pii-dataset",
+    "revision": "076419f07f7073b6b28cdfdb6fbd8b75e1278053",
+    "status": "evaluated_not_adopted",
+    "lock_file": "configs/candidate-townboy-lock.json",
+    "report": "reports/candidate-townboy-v1.json",
+    "summary": "reports/candidate-supplement-summary.md",
+    "conclusion": "CC-BY-4.0 verified. 33 raw labels audited with 0 errors. Under 15 confirmed labels only 1,780 unique train documents survive. Retaining PRD standard K-PII-Bench without replacement."
   }
 }

@@ -1,0 +1,86 @@
+{
+  "dataset_version": "service-test-v1-draft",
+  "file": "service-test-v1.draft.jsonl",
+  "sha256": "559e87c0efb12509270a90d4ad77a76d0335d19a86dd68fd734ab76f15e094cb",
+  "bytes": 231607,
+  "builder_sha256": "8316c507d01cd255ed0ecf58661d7b7566ea20f3d162bf1dac46f4648094b032",
+  "validator_version": "service-cases-validator-v1",
+  "python": "3.12.14",
+  "validation": {
+    "validator_version": "service-cases-validator-v1",
+    "status": "draft_needs_review",
+    "errors": [],
+    "warnings": [],
+    "counts": {
+      "documents": 300,
+      "by_direction": {
+        "request": 150,
+        "response": 150
+      },
+      "normal_documents": 100,
+      "documents_with_gold": 200,
+      "entities_by_type": {
+        "KR_RRN": 42,
+        "CREDIT_CARD": 41,
+        "PERSON": 155,
+        "EMAIL_ADDRESS": 77,
+        "KR_PHONE_NUMBER": 80,
+        "KR_BANK_ACCOUNT": 53,
+        "KR_LOCATION": 17,
+        "DATE_OF_BIRTH": 18,
+        "KR_DRIVER_LICENSE": 8,
+        "KR_PASSPORT": 8,
+        "KR_NHIS": 7,
+        "KR_VEHICLE_PLATE": 11,
+        "USERNAME": 24,
+        "PERSONAL_ATTRIBUTE": 10,
+        "ORGANIZATION": 25,
+        "URL": 15,
+        "IP_ADDRESS": 31,
+        "NRP": 9
+      },
+      "tags": {
+        "boundary": 48,
+        "code": 52,
+        "csv": 7,
+        "hard_digits": 35,
+        "hard_names": 1,
+        "has_pii": 200,
+        "json": 14,
+        "log": 20,
+        "long": 14,
+        "markdown": 12,
+        "missing_type": 45,
+        "mixed_language": 33,
+        "multi_entity": 32,
+        "normal": 100,
+        "particle": 75,
+        "sql": 10,
+        "table": 23,
+        "yaml": 14
+      },
+      "long_documents_ge_600_chars": 9,
+      "distinct_skeletons": 137,
+      "max_instances_per_skeleton": 4,
+      "review_status": {
+        "needs_review": 300
+      },
+      "unreviewed_documents": 300
+    },
+    "official_overlap": {
+      "exact_text": 0,
+      "long_surface": [],
+      "long_surface_entities": 0
+    },
+    "frozen": false
+  },
+  "regeneration": "python -m model.evaluation.service_testset_builder --output-dir <dir>",
+  "git_policy": "JSONL is Git-ignored (*.jsonl). Commit this manifest and the builder; regenerate the file deterministically and compare sha256.",
+  "frozen": false,
+  "freeze_requirements": [
+    "human review of every document (review_status=reviewed)",
+    "status ready_to_freeze with official overlap checked",
+    "sha256 recorded in the experiment record before any M0/M1 run"
+  ],
+  "use_policy": "final validation only; never for dev tuning or threshold selection"
+}

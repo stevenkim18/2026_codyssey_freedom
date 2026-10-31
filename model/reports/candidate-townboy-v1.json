@@ -1,0 +1,733 @@
+{
+  "splits": {
+    "train": {
+      "documents": 9227,
+      "unique_texts": 9155,
+      "duplicate_extra_occurrences": 72,
+      "documents_with_overlapping_spans": 0,
+      "raw_defects": {},
+      "span_count": 45182,
+      "raw_label_counts": {
+        "ACCOUNT_NUMBER": 920,
+        "ADDRESS": 1125,
+        "AGE": 985,
+        "ALIEN_NUMBER": 955,
+        "BIRTHDATE": 578,
+        "BLOOD_TYPE": 518,
+        "CARD_NUMBER": 1067,
+        "CITY": 522,
+        "DEPARTMENT": 914,
+        "DRIVER_LICENSE": 965,
+        "EMAIL": 3314,
+        "EMPLOYEE_ID": 1030,
+        "GENDER": 992,
+        "HEIGHT": 505,
+        "IP_ADDRESS": 905,
+        "MAJOR": 1804,
+        "MEMBER_ID": 1003,
+        "NAME": 9672,
+        "NATIONALITY": 904,
+        "NICKNAME": 1823,
+        "PARTICIPANT_ID": 910,
+        "PASSPORTNUM": 1089,
+        "PHONE": 2173,
+        "POSITION": 924,
+        "RELIGION": 518,
+        "RRN": 1049,
+        "SCHOOL": 1804,
+        "URL": 1812,
+        "USER_ID": 910,
+        "VEHICLE_NUMBER": 916,
+        "WEIGHT": 505,
+        "WORKPLACE": 936,
+        "ZIPCODE": 1135
+      },
+      "documents_with_zero_spans": 801,
+      "policies": {
+        "confirmed_only": {
+          "mapped_documents": 1843,
+          "rejected_for_unmapped_labels": 7384,
+          "unmapped_label_reasons": {
+            "label_not_mapped:NICKNAME": 1200,
+            "label_not_mapped:ZIPCODE": 943,
+            "label_not_mapped:ALIEN_NUMBER": 922,
+            "label_not_mapped:SCHOOL": 892,
+            "label_not_mapped:POSITION": 658,
+            "label_not_mapped:PARTICIPANT_ID": 621,
+            "label_not_mapped:HEIGHT": 449,
+            "label_not_mapped:CITY": 300,
+            "label_not_mapped:USER_ID": 281,
+            "label_not_mapped:WORKPLACE": 184,
+            "label_not_mapped:MAJOR": 165,
+            "label_not_mapped:EMPLOYEE_ID": 164,
+            "label_not_mapped:MEMBER_ID": 141,
+            "label_not_mapped:DEPARTMENT": 135,
+            "label_not_mapped:AGE": 102,
+            "label_not_mapped:BLOOD_TYPE": 82,
+            "label_not_mapped:GENDER": 75,
+            "label_not_mapped:WEIGHT": 70
+          },
+          "by_planner": {
+            "whitespace_default_v1": {
+              "convertible_documents": 1482,
+              "unique_convertible_texts": 1433,
+              "rejected_by_conversion": {
+                "unaligned_entity_boundary": 358,
+                "entity_exceeds_max_width": 3
+              },
+              "gold_entities_by_project_type_in_unique_convertible": {
+                "CREDIT_CARD": 394,
+                "DATE_OF_BIRTH": 1,
+                "EMAIL_ADDRESS": 396,
+                "IP_ADDRESS": 1,
+                "KR_BANK_ACCOUNT": 599,
+                "KR_DRIVER_LICENSE": 378,
+                "KR_LOCATION": 1,
+                "KR_PASSPORT": 173,
+                "KR_PHONE_NUMBER": 3,
+                "KR_RRN": 240,
+                "KR_VEHICLE_PLATE": 3,
+                "NRP": 10,
+                "PERSON": 577,
+                "URL": 5
+              }
+            },
+            "ko_atomic_suffix_v3": {
+              "convertible_documents": 1837,
+              "unique_convertible_texts": 1780,
+              "rejected_by_conversion": {
+                "planning_incomplete": 5,
+                "entity_exceeds_max_width": 1
+              },
+              "gold_entities_by_project_type_in_unique_convertible": {
+                "CREDIT_CARD": 457,
+                "DATE_OF_BIRTH": 14,
+                "EMAIL_ADDRESS": 463,
+                "IP_ADDRESS": 4,
+                "KR_BANK_ACCOUNT": 696,
+                "KR_DRIVER_LICENSE": 475,
+                "KR_LOCATION": 3,
+                "KR_PASSPORT": 232,
+                "KR_PHONE_NUMBER": 3,
+                "KR_RRN": 279,
+                "KR_VEHICLE_PLATE": 16,
+                "NRP": 63,
+                "PERSON": 711,
+                "URL": 15
+              }
+            }
+          }
+        },
+        "confirmed_and_tentative": {
+          "mapped_documents": 5021,
+          "rejected_for_unmapped_labels": 4206,
+          "unmapped_label_reasons": {
+            "label_not_mapped:ZIPCODE": 1069,
+            "label_not_mapped:ALIEN_NUMBER": 933,
+            "label_not_mapped:EMPLOYEE_ID": 801,
+            "label_not_mapped:MEMBER_ID": 712,
+            "label_not_mapped:PARTICIPANT_ID": 691
+          },
+          "by_planner": {
+            "whitespace_default_v1": {
+              "convertible_documents": 3795,
+              "unique_convertible_texts": 3743,
+              "rejected_by_conversion": {
+                "unaligned_entity_boundary": 846,
+                "entity_exceeds_max_width": 377,
+                "partial_entity_in_window": 3
+              },
+              "gold_entities_by_project_type_in_unique_convertible": {
+                "CREDIT_CARD": 444,
+                "DATE_OF_BIRTH": 431,
+                "EMAIL_ADDRESS": 1182,
+                "IP_ADDRESS": 458,
+                "KR_BANK_ACCOUNT": 623,
+                "KR_DRIVER_LICENSE": 399,
+                "KR_LOCATION": 320,
+                "KR_PASSPORT": 198,
+                "KR_PHONE_NUMBER": 223,
+                "KR_RRN": 269,
+                "KR_VEHICLE_PLATE": 73,
+                "NRP": 547,
+                "ORGANIZATION": 1443,
+                "PERSON": 3002,
+                "PERSONAL_ATTRIBUTE": 3935,
+                "URL": 516,
+                "USERNAME": 1268
+              }
+            },
+            "ko_atomic_suffix_v3": {
+              "convertible_documents": 4800,
+              "unique_convertible_texts": 4728,
+              "rejected_by_conversion": {
+                "entity_exceeds_max_width": 179,
+                "unaligned_entity_boundary": 33,
+                "planning_incomplete": 8,
+                "partial_entity_in_window": 1
+              },
+              "gold_entities_by_project_type_in_unique_convertible": {
+                "CREDIT_CARD": 520,
+                "DATE_OF_BIRTH": 450,
+                "EMAIL_ADDRESS": 1500,
+                "IP_ADDRESS": 585,
+                "KR_BANK_ACCOUNT": 723,
+                "KR_DRIVER_LICENSE": 501,
+                "KR_LOCATION": 538,
+                "KR_PASSPORT": 348,
+                "KR_PHONE_NUMBER": 412,
+                "KR_RRN": 312,
+                "KR_VEHICLE_PLATE": 94,
+                "NRP": 664,
+                "ORGANIZATION": 1610,
+                "PERSON": 3766,
+                "PERSONAL_ATTRIBUTE": 4201,
+                "URL": 756,
+                "USERNAME": 1608
+              }
+            }
+          }
+        }
+      }
+    },
+    "validation": {
+      "documents": 1510,
+      "unique_texts": 1510,
+      "duplicate_extra_occurrences": 0,
+      "documents_with_overlapping_spans": 0,
+      "raw_defects": {},
+      "span_count": 7054,
+      "raw_label_counts": {
+        "ACCOUNT_NUMBER": 68,
+        "ADDRESS": 21,
+        "AGE": 34,
+        "ALIEN_NUMBER": 20,
+        "BIRTHDATE": 260,
+        "BLOOD_TYPE": 218,
+        "CARD_NUMBER": 19,
+        "CITY": 874,
+        "DEPARTMENT": 804,
+        "DRIVER_LICENSE": 20,
+        "EMAIL": 99,
+        "EMPLOYEE_ID": 42,
+        "GENDER": 34,
+        "HEIGHT": 218,
+        "IP_ADDRESS": 35,
+        "MAJOR": 24,
+        "MEMBER_ID": 26,
+        "NAME": 1117,
+        "NATIONALITY": 34,
+        "NICKNAME": 28,
+        "PARTICIPANT_ID": 8,
+        "PASSPORTNUM": 20,
+        "PHONE": 801,
+        "POSITION": 804,
+        "RELIGION": 218,
+        "RRN": 47,
+        "SCHOOL": 24,
+        "URL": 28,
+        "USER_ID": 34,
+        "VEHICLE_NUMBER": 35,
+        "WEIGHT": 218,
+        "WORKPLACE": 804,
+        "ZIPCODE": 18
+      },
+      "documents_with_zero_spans": 0,
+      "policies": {
+        "confirmed_only": {
+          "mapped_documents": 255,
+          "rejected_for_unmapped_labels": 1255,
+          "unmapped_label_reasons": {
+            "label_not_mapped:WORKPLACE": 804,
+            "label_not_mapped:HEIGHT": 218,
+            "label_not_mapped:EMPLOYEE_ID": 42,
+            "label_not_mapped:USER_ID": 34,
+            "label_not_mapped:AGE": 33,
+            "label_not_mapped:NICKNAME": 28,
+            "label_not_mapped:MAJOR": 24,
+            "label_not_mapped:SCHOOL": 24,
+            "label_not_mapped:ALIEN_NUMBER": 20,
+            "label_not_mapped:ZIPCODE": 18,
+            "label_not_mapped:DEPARTMENT": 4,
+            "label_not_mapped:POSITION": 4,
+            "label_not_mapped:GENDER": 1,
+            "label_not_mapped:MEMBER_ID": 1
+          },
+          "by_planner": {
+            "whitespace_default_v1": {
+              "convertible_documents": 70,
+              "unique_convertible_texts": 70,
+              "rejected_by_conversion": {
+                "unaligned_entity_boundary": 183,
+                "entity_exceeds_max_width": 2
+              },
+              "gold_entities_by_project_type_in_unique_convertible": {
+                "EMAIL_ADDRESS": 3,
+                "IP_ADDRESS": 1,
+                "KR_BANK_ACCOUNT": 25,
+                "KR_PASSPORT": 10,
+                "KR_RRN": 3,
+                "KR_VEHICLE_PLATE": 13,
+                "NRP": 10,
+                "PERSON": 3,
+                "URL": 2
+              }
+            },
+            "ko_atomic_suffix_v3": {
+              "convertible_documents": 242,
+              "unique_convertible_texts": 242,
+              "rejected_by_conversion": {
+                "entity_exceeds_max_width": 13
+              },
+              "gold_entities_by_project_type_in_unique_convertible": {
+                "EMAIL_ADDRESS": 5,
+                "IP_ADDRESS": 21,
+                "KR_BANK_ACCOUNT": 68,
+                "KR_DRIVER_LICENSE": 20,
+                "KR_LOCATION": 2,
+                "KR_PASSPORT": 20,
+                "KR_PHONE_NUMBER": 1,
+                "KR_RRN": 5,
+                "KR_VEHICLE_PLATE": 35,
+                "NRP": 34,
+                "PERSON": 5,
+                "URL": 28
+              }
+            }
+          }
+        },
+        "confirmed_and_tentative": {
+          "mapped_documents": 1396,
+          "rejected_for_unmapped_labels": 114,
+          "unmapped_label_reasons": {
+            "label_not_mapped:EMPLOYEE_ID": 42,
+            "label_not_mapped:MEMBER_ID": 26,
+            "label_not_mapped:ALIEN_NUMBER": 20,
+            "label_not_mapped:ZIPCODE": 18,
+            "label_not_mapped:PARTICIPANT_ID": 8
+          },
+          "by_planner": {
+            "whitespace_default_v1": {
+              "convertible_documents": 324,
+              "unique_convertible_texts": 324,
+              "rejected_by_conversion": {
+                "unaligned_entity_boundary": 1070,
+                "entity_exceeds_max_width": 2
+              },
+              "gold_entities_by_project_type_in_unique_convertible": {
+                "DATE_OF_BIRTH": 218,
+                "EMAIL_ADDRESS": 3,
+                "IP_ADDRESS": 1,
+                "KR_BANK_ACCOUNT": 25,
+                "KR_PASSPORT": 10,
+                "KR_RRN": 3,
+                "KR_VEHICLE_PLATE": 13,
+                "NRP": 228,
+                "ORGANIZATION": 11,
+                "PERSON": 221,
+                "PERSONAL_ATTRIBUTE": 675,
+                "URL": 2,
+                "USERNAME": 4
+              }
+            },
+            "ko_atomic_suffix_v3": {
+              "convertible_documents": 1383,
+              "unique_convertible_texts": 1383,
+              "rejected_by_conversion": {
+                "entity_exceeds_max_width": 13
+              },
+              "gold_entities_by_project_type_in_unique_convertible": {
+                "CREDIT_CARD": 1,
+                "DATE_OF_BIRTH": 218,
+                "EMAIL_ADDRESS": 6,
+                "IP_ADDRESS": 21,
+                "KR_BANK_ACCOUNT": 68,
+                "KR_DRIVER_LICENSE": 20,
+                "KR_LOCATION": 803,
+                "KR_PASSPORT": 20,
+                "KR_PHONE_NUMBER": 801,
+                "KR_RRN": 5,
+                "KR_VEHICLE_PLATE": 35,
+                "NRP": 252,
+                "ORGANIZATION": 1632,
+                "PERSON": 1024,
+                "PERSONAL_ATTRIBUTE": 1484,
+                "URL": 28,
+                "USERNAME": 62
+              }
+            }
+          }
+        }
+      }
+    },
+    "test": {
+      "documents": 995,
+      "unique_texts": 995,
+      "duplicate_extra_occurrences": 0,
+      "documents_with_overlapping_spans": 0,
+      "raw_defects": {},
+      "span_count": 3391,
+      "raw_label_counts": {
+        "ACCOUNT_NUMBER": 1,
+        "ADDRESS": 83,
+        "AGE": 53,
+        "ALIEN_NUMBER": 21,
+        "BIRTHDATE": 237,
+        "BLOOD_TYPE": 237,
+        "CARD_NUMBER": 1,
+        "CITY": 180,
+        "DEPARTMENT": 150,
+        "DRIVER_LICENSE": 21,
+        "EMAIL": 137,
+        "EMPLOYEE_ID": 1,
+        "GENDER": 53,
+        "HEIGHT": 237,
+        "IP_ADDRESS": 30,
+        "MAJOR": 40,
+        "MEMBER_ID": 53,
+        "NAME": 531,
+        "NATIONALITY": 30,
+        "NICKNAME": 40,
+        "PARTICIPANT_ID": 20,
+        "PASSPORTNUM": 48,
+        "PHONE": 210,
+        "POSITION": 140,
+        "RELIGION": 237,
+        "SCHOOL": 40,
+        "URL": 40,
+        "USER_ID": 30,
+        "VEHICLE_NUMBER": 30,
+        "WEIGHT": 237,
+        "WORKPLACE": 140,
+        "ZIPCODE": 83
+      },
+      "documents_with_zero_spans": 0,
+      "policies": {
+        "confirmed_only": {
+          "mapped_documents": 173,
+          "rejected_for_unmapped_labels": 822,
+          "unmapped_label_reasons": {
+            "label_not_mapped:HEIGHT": 237,
+            "label_not_mapped:WORKPLACE": 140,
+            "label_not_mapped:ZIPCODE": 83,
+            "label_not_mapped:AGE": 53,
+            "label_not_mapped:DEPARTMENT": 50,
+            "label_not_mapped:NICKNAME": 40,
+            "label_not_mapped:MAJOR": 40,
+            "label_not_mapped:POSITION": 40,
+            "label_not_mapped:SCHOOL": 40,
+            "label_not_mapped:USER_ID": 30,
+            "label_not_mapped:CITY": 27,
+            "label_not_mapped:ALIEN_NUMBER": 21,
+            "label_not_mapped:PARTICIPANT_ID": 20,
+            "label_not_mapped:EMPLOYEE_ID": 1
+          },
+          "by_planner": {
+            "whitespace_default_v1": {
+              "convertible_documents": 41,
+              "unique_convertible_texts": 41,
+              "rejected_by_conversion": {
+                "unaligned_entity_boundary": 132
+              },
+              "gold_entities_by_project_type_in_unique_convertible": {
+                "KR_DRIVER_LICENSE": 10,
+                "KR_PASSPORT": 11,
+                "KR_VEHICLE_PLATE": 10,
+                "NRP": 10,
+                "PERSON": 1
+              }
+            },
+            "ko_atomic_suffix_v3": {
+              "convertible_documents": 166,
+              "unique_convertible_texts": 166,
+              "rejected_by_conversion": {
+                "entity_exceeds_max_width": 7
+              },
+              "gold_entities_by_project_type_in_unique_convertible": {
+                "IP_ADDRESS": 23,
+                "KR_BANK_ACCOUNT": 1,
+                "KR_DRIVER_LICENSE": 21,
+                "KR_PASSPORT": 21,
+                "KR_VEHICLE_PLATE": 30,
+                "NRP": 30,
+                "PERSON": 1,
+                "URL": 40
+              }
+            }
+          }
+        },
+        "confirmed_and_tentative": {
+          "mapped_documents": 817,
+          "rejected_for_unmapped_labels": 178,
+          "unmapped_label_reasons": {
+            "label_not_mapped:ZIPCODE": 83,
+            "label_not_mapped:MEMBER_ID": 53,
+            "label_not_mapped:ALIEN_NUMBER": 21,
+            "label_not_mapped:PARTICIPANT_ID": 20,
+            "label_not_mapped:EMPLOYEE_ID": 1
+          },
+          "by_planner": {
+            "whitespace_default_v1": {
+              "convertible_documents": 348,
+              "unique_convertible_texts": 348,
+              "rejected_by_conversion": {
+                "unaligned_entity_boundary": 469
+              },
+              "gold_entities_by_project_type_in_unique_convertible": {
+                "DATE_OF_BIRTH": 237,
+                "KR_DRIVER_LICENSE": 10,
+                "KR_PASSPORT": 11,
+                "KR_VEHICLE_PLATE": 10,
+                "NRP": 247,
+                "ORGANIZATION": 40,
+                "PERSON": 238,
+                "PERSONAL_ATTRIBUTE": 721,
+                "USERNAME": 20
+              }
+            },
+            "ko_atomic_suffix_v3": {
+              "convertible_documents": 810,
+              "unique_convertible_texts": 810,
+              "rejected_by_conversion": {
+                "entity_exceeds_max_width": 7
+              },
+              "gold_entities_by_project_type_in_unique_convertible": {
+                "DATE_OF_BIRTH": 237,
+                "IP_ADDRESS": 23,
+                "KR_BANK_ACCOUNT": 1,
+                "KR_DRIVER_LICENSE": 21,
+                "KR_LOCATION": 127,
+                "KR_PASSPORT": 48,
+                "KR_PHONE_NUMBER": 127,
+                "KR_VEHICLE_PLATE": 30,
+                "NRP": 267,
+                "ORGANIZATION": 330,
+                "PERSON": 392,
+                "PERSONAL_ATTRIBUTE": 891,
+                "URL": 40,
+                "USERNAME": 70
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "cross_split_duplicate_texts": {
+    "train+validation": 1,
+    "train+test": 0,
+    "validation+test": 0
+  },
+  "overlap_with_project_data": {
+    "train": {
+      "exact_text_with_k_pii_bench": 0,
+      "exact_text_with_service_set": 0,
+      "long_surface_entities_in_k_pii_bench": 62
+    },
+    "validation": {
+      "exact_text_with_k_pii_bench": 0,
+      "exact_text_with_service_set": 0,
+      "long_surface_entities_in_k_pii_bench": 29
+    },
+    "test": {
+      "exact_text_with_k_pii_bench": 0,
+      "exact_text_with_service_set": 0,
+      "long_surface_entities_in_k_pii_bench": 17
+    }
+  },
+  "schema_version": "1.0",
+  "report_id": "candidate-townboy-v1",
+  "status": "candidate_not_adopted",
+  "dataset": "townboy/korean-pii-dataset",
+  "revision": "076419f07f7073b6b28cdfdb6fbd8b75e1278053",
+  "license": {
+    "id": "CC-BY-4.0",
+    "source": "dataset card metadata, LICENSE file and README",
+    "attribution": "townboy/korean-pii-dataset, Korean Synthetic PII Dataset.",
+    "legalcode": "https://creativecommons.org/licenses/by/4.0/legalcode"
+  },
+  "lock_sha256": "d999b622691d1f8b8ca6bb8bee244eb6c31cfc6a7315cae559f5bed6c3f9b0c1",
+  "mapping_status_by_label": {
+    "NAME": {
+      "project_type": "PERSON",
+      "status": "confirmed",
+      "note": ""
+    },
+    "EMAIL": {
+      "project_type": "EMAIL_ADDRESS",
+      "status": "confirmed",
+      "note": ""
+    },
+    "PHONE": {
+      "project_type": "KR_PHONE_NUMBER",
+      "status": "confirmed",
+      "note": "region KR only is stated; foreign formats unverified"
+    },
+    "ACCOUNT_NUMBER": {
+      "project_type": "KR_BANK_ACCOUNT",
+      "status": "confirmed",
+      "note": ""
+    },
+    "CARD_NUMBER": {
+      "project_type": "CREDIT_CARD",
+      "status": "confirmed",
+      "note": ""
+    },
+    "RRN": {
+      "project_type": "KR_RRN",
+      "status": "confirmed",
+      "note": ""
+    },
+    "ADDRESS": {
+      "project_type": "KR_LOCATION",
+      "status": "confirmed",
+      "note": "full street address"
+    },
+    "BIRTHDATE": {
+      "project_type": "DATE_OF_BIRTH",
+      "status": "confirmed",
+      "note": ""
+    },
+    "DRIVER_LICENSE": {
+      "project_type": "KR_DRIVER_LICENSE",
+      "status": "confirmed",
+      "note": ""
+    },
+    "PASSPORTNUM": {
+      "project_type": "KR_PASSPORT",
+      "status": "confirmed",
+      "note": ""
+    },
+    "VEHICLE_NUMBER": {
+      "project_type": "KR_VEHICLE_PLATE",
+      "status": "confirmed",
+      "note": ""
+    },
+    "IP_ADDRESS": {
+      "project_type": "IP_ADDRESS",
+      "status": "confirmed",
+      "note": ""
+    },
+    "URL": {
+      "project_type": "URL",
+      "status": "confirmed",
+      "note": ""
+    },
+    "NATIONALITY": {
+      "project_type": "NRP",
+      "status": "confirmed",
+      "note": "nationality part of NRP"
+    },
+    "RELIGION": {
+      "project_type": "NRP",
+      "status": "confirmed",
+      "note": "religion part of NRP"
+    },
+    "CITY": {
+      "project_type": "KR_LOCATION",
+      "status": "tentative",
+      "note": "city-level fragment; K-PII-Bench KR_LOCATION granularity not verified"
+    },
+    "USER_ID": {
+      "project_type": "USERNAME",
+      "status": "tentative",
+      "note": "login id vs K-PII-Bench USERNAME semantics not verified"
+    },
+    "NICKNAME": {
+      "project_type": "USERNAME",
+      "status": "tentative",
+      "note": "nickname is not necessarily an account name"
+    },
+    "WORKPLACE": {
+      "project_type": "ORGANIZATION",
+      "status": "tentative",
+      "note": "employer vs generic organization"
+    },
+    "SCHOOL": {
+      "project_type": "ORGANIZATION",
+      "status": "tentative",
+      "note": "school is an organization but may be personal attribute"
+    },
+    "DEPARTMENT": {
+      "project_type": "ORGANIZATION",
+      "status": "tentative",
+      "note": "internal unit; policy ALLOW for ORGANIZATION may hide risk"
+    },
+    "BLOOD_TYPE": {
+      "project_type": "PERSONAL_ATTRIBUTE",
+      "status": "tentative",
+      "note": "PERSONAL_ATTRIBUTE definition in K-PII-Bench unverified"
+    },
+    "HEIGHT": {
+      "project_type": "PERSONAL_ATTRIBUTE",
+      "status": "tentative",
+      "note": "same"
+    },
+    "WEIGHT": {
+      "project_type": "PERSONAL_ATTRIBUTE",
+      "status": "tentative",
+      "note": "same"
+    },
+    "AGE": {
+      "project_type": "PERSONAL_ATTRIBUTE",
+      "status": "tentative",
+      "note": "same"
+    },
+    "GENDER": {
+      "project_type": "PERSONAL_ATTRIBUTE",
+      "status": "tentative",
+      "note": "same"
+    },
+    "MAJOR": {
+      "project_type": "PERSONAL_ATTRIBUTE",
+      "status": "tentative",
+      "note": "same"
+    },
+    "POSITION": {
+      "project_type": "PERSONAL_ATTRIBUTE",
+      "status": "tentative",
+      "note": "job title; same"
+    },
+    "ZIPCODE": {
+      "project_type": null,
+      "status": "unmapped",
+      "note": "no project type; part of an address but not the same span"
+    },
+    "ALIEN_NUMBER": {
+      "project_type": null,
+      "status": "unmapped",
+      "note": "foreigner registration number; KR_RRN semantics differ, undecided"
+    },
+    "EMPLOYEE_ID": {
+      "project_type": null,
+      "status": "unmapped",
+      "note": "internal identifier; no project type"
+    },
+    "MEMBER_ID": {
+      "project_type": null,
+      "status": "unmapped",
+      "note": "service member id; no project type"
+    },
+    "PARTICIPANT_ID": {
+      "project_type": null,
+      "status": "unmapped",
+      "note": "event participant id; no project type"
+    }
+  },
+  "policies": {
+    "confirmed_only": [
+      "confirmed"
+    ],
+    "confirmed_and_tentative": [
+      "confirmed",
+      "tentative"
+    ]
+  },
+  "candidates": {
+    "whitespace_default_v1": "a-seg-candidate-whitespace_default_v1",
+    "ko_atomic_suffix_v3": "a-seg-candidate-ko_atomic_suffix_v3"
+  },
+  "adopted": false,
+  "k_pii_bench_replaced": false,
+  "test_split_used_for_training": false
+}
