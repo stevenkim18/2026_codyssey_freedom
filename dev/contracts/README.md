@@ -32,15 +32,17 @@ than 32, independently of the aggregate 16,000-codepoint text limit.
 `GET /healthz` is liveness only. In direct-backend mode, `GET /readyz` requires
 a backend, token and nonempty model/threshold versions other than `unloaded`.
 That mode relies on the injector to load and warm its backend. In manager mode,
-readiness requires the manager's dynamic ready state and a token. No concrete M0
-loader or real GPU model is supplied in this development cycle.
+readiness requires the manager's dynamic ready state and a token. The production
+`detector.server` connects a concrete offline GLiNER M0 loader; local CPU loading
+was verified separately. No GPU inspection service is currently deployed.
 
 The app permits one active backend execution and eight waiting inspections by
 default. Timed-out/cancelled work receives cancellation; the execution slot stays
 occupied until that backend actually terminates. Backends must be asynchronous
 and cancellation-aware; blocking GPU adapters require separate executor isolation.
-These mock checks do not prove GPU warmup, TLS, real CLI compatibility, latency,
-model quality, or model replacement/rollback.
+The GLiNER adapter isolates synchronous work in the manager's thread executor.
+Mock checks do not prove GPU warmup, latency or model quality. Local real TLS and
+pinned CLI checks have separate evidence; they do not prove remote deployment.
 
 ## Local model package contract
 

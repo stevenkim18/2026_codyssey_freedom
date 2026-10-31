@@ -255,7 +255,7 @@ def strict_local_package(tmp_path, manifest, *, mutation=None, auxiliary=None):
 def fake_library(monkeypatch, loader):
     import detector.gliner_backend as module
     library = SimpleNamespace(__version__=GLINER_VERSION, GLiNER=SimpleNamespace(from_pretrained=loader))
-    monkeypatch.setattr(module.importlib, "import_module", lambda name: library)
+    monkeypatch.setattr(module.importlib, "import_module", lambda name: SimpleNamespace(__version__="2.10.0") if name == "torch" else library)
 
 
 def test_default_factory_uses_supported_gliner_keywords_after_config_guards(tmp_path, complete_manifest, monkeypatch):

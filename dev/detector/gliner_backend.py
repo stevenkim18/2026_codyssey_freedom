@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 import warnings
 from typing import get_args
+from packaging.version import Version
 
 from . import timing as stage_timing
 from .runtime import ModelPackage, _verify_package
@@ -18,6 +19,7 @@ from .schemas import BackendResult, Finding, PIIType, Segment
 M0_REPO_ID = "urchade/gliner_multi_pii-v1"
 M0_REVISION = "1fcf13e85f4eef5394e1fcd406cf2ca9ea82351d"
 GLINER_VERSION = "0.2.29"
+MIN_TORCH_VERSION = Version("2.10.0")
 MODEL_TYPES = frozenset(get_args(PIIType)) - {"API_KEY", "PRIVATE_KEY"}
 PINNED_ENCODER_CONFIG = {
     "model_type": "deberta-v2", "attention_probs_dropout_prob": 0.1, "hidden_act": "gelu",
@@ -249,7 +251,8 @@ def _guard_builtin_m0(root, checked):
 def load_gliner(package_dir, manifest, *, loader=None, device="cpu"):
     """Load a verified M0 package locally; injected loader is for offline tests.
 
-The default GLiNER pin uses weights_only=True for .bin deserialization. A
+The default GLiNER pin uses weights_only=True for .bin deserialization and
+requires a stable PyTorch >=2.10.0 (GHSA-63cw-57p8-fm3p) before loading weights. A
 bundled tokenizer_config.json is mandatory to prevent tokenizer Hub fallback.
 Actual backbone/config cache independence requires the separate cold-start gate.
 """
@@ -266,6 +269,13 @@ Actual backbone/config cache independence requires the separate cold-start gate.
         if loader is None:
             library = importlib.import_module("gliner")
             if library.__version__ != GLINER_VERSION:
+                raise ValueError
+            torch = importlib.import_module("torch")
+            if not isinstance(torch.__version__, str):
+                raise ValueError
+            torch_version = Version(torch.__version__)
+            if (torch_version.epoch != 0 or torch_version.is_prerelease
+                    or torch_version < MIN_TORCH_VERSION):
                 raise ValueError
             loader = library.GLiNER.from_pretrained
         else:
