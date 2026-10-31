@@ -5,6 +5,7 @@
 - **현재 브랜치**: `model`
 - **현재 진행 상태**: **1~5단계 완료 (100% 실측 완료)** $\rightarrow$ **6단계 (M1 5,000건 파인튜닝) 착수 대기**
 - **로컬 테스트 현황**: 173개 단위/통합 테스트 전원 통과 (`173 passed in 0.23s`)
+- **참조 문서**: 메인 가이드 [`model_README.md`](model_README.md) (메인 디렉터리 README와 구분하기 위해 이름 변경됨), 전체 작업 흐름 [`process.md`](process.md)
 
 ---
 
@@ -111,3 +112,4 @@ python -m model.evaluation decide model/reports/m1-service-test-record.json mode
 - **보안**: `model/.secrets` 내 비밀번호, OTP, 키값은 절대 커밋하거나 로그/응답에 평문 출력하지 마십시오.
 - **대용량 파일**: 모델 가중치 파일(`.bin`, `.pt`, `.safetensors`) 및 원본/중간 데이터셋(`.jsonl`)은 Git에 커밋하지 않습니다 (`.gitignore` 설정 완료).
 - **테스트 무결성**: 코드 수정 시 반드시 `model/.cache/conversion-venv/bin/python -m pytest model/tests -q`로 173개 테스트 통과를 확인하십시오.
+
