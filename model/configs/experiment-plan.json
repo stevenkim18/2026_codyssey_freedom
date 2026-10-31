@@ -58,5 +58,78 @@
     "hold_if_any_critical_type_regresses_unresolved": true,
     "report_per_type_misses_denominators_changes_and_confidence_intervals": true,
     "requires_B_runtime_memory_latency_and_integration_acceptance": true
+  },
+  "comparison_protocol_plan": {
+    "status": "planned_not_implemented_or_executed",
+    "selection_data": "dev_only",
+    "final_test_policy": "Reserve official and independent service tests for final validation of selected models/settings; do not score every trial on these tests.",
+    "before_training": [
+      "Confirm labels, chunking/overlap and original-codepoint offsets against B implementation",
+      "Measure M0 basic and dev-selected settings as separate experiments",
+      "Use a recorded fair dev selection procedure, search scope and resource budget for both M0 and M1"
+    ],
+    "improvement_candidates": [
+      "label names and descriptions",
+      "per-type detection thresholds",
+      "the same detection rules",
+      "long-text chunking and overlap",
+      "span postprocessing"
+    ],
+    "candidate_effects_measured": false,
+    "ownership": "Align with B serving configuration and reuse existing functionality; do not duplicate its runtime, rules or postprocessing.",
+    "comparison_modes": {
+      "dev_selected_pipeline": "Select M0 and M1 settings fairly on dev. Attribute the difference to the complete recorded pipelines.",
+      "controlled_weights_only": "When claiming an isolated fine-tuning effect, hold labels, thresholds, rules, chunking and postprocessing fixed across M0/M1."
+    },
+    "cumulative_change_interpretation": "A -> B -> C differences are incremental effects in that order, including interactions; they are not independent effects.",
+    "optional_single_factor_check": "When needed, change one factor from a common M0 reference. Do not automatically run all combinations.",
+    "report_modes": [
+      "model_only",
+      "model_plus_same_rules"
+    ]
+  },
+  "experiment_record_plan": {
+    "schema_version": "planned-1.0",
+    "status": "to_be_implemented_in_evaluation_stage",
+    "required_fields": [
+      "experiment_id",
+      "parent_experiment_id",
+      "common_baseline_experiment_id",
+      "changed_factors",
+      "comparison_mode",
+      "comparison_condition_id",
+      "model_repo_revision_or_checkpoint_sha256",
+      "dataset_revision",
+      "split_and_service_test_version",
+      "sample_manifest_sha256",
+      "seed",
+      "inference_configuration",
+      "label_mapping_version",
+      "threshold_version",
+      "rules_version",
+      "policy_version",
+      "chunking_and_overlap_version",
+      "span_postprocessing_version",
+      "metrics_protocol_version",
+      "started_at_utc",
+      "finished_at_utc",
+      "overall_precision_recall_f1",
+      "per_type_precision_recall_f1_and_denominators",
+      "critical_type_false_negatives_and_gold_counts",
+      "normal_false_block_rate_and_denominator",
+      "delta_vs_parent",
+      "delta_vs_common_baseline"
+    ],
+    "rate_units": "Rates in [0,1]; percentage-point deltas = 100 * (current - reference). Counts use count differences.",
+    "zero_denominator_policy": "Undefined with denominator 0; never fabricate 0% or 100%. PERSONAL_ATTRIBUTE has no gold support in the current dev/test splits.",
+    "epoch_history": "Link each epoch/checkpoint to train/dev metrics, configuration, artifact and selection reason; no final-test tuning.",
+    "stage_mapping": {
+      "1": "Record experiment configuration/history requirements",
+      "4": "Implement metric/record schemas and fair comparisons",
+      "5": "Record M0 basic and dev-selected results",
+      "6": "Record epoch/dev/checkpoint history",
+      "7": "Evaluate selected models/settings on final tests and generate improvement-history tables",
+      "8": "Hand off final settings, experiment history and reports"
+    }
   }
 }

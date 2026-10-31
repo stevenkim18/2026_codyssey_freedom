@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "recorded_at_utc": "2026-10-31T08:40:15+00:00",
+  "test_result": {
+    "runner": "unittest; compatible with pytest discovery",
+    "tests_run": 47,
+    "status": "OK",
+    "observed_duration_seconds": 0.061,
+    "python_version": "3.12.14",
+    "command": "python3 -m unittest discover -s model/tests -v",
+    "network_and_gpu_used_by_tests": false
+  },
+  "development_sequence": "Missing implementation RED, implementation GREEN; Unicode/number and duplicate-label-support regressions reproduced RED then fixed GREEN.",
+  "code_sha256": {
+    "__init__.py": "ec4099d22334dfe9283c9091fa957cd38c825a3342e299d6e724bd218bf6c93c",
+    "data/__init__.py": "9ce76838f8fd8c75d363ad3bcd8ab3436138c8d2e1d0e5da6eeefb3d2e0f81dc",
+    "data/audit.py": "f483ac93969d262c1a1e02fd69c22a773f044d6e42bf0f96cc1b346fd54a0380",
+    "data/download.py": "f3cfffcf62cabb457e5353576521ec369d6558c2db4c63a880e0c3348d2ed183",
+    "data/manifest.py": "810783be6b3b858bea221758a9560fa2ea1ee10e51042e2eeb5e8fd4a4eeb72f",
+    "tests/__init__.py": "b7d34454c663153808d5e8000c974c516d35380d9c736f13ad17c1400f6efcf7",
+    "tests/helpers.py": "dd6a37169c55caca53cd61a5d04b5da25ebcf7ea14e9d06ef937bf3e5fbf0d1a",
+    "tests/test_audit.py": "f9510af4a15a257ae4f8da34a9a1d429173406b5822418d88b73942f1eac0678",
+    "tests/test_download.py": "36886adec5da26ed672b61065c18decb30a18ad5175cc6d37f211179060ba714"
+  },
+  "full_data_audit": {
+    "path": "reports/data-audit-v2.json",
+    "sha256": "2a7d55bdb10977b34f8b664501b98fa12a674b3a572864d9b5df14b532325dab",
+    "status": "needs_review",
+    "documents": 300000,
+    "errors": {},
+    "warnings": {
+      "duplicate_text_within_split": 4035
+    }
+  },
+  "scope_limitations": [
+    "No GLiNER conversion, predictions, training or GPU verification",
+    "Duplicate-text handling remains under review",
+    "No negative examples in source; PERSONAL_ATTRIBUTE absent from dev/test"
+  ],
+  "additional_documentation_sha256": {
+    "configs/experiment-plan.json": "d216417a27a2f9041bd4820e5b3dbc69f32a75887739a945f852464c1741b289",
+    "reports/data-audit-summary.md": "cdc844ddcf7182242abd5417775d7516ad372036d5221e4cde20963e5968a429"
+  },
+  "additional_comparison_planning": {
+    "status": "planned_only",
+    "existing_eight_stages_preserved": true,
+    "new_model_experiments_run": false,
+    "comparison_plan_consistency": "passed"
+  }
+}

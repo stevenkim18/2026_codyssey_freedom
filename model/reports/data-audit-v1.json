@@ -1,0 +1,403 @@
+{
+  "schema_version": "1.0",
+  "status": "needs_review",
+  "created_at_utc": "2026-10-31T08:34:49+00:00",
+  "repo_id": "woohyun212/k-pii-bench",
+  "revision": "844f92f7beba98fa964f957ba324017e82451701",
+  "assets_lock_sha256": "34a7367eaf24cad1d71f386369db423467ee2cf38b4e44ce9fb3b873457a1a6a",
+  "upstream_statistics_sha256": "19f659d4ac8f0d459169e2f4bd301e2a59260670c40468a436039cfd06b763f0",
+  "implementation_sha256": {
+    "audit.py": "98616874fb87137f382ef3d775a51cb2a39982ffc7f191a331aeda2f42eb5b5d",
+    "manifest.py": "810783be6b3b858bea221758a9560fa2ea1ee10e51042e2eeb5e8fd4a4eeb72f"
+  },
+  "python_version": "3.12.14",
+  "elapsed_seconds": 19.028,
+  "scope": "Full-file integrity and all-record structural/gold-span/distribution/duplicate checks. No model predictions, tokenizer conversion or model-quality measurements.",
+  "test_split_use": "Structural quality audit only; no model or threshold selection.",
+  "total_documents": 300000,
+  "splits": {
+    "train": {
+      "documents": 243711,
+      "physical_lines": 243711,
+      "entity_count": 1112580,
+      "negative_documents": 0,
+      "label_counts": {
+        "CREDIT_CARD": 18753,
+        "DATE_OF_BIRTH": 41726,
+        "EMAIL_ADDRESS": 79350,
+        "IP_ADDRESS": 31674,
+        "KR_BANK_ACCOUNT": 53092,
+        "KR_DRIVER_LICENSE": 21295,
+        "KR_LOCATION": 58096,
+        "KR_NHIS": 19935,
+        "KR_PASSPORT": 14503,
+        "KR_PHONE_NUMBER": 94098,
+        "KR_RRN": 105578,
+        "KR_VEHICLE_PLATE": 24366,
+        "NRP": 24955,
+        "ORGANIZATION": 63555,
+        "PERSON": 406979,
+        "PERSONAL_ATTRIBUTE": 2460,
+        "URL": 33294,
+        "USERNAME": 18871
+      },
+      "documents_per_label": {
+        "CREDIT_CARD": 17523,
+        "DATE_OF_BIRTH": 38681,
+        "EMAIL_ADDRESS": 76366,
+        "IP_ADDRESS": 29298,
+        "KR_BANK_ACCOUNT": 48266,
+        "KR_DRIVER_LICENSE": 18185,
+        "KR_LOCATION": 56837,
+        "KR_NHIS": 15088,
+        "KR_PASSPORT": 12738,
+        "KR_PHONE_NUMBER": 91051,
+        "KR_RRN": 98208,
+        "KR_VEHICLE_PLATE": 21910,
+        "NRP": 24328,
+        "ORGANIZATION": 61105,
+        "PERSON": 221762,
+        "PERSONAL_ATTRIBUTE": 2460,
+        "URL": 32699,
+        "USERNAME": 17052
+      },
+      "domain_counts": {
+        "chat": 19937,
+        "document": 19955,
+        "education": 20082,
+        "email_thread": 19990,
+        "employment": 20102,
+        "financial": 20091,
+        "government": 19786,
+        "insurance": 19967,
+        "legal": 23429,
+        "medical": 20108,
+        "support_ticket": 20082,
+        "telecommunications": 20182
+      },
+      "over_gateway_limit_documents": 0,
+      "unique_doc_ids": 243711,
+      "unique_texts": 240425,
+      "unique_template_ids": 402,
+      "unique_template_skeletons": 394,
+      "integrity": {
+        "matches": true,
+        "expected_sha256": "c484cff4823c8a8f291d08520aee4b6955d7e0dd34f96db62a4e75d0b91429a5",
+        "expected_bytes": 1268092270,
+        "actual_sha256": "c484cff4823c8a8f291d08520aee4b6955d7e0dd34f96db62a4e75d0b91429a5",
+        "actual_bytes": 1268092270
+      },
+      "text_length": {
+        "min": 120,
+        "max": 709,
+        "mean": 224.332,
+        "p50": 210,
+        "p95": 311
+      }
+    },
+    "dev": {
+      "documents": 28147,
+      "physical_lines": 28147,
+      "entity_count": 123519,
+      "negative_documents": 0,
+      "label_counts": {
+        "CREDIT_CARD": 2916,
+        "DATE_OF_BIRTH": 2873,
+        "EMAIL_ADDRESS": 9804,
+        "IP_ADDRESS": 6313,
+        "KR_BANK_ACCOUNT": 6293,
+        "KR_DRIVER_LICENSE": 2317,
+        "KR_LOCATION": 4574,
+        "KR_NHIS": 580,
+        "KR_PASSPORT": 1135,
+        "KR_PHONE_NUMBER": 8063,
+        "KR_RRN": 18933,
+        "KR_VEHICLE_PLATE": 2273,
+        "NRP": 2304,
+        "ORGANIZATION": 4654,
+        "PERSON": 43732,
+        "URL": 5043,
+        "USERNAME": 1712
+      },
+      "documents_per_label": {
+        "CREDIT_CARD": 2327,
+        "DATE_OF_BIRTH": 2873,
+        "EMAIL_ADDRESS": 9804,
+        "IP_ADDRESS": 4586,
+        "KR_BANK_ACCOUNT": 5716,
+        "KR_DRIVER_LICENSE": 2317,
+        "KR_LOCATION": 4574,
+        "KR_NHIS": 580,
+        "KR_PASSPORT": 1135,
+        "KR_PHONE_NUMBER": 8063,
+        "KR_RRN": 16077,
+        "KR_VEHICLE_PLATE": 2273,
+        "NRP": 2304,
+        "ORGANIZATION": 4654,
+        "PERSON": 23031,
+        "URL": 5043,
+        "USERNAME": 1712
+      },
+      "domain_counts": {
+        "chat": 2292,
+        "document": 2271,
+        "education": 2293,
+        "email_thread": 2307,
+        "employment": 2306,
+        "financial": 2315,
+        "government": 2268,
+        "insurance": 2275,
+        "legal": 2893,
+        "medical": 2299,
+        "support_ticket": 2315,
+        "telecommunications": 2313
+      },
+      "over_gateway_limit_documents": 0,
+      "unique_doc_ids": 28147,
+      "unique_texts": 27845,
+      "unique_template_ids": 49,
+      "unique_template_skeletons": 49,
+      "integrity": {
+        "matches": true,
+        "expected_sha256": "2f056ea7eb4a55054aeeb278416b088b02a7fc0254a8afbfd5c9ede4deffa493",
+        "expected_bytes": 147128906,
+        "actual_sha256": "2f056ea7eb4a55054aeeb278416b088b02a7fc0254a8afbfd5c9ede4deffa493",
+        "actual_bytes": 147128906
+      },
+      "text_length": {
+        "min": 153,
+        "max": 533,
+        "mean": 229.191,
+        "p50": 223,
+        "p95": 340
+      }
+    },
+    "test_track_a": {
+      "documents": 28142,
+      "physical_lines": 28142,
+      "entity_count": 121176,
+      "negative_documents": 0,
+      "label_counts": {
+        "CREDIT_CARD": 2266,
+        "DATE_OF_BIRTH": 2891,
+        "EMAIL_ADDRESS": 12045,
+        "IP_ADDRESS": 1710,
+        "KR_BANK_ACCOUNT": 4081,
+        "KR_DRIVER_LICENSE": 1739,
+        "KR_LOCATION": 5172,
+        "KR_NHIS": 2306,
+        "KR_PASSPORT": 4004,
+        "KR_PHONE_NUMBER": 11482,
+        "KR_RRN": 12048,
+        "KR_VEHICLE_PLATE": 2305,
+        "NRP": 2300,
+        "ORGANIZATION": 8012,
+        "PERSON": 40845,
+        "URL": 5680,
+        "USERNAME": 2290
+      },
+      "documents_per_label": {
+        "CREDIT_CARD": 1700,
+        "DATE_OF_BIRTH": 2891,
+        "EMAIL_ADDRESS": 12045,
+        "IP_ADDRESS": 1710,
+        "KR_BANK_ACCOUNT": 4081,
+        "KR_DRIVER_LICENSE": 1739,
+        "KR_LOCATION": 4606,
+        "KR_NHIS": 2306,
+        "KR_PASSPORT": 2870,
+        "KR_PHONE_NUMBER": 10915,
+        "KR_RRN": 12048,
+        "KR_VEHICLE_PLATE": 2305,
+        "NRP": 1721,
+        "ORGANIZATION": 8012,
+        "PERSON": 25276,
+        "URL": 5680,
+        "USERNAME": 2290
+      },
+      "domain_counts": {
+        "chat": 2294,
+        "document": 2282,
+        "education": 2289,
+        "email_thread": 2303,
+        "employment": 2297,
+        "financial": 2316,
+        "government": 2272,
+        "insurance": 2279,
+        "legal": 2881,
+        "medical": 2292,
+        "support_ticket": 2324,
+        "telecommunications": 2313
+      },
+      "over_gateway_limit_documents": 0,
+      "unique_doc_ids": 28142,
+      "unique_texts": 27695,
+      "unique_template_ids": 49,
+      "unique_template_skeletons": 49,
+      "integrity": {
+        "matches": true,
+        "expected_sha256": "219c023f69832f9089d59df00368320fc76be81e05ee602cf0909289cd456add",
+        "expected_bytes": 143005610,
+        "actual_sha256": "219c023f69832f9089d59df00368320fc76be81e05ee602cf0909289cd456add",
+        "actual_bytes": 143005610
+      },
+      "text_length": {
+        "min": 136,
+        "max": 320,
+        "mean": 219.513,
+        "p50": 219,
+        "p95": 289
+      }
+    }
+  },
+  "cross_split_overlap": {
+    "train__dev": {
+      "doc_id": 0,
+      "text": 0,
+      "template_id": 0,
+      "template_text": 0
+    },
+    "train__test_track_a": {
+      "doc_id": 0,
+      "text": 0,
+      "template_id": 0,
+      "template_text": 0
+    },
+    "dev__test_track_a": {
+      "doc_id": 0,
+      "text": 0,
+      "template_id": 0,
+      "template_text": 0
+    }
+  },
+  "errors": {},
+  "warnings": {
+    "duplicate_text_within_split": 4035
+  },
+  "issue_examples": [
+    {
+      "code": "duplicate_text_within_split",
+      "severity": "review",
+      "split": "train",
+      "line": 2335
+    },
+    {
+      "code": "duplicate_text_within_split",
+      "severity": "review",
+      "split": "train",
+      "line": 2636
+    },
+    {
+      "code": "duplicate_text_within_split",
+      "severity": "review",
+      "split": "train",
+      "line": 3348
+    },
+    {
+      "code": "duplicate_text_within_split",
+      "severity": "review",
+      "split": "train",
+      "line": 3581
+    },
+    {
+      "code": "duplicate_text_within_split",
+      "severity": "review",
+      "split": "train",
+      "line": 5417
+    },
+    {
+      "code": "duplicate_text_within_split",
+      "severity": "review",
+      "split": "train",
+      "line": 5858
+    },
+    {
+      "code": "duplicate_text_within_split",
+      "severity": "review",
+      "split": "train",
+      "line": 7264
+    },
+    {
+      "code": "duplicate_text_within_split",
+      "severity": "review",
+      "split": "train",
+      "line": 7861
+    },
+    {
+      "code": "duplicate_text_within_split",
+      "severity": "review",
+      "split": "train",
+      "line": 9077
+    },
+    {
+      "code": "duplicate_text_within_split",
+      "severity": "review",
+      "split": "train",
+      "line": 9554
+    },
+    {
+      "code": "duplicate_text_within_split",
+      "severity": "review",
+      "split": "train",
+      "line": 9831
+    },
+    {
+      "code": "duplicate_text_within_split",
+      "severity": "review",
+      "split": "train",
+      "line": 10063
+    },
+    {
+      "code": "duplicate_text_within_split",
+      "severity": "review",
+      "split": "train",
+      "line": 10559
+    },
+    {
+      "code": "duplicate_text_within_split",
+      "severity": "review",
+      "split": "train",
+      "line": 11351
+    },
+    {
+      "code": "duplicate_text_within_split",
+      "severity": "review",
+      "split": "train",
+      "line": 13438
+    },
+    {
+      "code": "duplicate_text_within_split",
+      "severity": "review",
+      "split": "train",
+      "line": 14048
+    },
+    {
+      "code": "duplicate_text_within_split",
+      "severity": "review",
+      "split": "train",
+      "line": 15006
+    },
+    {
+      "code": "duplicate_text_within_split",
+      "severity": "review",
+      "split": "train",
+      "line": 15525
+    },
+    {
+      "code": "duplicate_text_within_split",
+      "severity": "review",
+      "split": "train",
+      "line": 16058
+    },
+    {
+      "code": "duplicate_text_within_split",
+      "severity": "review",
+      "split": "train",
+      "line": 16705
+    }
+  ],
+  "issue_example_limit": 20,
+  "report_privacy": "No raw document text, entity surface values, document IDs or per-record text hashes are exported. Whole-file hashes identify the fixed public dataset files.",
+  "ready_for_conversion_without_review": false,
+  "training_performed": false
+}
