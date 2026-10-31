@@ -160,10 +160,16 @@ class Journal:
             except sqlite3.Error:
                 raise JournalError("journal write failed") from None
 
-    def pending(self):
+    def pending(self, *, limit=None):
+        """Read committed events; optional SQL LIMIT bounds replay allocation."""
+        if limit is not None and (type(limit) is not int or not 1 <= limit <= 1000):
+            raise JournalError("invalid pending limit")
         with self._lock:
             try:
-                rows = self._require_open().execute("SELECT event_id,payload FROM events ORDER BY rowid").fetchall()
+                query = "SELECT event_id,payload FROM events ORDER BY rowid"
+                if limit is not None:
+                    query += " LIMIT ?"
+                rows = self._require_open().execute(query, () if limit is None else (limit,)).fetchall()
                 events = []
                 for event_id, payload in rows:
                     event = json.loads(payload)

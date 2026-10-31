@@ -267,3 +267,22 @@ def test_closed_journal_raises_content_free_error(tmp_path):
     journal.close()
     with pytest.raises(JournalError):
         journal.append(event())
+
+
+def test_pending_limit_bounds_the_sql_read_and_preserves_default_api(tmp_path):
+    with Journal(tmp_path / "events.sqlite3") as journal:
+        for index in range(4):
+            journal.append(event(f"event-{index}"))
+        queries = []
+        journal._connection.set_trace_callback(queries.append)
+        assert journal.pending(limit=2) == [event("event-0"), event("event-1")]
+        assert any("LIMIT 2" in query for query in queries)
+        assert journal.pending(limit=1) == [event("event-0")]
+        assert len(journal.pending()) == len(journal.pending(limit=None)) == 4
+
+
+@pytest.mark.parametrize("limit", [0, -1, True, 1.0, "1", 1001])
+def test_pending_invalid_limit_cannot_trigger_an_unbounded_read(tmp_path, limit):
+    with Journal(tmp_path / "events.sqlite3") as journal:
+        with pytest.raises(JournalError):
+            journal.pending(limit=limit)
