@@ -1,8 +1,10 @@
 """Run from dev: python -m deployment --help."""
 import argparse
 import base64
+import hashlib
 from contextlib import nullcontext
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -16,6 +18,29 @@ class SafeParser(argparse.ArgumentParser):
         self.exit(2, "invalid_cli_arguments\n")
 
 
+def _packet_inputs(path, trusted):
+    # Import only on this path; preparation validates metadata, never loads tensors.
+    from . import prepare
+    from .model_stage import _file, _same_file
+    try:
+        manifest = prepare.verify(path, expected_manifest_sha256=trusted)
+        snapshots = {}
+        for name, limit in (("deploy.json", 1024 * 1024), ("application.tar", 20 * 1024 * 1024)):
+            with _file(path / name, limit) as (handle, before):
+                data = handle.read(limit + 1)
+                if len(data) > limit or not _same_file(before, os.fstat(handle.fileno())):
+                    raise ValueError()
+            if hashlib.sha256(data).hexdigest() != manifest["files"][name]:
+                raise ValueError()
+            snapshots[name] = data
+        spec = Spec.parse(prepare._json(snapshots["deploy.json"]))
+        if spec.role != manifest["role"] or len(snapshots["application.tar"]) != manifest["application"]["bytes"]:
+            raise ValueError()
+        return spec, snapshots["application.tar"], manifest["application"]["sha256"]
+    except Exception:
+        raise DeploymentError("invalid_deployment_packet") from None
+
+
 def main(argv=None, *, run=subprocess.run):
     parser = SafeParser(description="Managed user-service deployment; no dependency installation or deletion")
     parser.add_argument("mode", choices=("plan", "preflight", "deploy", "verify", "rollback"))
@@ -23,13 +48,24 @@ def main(argv=None, *, run=subprocess.run):
     parser.add_argument("--spec", type=Path, help="Nonsecret service JSON contract; required except read-only preflight")
     parser.add_argument("--python", help="Optional absolute app Python path to inspect during contract-free preflight")
     parser.add_argument("--known-hosts", type=Path, help="Independently verified host keys; exact file mode 0600")
-    parser.add_argument("--source", type=Path, default=Path(__file__).resolve().parents[1])
+    parser.add_argument("--source", type=Path)
+    parser.add_argument("--packet", type=Path, help="Verified prepared packet; incompatible with --source and --spec")
+    parser.add_argument("--expected-manifest-sha256", help="Trusted packet manifest digest; required for remote packet modes")
     authentication = parser.add_mutually_exclusive_group()
     authentication.add_argument("--interactive-auth", action="store_true", help="Permit native OpenSSH terminal authentication")
     authentication.add_argument("--password-auth", action="store_true", help="One-use native askpass from the private access file; verified host key required")
     args = parser.parse_args(argv)
     try:
-        spec = Spec.parse(json.loads(args.spec.read_text())) if args.spec else None
+        if args.packet:
+            if args.spec is not None or args.source is not None or args.python is not None:
+                raise DeploymentError("packet_input_conflict")
+            if args.mode != "plan" and args.expected_manifest_sha256 is None:
+                raise DeploymentError("trusted_packet_digest_required")
+            spec, data, digest = _packet_inputs(args.packet, args.expected_manifest_sha256)
+        else:
+            if args.expected_manifest_sha256 is not None:
+                raise DeploymentError("packet_required")
+            spec = Spec.parse(json.loads(args.spec.read_text())) if args.spec else None
         if spec and spec.role != args.role:
             raise DeploymentError("role_mismatch")
         if not spec and args.mode != "preflight":
@@ -41,7 +77,8 @@ def main(argv=None, *, run=subprocess.run):
         if not spec and python:
             request["application_python"] = python
         if args.mode in {"plan", "deploy"}:
-            data, digest = bundle(args.source, args.role)
+            if not args.packet:
+                data, digest = bundle(args.source or Path(__file__).resolve().parents[1], args.role)
             request.update(bundle=base64.b64encode(data).decode("ascii"), sha256=digest)
         if args.mode == "plan":
             print(json.dumps({"status":"planned", "role":args.role, "sha256":digest,
@@ -78,6 +115,8 @@ def main(argv=None, *, run=subprocess.run):
             if status == "error":
                 print(json.dumps({"status":"error", "code":"remote_operation_failed"}))
                 return 2
+            if args.packet and args.mode in {"deploy", "verify"} and result.get("release") != digest:
+                raise ValueError
             public = {"status":status, "role":args.role}
             if args.mode == "preflight":
                 details = result.get("details", {})

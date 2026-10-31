@@ -5,6 +5,10 @@
 수행하지 않는다. 현재 검증은 **로컬 합성 SSH/파일시스템 테스트**다. 실제 서버의
 CUDA, systemd, TLS, 성능 및 C 서비스 검증을 완료했다는 뜻이 아니다.
 
+서버 접속 없이 전달 파일을 준비하는 [packet 가이드](PREPARE.md)와
+[모델 staging 가이드](MODEL_STAGE.md)를 먼저 확인한다. 실제 실행은 아래
+역할별 사전 조건과 별도 사용자 승인 범위에서만 수행한다.
+
 ## 역할과 사전 조건
 
 - `gpu`: B의 `python -m detector`. 서비스 JSON에서 `device`를 `cuda` 또는
@@ -30,10 +34,14 @@ CUDA, systemd, TLS, 성능 및 C 서비스 검증을 완료했다는 뜻이 아�
   GPU 환경에는 `PII_DETECTOR_TOKEN`, `PII_MODEL_PACKAGE`가 필요하고,
   `PII_DETECTOR_PORT`, `PII_DETECTOR_DEVICE`는 서비스 계약과 일치해야 한다.
   모델 패키지는 별도로 준비한다. 토큰·모델·SQLite·환경 파일은 업로드하지 않는다.
-- 두 서비스는 IPv4 `127.0.0.1`에 직접 바인딩해야 한다. 서비스의 main PID가
+- 기본 bind는 IPv4 `127.0.0.1`이다. GPU 직접 TLS는 `bind_host: "0.0.0.0"`와
+  HTTPS health/ready를 함께 설정할 수 있다. 해당 URL의 대상은 항상 loopback이다.
+  GPU 환경의 `PII_DETECTOR_HOST` 및 인증서/키 쌍과 계약이 일치해야 하며
+  `tls_ca_file`로 신뢰 CA를 지정할 수 있다. [TLS 준비·전환·롤백](GPU_TLS.md)을 따른다.
+  서비스의 main PID가
   health/ready 포트를 실제로 소유하는지 `/proc`로 확인한다. fork한 자식만
-  포트를 여는 서비스는 이 실행기의 계약에 맞지 않는다. 외부 TLS 종단은
-  별도로 구성하고 검증해야 한다.
+  포트를 여는 서비스는 이 실행기의 계약에 맞지 않는다. listener 주소도 계약의
+  bind와 정확히 일치해야 한다. 실제 클라이언트의 TLS 경로는 별도로 검증한다.
 
 ## 호스트 신뢰 및 인증
 
@@ -54,7 +62,8 @@ CUDA, systemd, TLS, 성능 및 C 서비스 검증을 완료했다는 뜻이 아�
 서버의 비밀번호를 읽는다. 비밀번호를 인수·환경변수·임시 파일·로그에 넣지 않는다.
 키 암호·OTP·VPN 프롬프트나 다른 사용자/호스트 프롬프트에는 응답하지 않으며,
 비밀번호 인증은 한 번만 시도한다. context와 helper는 비밀값 없이 `.cache`에
-보존하고 세션 종료 후 비활성화한다. 실제 원격 비밀번호 인증은 아직 미검증이다.
+보존하고 세션 종료 후 비활성화한다. 이전 승인 단계에서 실제 원격 비밀번호
+인증·호스트 사전 확인을 검증했으며 현재는 두 서버 모두 접속을 중단한 상태다.
 인증 및 호스트 키 실패의 원문 stderr는 출력하지 않는다.
 
 ## 실행
@@ -135,9 +144,11 @@ ready 및 프로세스·포트 소유권을 검사하고, 실패하면 기존 re
 결합되지 않는다. 빈 표본·timeout만으로 VPN/ACG/서버 중 원인을 확정하지 않는다.
 
 중단된 배포 디렉터리는 [읽기 전용 복구 진단](RECOVERY.md)으로 먼저 확인한다.
-상태 기록·링크 전환 사이 중단과 첫 release 부분 기록은 현재 재배포/rollback을
-막을 수 있으며 자동 복구는 구현하지 않았다. 기존 파일을 삭제하거나 상태를
-추측해 바꾸지 않는다. 관련 미해결 항목은 `dev/BACKLOG.md`의 S04다.
+같은 bundle/SHA의 검증 가능한 중단 상태는 기존 내용을 보존하며 재배포할 수
+있다. 완성 stage는 bundle과 대조하고 부분 stage는 검증 후 별도 보존한다.
+명시적 실패 state·알 수 없는 임시 파일·모든 전원 손실을 자동 수리하는 것은
+아니다. 기존 파일을 삭제하거나 상태를 추측해 바꾸지 않는다. 검증 범위는
+`dev/BACKLOG.md`의 S04를 따른다.
 
 C 계약의 SQLite·업로드·기타 영속 데이터 경로는 반드시 release 트리 밖의
 고정된 절대 경로를 사용해야 한다. WorkingDirectory는 release마다 달라지므로
@@ -151,3 +162,51 @@ python -m pytest deployment/tests -q
 
 R11/T07/T10의 배포 준비, 실패 시 readiness 거부, 안전한 오류 노출을 검증한다.
 초기 RED와 복구 경로 RED/GREEN 결과는 `dev/.cache/deployment-*.log`에 기록한다.
+# Applying a prepared packet (future authorized operation)
+
+The deployment CLI accepts a packet produced by `deployment.prepare` through
+`--packet`. This path consumes the verified `application.tar` bytes and the
+verified `deploy.json`; it never rebuilds the current working source. Changes to
+the working source after preparation do not enter that packet's deployment.
+
+From `dev`, using the approved Python environment, a local-only check is:
+
+```sh
+python -m deployment plan --role gpu --packet /absolute/private-packet
+```
+
+Every remote packet mode (`preflight`, `deploy`, `verify`, `rollback`) requires
+`--expected-manifest-sha256` from a separately trusted preparation record.
+For a future explicitly authorized operation, the command form is:
+
+```sh
+python -m deployment deploy --role gpu --packet /absolute/private-packet \
+  --expected-manifest-sha256 TRUSTED_MANIFEST_SHA256 \
+  --known-hosts /absolute/private-known-hosts
+```
+
+Replace `deploy` with the intended remote mode; these modes connect to the server
+when invoked. This documentation is not authorization to run them. GPU access
+remains handed off to A until the user separately authorizes further access.
+Use `--role general` only for a packet containing the actual shared C service.
+
+`--packet` rejects `--source`, `--spec`, and `--python` overrides, including equal
+values. Role must match the packet. Host keys and authentication remain external
+operator inputs; existing `--password-auth` and `--interactive-auth` behavior is
+unchanged. No credential, token, or TLS private-key material belongs in a packet.
+The full packet is validated, then bounded application/spec bytes are read and
+their hashes checked again before credentials or SSH are used. The in-memory
+application snapshot is what is sent. A matching digest establishes integrity
+against the trusted record, not model quality or approval. Model staging,
+readiness, actual TLS communication, and server/GPU verification remain separate.
+
+For packet `verify`, the running release must match the packet's application
+digest. `rollback` instead selects the previously recorded healthy release; a
+packet supplies its verified service configuration, not a rollback target. Inspect
+the returned release digest and the retained deployment state before a separately
+authorized rollback.
+
+Without `--packet`, the existing source/spec workflow remains available. A
+manifest digest supplied without a packet is rejected. Local fixture tests mock
+all transport; passing them does not claim any real deployment.
+

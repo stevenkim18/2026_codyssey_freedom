@@ -67,6 +67,22 @@ def _state_dir(env):
     return path
 
 
+def _detector_ca_file(env):
+    if "PII_DETECTOR_CA_FILE" not in env:
+        return None
+    value = env["PII_DETECTOR_CA_FILE"]
+    try:
+        if not isinstance(value, str) or not value or any(ord(c) < 32 or ord(c) == 127 for c in value):
+            raise ValueError
+        value.encode("utf-8")
+        path = Path(value)
+        if not path.is_absolute():
+            raise ValueError
+        return path
+    except (ValueError, UnicodeError):
+        raise SettingsError("INVALID_DETECTOR_CA_FILE") from None
+
+
 @dataclass(frozen=True)
 class Settings:
     local_token: str = field(repr=False)
@@ -76,6 +92,7 @@ class Settings:
     model_id: str
     port: int
     state_dir: Path = field(repr=False)
+    detector_ca_file: Path | None = field(default=None, repr=False)
     host: str = field(default="127.0.0.1", init=False)
     upstream_url: str = field(default="https://api.openai.com/v1/responses", init=False)
     verify_tls: bool = field(default=True, init=False)
@@ -86,7 +103,8 @@ class Settings:
 
         Required: PII_GATEWAY_LOCAL_TOKEN, PII_DETECTOR_URL,
         PII_DETECTOR_TOKEN, OPENAI_API_KEY and PII_MODEL_ID. Optional strings:
-        PII_GATEWAY_PORT (8765), PII_STATE_DIR (platform home local state).
+        PII_GATEWAY_PORT (8765), PII_STATE_DIR (platform home local state),
+        PII_DETECTOR_CA_FILE (absolute PEM trust-anchor path, detector only).
         Credentials are preserved exactly; whitespace is rejected, not stripped.
         """
         if not isinstance(env, Mapping):
@@ -104,4 +122,5 @@ class Settings:
         if not isinstance(port, str) or _PORT.fullmatch(port) is None or not 1 <= int(port) <= 65535:
             raise SettingsError("INVALID_PORT")
         return cls(local_token=local_token, detector_url=detector_url, detector_token=detector_token,
-                   openai_api_key=openai_api_key, model_id=model_id, port=int(port), state_dir=_state_dir(env))
+                   openai_api_key=openai_api_key, model_id=model_id, port=int(port), state_dir=_state_dir(env),
+                   detector_ca_file=_detector_ca_file(env))

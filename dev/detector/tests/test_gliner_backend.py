@@ -306,6 +306,43 @@ def test_t07_local_loader_is_pinned_offline_and_does_not_implicitly_warm(local_p
     assert not loaded.warmed
 
 
+@pytest.mark.parametrize("version", ["2.0.0", "2.5.1", "2.6.0", "2.9.1", "2.10.0rc1",
+                                     "2.10.0.dev1", "2.11.0.dev1", "1!2.0.0", "PRIVATE_INVALID_VERSION", None, True])
+def test_t10_builtin_loader_rejects_unpatched_or_unverified_torch_before_deserialization(local_package, monkeypatch, version):
+    import detector.gliner_backend as module
+    root, manifest = local_package
+    calls = []
+    def deserialize(*args, **kwargs):
+        calls.append(True)
+        return Model()
+    libraries = {
+        "gliner": SimpleNamespace(__version__=GLINER_VERSION, GLiNER=SimpleNamespace(from_pretrained=deserialize)),
+        "torch": SimpleNamespace(__version__=version),
+    }
+    monkeypatch.setattr(module.importlib, "import_module", lambda name: libraries[name])
+    with pytest.raises(ModelBackendError) as error:
+        load_gliner(root, manifest)
+    assert calls == []
+    assert str(error.value) == "gliner_load_failed"
+
+
+@pytest.mark.parametrize("version", ["2.10.0", "2.10.0+cu130", "2.12.0"])
+def test_t10_builtin_loader_accepts_supported_stable_torch_version(local_package, monkeypatch, version):
+    import detector.gliner_backend as module
+    root, manifest = local_package
+    calls = []
+    def deserialize(*args, **kwargs):
+        calls.append(True)
+        return Model()
+    libraries = {
+        "gliner": SimpleNamespace(__version__=GLINER_VERSION, GLiNER=SimpleNamespace(from_pretrained=deserialize)),
+        "torch": SimpleNamespace(__version__=version),
+    }
+    monkeypatch.setattr(module.importlib, "import_module", lambda name: libraries[name])
+    assert isinstance(load_gliner(root, manifest), GLiNERBackend)
+    assert calls == [True]
+
+
 @pytest.mark.parametrize("mode", ["manifest_mismatch", "wrong_revision", "device", "missing_tokenizer", "remote_code", "loader_error", "wrong_version", "default_loader"])
 def test_t07_factory_rejects_unsafe_packages_and_incompatible_libraries(local_package, monkeypatch, mode):
     import detector.gliner_backend as module
@@ -331,6 +368,7 @@ def test_t07_factory_rejects_unsafe_packages_and_incompatible_libraries(local_pa
         (root / "manifest.json").write_text(json.dumps(manifest))
     if mode in {"wrong_version", "default_loader"}:
         monkeypatch.setattr(module.importlib, "import_module", lambda name: SimpleNamespace(
+            __version__="2.10.0") if name == "torch" else SimpleNamespace(
             __version__="wrong" if mode == "wrong_version" else GLINER_VERSION,
             GLiNER=SimpleNamespace(from_pretrained=loader)))
         supplied_loader = None
@@ -399,6 +437,7 @@ def test_t07_default_library_loader_does_not_receive_unsupported_remote_code_key
         assert local_files_only and strict and load_tokenizer and map_location == "cpu"
         return Model()
     monkeypatch.setattr(module.importlib, "import_module", lambda name: SimpleNamespace(
+        __version__="2.10.0") if name == "torch" else SimpleNamespace(
         __version__=GLINER_VERSION, GLiNER=SimpleNamespace(from_pretrained=real_supported_signature)))
     assert isinstance(load_gliner(root, manifest), GLiNERBackend)
 

@@ -35,6 +35,8 @@ class Spec:
     device: str
     requirements: dict
     timeout: int = 120
+    bind_host: str = "127.0.0.1"
+    tls_ca_file: str | None = None
 
     @classmethod
     def parse(cls, raw):
@@ -65,12 +67,22 @@ class Spec:
                 raise ValueError
             if type(result.timeout) is not int or not 1 <= result.timeout <= 600:
                 raise ValueError
+            if result.bind_host not in {"127.0.0.1", "0.0.0.0"}:
+                raise ValueError
+            if result.tls_ca_file is not None and not safe_path(result.tls_ca_file):
+                raise ValueError
+            schemes = set()
             for url in (result.health_url, result.ready_url):
                 parsed = urlsplit(url)
-                if (parsed.scheme != "http" or parsed.hostname != "127.0.0.1" or not parsed.port
+                if (parsed.scheme not in {"http", "https"} or parsed.hostname != "127.0.0.1" or not parsed.port
                         or parsed.username or parsed.password or parsed.query or parsed.fragment
                         or not re.fullmatch(r"/[A-Za-z0-9_/-]+", parsed.path)):
                     raise ValueError
+                schemes.add(parsed.scheme)
+            if len(schemes) != 1 or (result.bind_host == "0.0.0.0" and schemes != {"https"}):
+                raise ValueError
+            if result.tls_ca_file is not None and schemes != {"https"}:
+                raise ValueError
             for expected in (result.health_json, result.ready_json):
                 if not isinstance(expected, dict) or not expected or any(not isinstance(k, str) or not isinstance(v, (str, bool, int)) for k,v in expected.items()):
                     raise ValueError

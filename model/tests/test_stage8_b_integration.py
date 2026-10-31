@@ -166,6 +166,40 @@ def test_b_gliner_backend_filters_numeric_lookalike_kr_rrn_and_redacted_placehol
     assert recheck_text[recheck_res.findings[0].start:recheck_res.findings[0].end] == "김철수"
 
 
+def test_merged_backend_records_timings_with_guarded_global_offsets():
+    from dev.detector import timing
+
+    def entities(text):
+        return [{"start": m.start(), "end": m.end(), "text": m.group(),
+                 "label": label, "score": 0.95}
+                for pattern, label in [(r"010-1234-5678", "kr_rrn"),
+                                       (r"900101-1234567", "kr_rrn"),
+                                       (r"\[REDACTED\]", "person"),
+                                       (r"김철수", "person")]
+                for m in re.finditer(pattern, text)]
+
+    model = _Model(entities=entities, max_len=64, max_width=12)
+    backend = GLiNERBackend(model, _base_manifest())
+    backend.warmup()
+    # Force a later window: guards must see document offsets, not window offsets.
+    text = "안내 문장입니다. " * 45 + "010-1234-5678 [REDACTED] 주민번호 900101-1234567 김철수"
+    reports = []
+    model.calls.clear()
+    with timing.observe(reports.append):
+        result = backend.inspect([{"segment_id": "merged", "text": text}])
+        timing.outcome(result.status)
+    assert result.status == "complete" and len(model.calls) > 1
+    assert {(f.type, text[f.start:f.end]) for f in result.findings} == {
+        ("KR_RRN", "900101-1234567"), ("PERSON", "김철수")}
+    assert len(result.findings) == 2  # overlapping windows still deduplicate
+    stages = reports[0]["stages"]
+    assert reports[0]["outcome"] == "complete"
+    assert stages["preprocessing"]["completed"] == 1
+    assert stages["model_call"]["completed"] == len(model.calls)
+    assert stages["postprocessing"]["completed"] == len(model.calls)
+    assert all(stage["failed"] == 0 for stage in stages.values())
+
+
 def _write_package_dir(root, *, revision, encoder_config, preprocessing_version, model_version):
     root.mkdir(parents=True, exist_ok=True)
     manifest = _base_manifest(preprocessing_version=preprocessing_version, revision=revision)

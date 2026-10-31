@@ -14,6 +14,7 @@ from .engine import Gateway
 from .journal import Journal, JournalError
 from .replay import ReplayWorker
 from .settings import Settings, SettingsError
+from .tls import detector_tls_context
 from .transport import InspectionClient, TransportError, UpstreamClient
 
 
@@ -29,6 +30,7 @@ def create_server(settings, *, client_factory=httpx.AsyncClient, send_events=Non
         raise ValueError("event replay requires an explicit adapter")
     if replay_options is not None and not isinstance(replay_options, dict):
         raise ValueError("invalid event replay configuration")
+    detector_verify = detector_tls_context(settings.detector_ca_file)
     shipper = LocalEventShipper(None, send_events) if send_events is not None else None
     worker = ReplayWorker(shipper, **dict(replay_options or {})) if shipper is not None else None
     lifespan_active = False
@@ -41,7 +43,7 @@ def create_server(settings, *, client_factory=httpx.AsyncClient, send_events=Non
         lifespan_active = True
         try:
             with Journal(settings.state_dir / "events.sqlite3") as journal:
-                async with client_factory(trust_env=False, verify=True) as detector_http, \
+                async with client_factory(trust_env=False, verify=detector_verify) as detector_http, \
                         client_factory(trust_env=False, verify=True) as upstream_http:
                     inspector = InspectionClient(detector_http, settings.detector_url, settings.detector_token)
                     upstream = UpstreamClient(upstream_http, "https://api.openai.com/v1/responses",
@@ -75,9 +77,14 @@ def main():
     try:
         settings = Settings.from_env(os.environ)
         app = create_server(settings)
-    except (SettingsError, JournalError, TransportError):
+        # No command-line or environment switch can open the binding or access logs.
+        uvicorn.run(app, host="127.0.0.1", port=settings.port, access_log=False, log_level="critical")
+    except SystemExit as exc:
+        if exc.code in (None, 0):
+            return 0
         print("Gateway startup rejected: invalid or unavailable secure configuration.", file=sys.stderr)
         return 2
-    # No command-line or environment switch can open the binding or access logs.
-    uvicorn.run(app, host="127.0.0.1", port=settings.port, access_log=False, log_level="critical")
+    except (SettingsError, JournalError, TransportError, OSError):
+        print("Gateway startup rejected: invalid or unavailable secure configuration.", file=sys.stderr)
+        return 2
     return 0

@@ -10,7 +10,9 @@ from pathlib import Path
 import re
 import warnings
 from typing import get_args
+from packaging.version import Version
 
+from . import timing as stage_timing
 from .runtime import ModelPackage, _verify_package
 from .schemas import BackendResult, Finding, PIIType, Segment
 
@@ -23,6 +25,7 @@ ALLOWED_MODEL_IDENTITIES = frozenset({
     (M0_REPO_ID, M1_REVISION),
 })
 GLINER_VERSION = "0.2.29"
+MIN_TORCH_VERSION = Version("2.10.0")
 MODEL_TYPES = frozenset(get_args(PIIType)) - {"API_KEY", "PRIVATE_KEY"}
 PINNED_ENCODER_CONFIG = {
     "model_type": "deberta-v2", "attention_probs_dropout_prob": 0.1, "hidden_act": "gelu",
@@ -326,47 +329,50 @@ class GLiNERBackend:
 
     def _inspect(self, segments):
         try:
-            parsed = [Segment.model_validate(segment) for segment in segments]
-            if (not parsed or len({segment.segment_id for segment in parsed}) != len(parsed)
-                    or sum(len(segment.text) for segment in parsed) > self.manifest["preprocessing"]["max_input_codepoints"]):
-                raise ValueError
-            try:
-                checks_remaining = [self.max_plan_checks]
-                plans = [(segment, self._plan(segment.text, checks_remaining)) for segment in parsed]
-                if sum(len(windows) for _, windows in plans) > self.max_windows:
-                    raise _CoverageError
-            except Exception:
-                return BackendResult(status="incomplete")
+            with stage_timing.stage("preprocessing"):
+                parsed = [Segment.model_validate(segment) for segment in segments]
+                if (not parsed or len({segment.segment_id for segment in parsed}) != len(parsed)
+                        or sum(len(segment.text) for segment in parsed) > self.manifest["preprocessing"]["max_input_codepoints"]):
+                    raise ValueError
+                try:
+                    checks_remaining = [self.max_plan_checks]
+                    plans = [(segment, self._plan(segment.text, checks_remaining)) for segment in parsed]
+                    if sum(len(windows) for _, windows in plans) > self.max_windows:
+                        raise _CoverageError
+                except Exception:
+                    return BackendResult(status="incomplete")
             findings = {}
             for segment, windows in plans:
                 for start, end in windows:
                     text = segment.text[start:end]
-                    with warnings.catch_warnings(record=True) as emitted:
-                        warnings.simplefilter("always")
-                        raw = self.model.predict_entities(text, self.labels[:], flat_ner=False, multi_label=True,
-                                                          threshold=min(self.thresholds.values()))
-                    if any("truncat" in str(warning.message).lower() for warning in emitted):
-                        raise ValueError
-                    if not isinstance(raw, list):
-                        raise ValueError
-                    for entity in raw:
-                        kind = self.canonical[entity["label"]]
-                        finding = Finding(segment_id=segment.segment_id, type=kind, start=entity["start"],
-                                          end=entity["end"], score=entity["score"], detector="model")
-                        if finding.end > len(text) or entity["text"] != text[finding.start:finding.end]:
+                    with stage_timing.stage("model_call"):
+                        with warnings.catch_warnings(record=True) as emitted:
+                            warnings.simplefilter("always")
+                            raw = self.model.predict_entities(text, self.labels[:], flat_ner=False, multi_label=True,
+                                                              threshold=min(self.thresholds.values()))
+                    with stage_timing.stage("postprocessing"):
+                        if any("truncat" in str(warning.message).lower() for warning in emitted):
                             raise ValueError
-                        if finding.score < self.thresholds[kind]:
-                            continue
-                        finding.start += start
-                        finding.end += start
-                        if getattr(self, "korean_guards", False):
-                            if kind == "KR_RRN" and not _is_valid_kr_rrn(segment.text, finding.start, finding.end):
+                        if not isinstance(raw, list):
+                            raise ValueError
+                        for entity in raw:
+                            kind = self.canonical[entity["label"]]
+                            finding = Finding(segment_id=segment.segment_id, type=kind, start=entity["start"],
+                                              end=entity["end"], score=entity["score"], detector="model")
+                            if finding.end > len(text) or entity["text"] != text[finding.start:finding.end]:
+                                raise ValueError
+                            if finding.score < self.thresholds[kind]:
                                 continue
-                            if _overlaps_redacted_placeholder(segment.text, finding.start, finding.end):
-                                continue
-                        key = (finding.segment_id, finding.start, finding.end, finding.type)
-                        if key not in findings or finding.score > findings[key].score:
-                            findings[key] = finding
+                            finding.start += start
+                            finding.end += start
+                            if getattr(self, "korean_guards", False):
+                                if kind == "KR_RRN" and not _is_valid_kr_rrn(segment.text, finding.start, finding.end):
+                                    continue
+                                if _overlaps_redacted_placeholder(segment.text, finding.start, finding.end):
+                                    continue
+                            key = (finding.segment_id, finding.start, finding.end, finding.type)
+                            if key not in findings or finding.score > findings[key].score:
+                                findings[key] = finding
             return BackendResult(findings=list(findings.values()))
         except Exception:
             raise ModelBackendError("gliner_inference_failed") from None
@@ -423,7 +429,8 @@ def _guard_builtin_m0(root, checked):
 def load_gliner(package_dir, manifest, *, loader=None, device="cpu"):
     """Load a verified M0/M1 package locally; injected loader is for offline tests.
 
-The default GLiNER pin uses weights_only=True for .bin deserialization. A
+The default GLiNER pin uses weights_only=True for .bin deserialization and
+requires a stable PyTorch >=2.10.0 (GHSA-63cw-57p8-fm3p) before loading weights. A
 bundled tokenizer_config.json is mandatory to prevent tokenizer Hub fallback.
 Actual backbone/config cache independence requires the separate cold-start gate.
 """
@@ -441,6 +448,13 @@ Actual backbone/config cache independence requires the separate cold-start gate.
         if loader is None:
             library = importlib.import_module("gliner")
             if library.__version__ != GLINER_VERSION:
+                raise ValueError
+            torch = importlib.import_module("torch")
+            if not isinstance(torch.__version__, str):
+                raise ValueError
+            torch_version = Version(torch.__version__)
+            if (torch_version.epoch != 0 or torch_version.is_prerelease
+                    or torch_version < MIN_TORCH_VERSION):
                 raise ValueError
             loader = library.GLiNER.from_pretrained
         else:

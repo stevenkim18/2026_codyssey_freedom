@@ -15,6 +15,7 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
+from . import timing as stage_timing
 from .rules import detect_secrets
 from .runtime import ModelManager
 from .schemas import BackendResult, Finding, InspectionRequest, InspectionResponse, Segment
@@ -141,7 +142,9 @@ def create_app(*, backend: Backend | None = None, token: str | None = None,
                manager: ModelManager | None = None,
                model_version: str = "unloaded", threshold_version: str = "unloaded",
                max_queue: int = 8, queue_timeout_s: float = 2,
-               inspection_timeout_s: float = 10) -> FastAPI:
+               inspection_timeout_s: float = 10, timing_observer=None) -> FastAPI:
+    if timing_observer is not None and not callable(timing_observer):
+        raise ValueError("invalid timing observer")
     if token is not None and (not isinstance(token, str) or not token or any(not 33 <= ord(char) <= 126 for char in token)):
         raise ValueError("invalid inspection token")
     if backend is not None and not callable(backend):
@@ -185,6 +188,10 @@ def create_app(*, backend: Backend | None = None, token: str | None = None,
 
     @app.post("/v1/inspect")
     async def inspect(body: InspectionRequest):
+        with stage_timing.observe(timing_observer):
+            return await inspect_measured(body)
+
+    async def inspect_measured(body):
         nonlocal admitted
         started = time.monotonic()
         timing = {"queue": 0.0, "inference": 0.0, "rules": 0.0, "total": 0.0}
@@ -193,6 +200,7 @@ def create_app(*, backend: Backend | None = None, token: str | None = None,
         original_segments = tuple((segment.segment_id, segment.text) for segment in body.segments)
 
         def response(status="error", findings=None, code=None, http_status=200):
+            stage_timing.outcome(status)
             timing["total"] = (time.monotonic() - started) * 1000
             result = InspectionResponse(request_id=body.request_id, inspection_id=body.inspection_id,
                 status=status, findings=findings or [], model_version=request_model_version,
@@ -207,8 +215,10 @@ def create_app(*, backend: Backend | None = None, token: str | None = None,
             return response(code="queue_full", http_status=429)
         admitted += 1
         try:
-            await asyncio.wait_for(slot.acquire(), timeout=min(queue_timeout_s, inspection_timeout_s))
+            with stage_timing.stage("queue"):
+                await asyncio.wait_for(slot.acquire(), timeout=min(queue_timeout_s, inspection_timeout_s))
         except TimeoutError:
+            timing["queue"] = (time.monotonic() - started) * 1000
             admitted -= 1
             if time.monotonic() - started >= inspection_timeout_s:
                 return response(code="inspection_timeout", http_status=504)
@@ -259,7 +269,8 @@ def create_app(*, backend: Backend | None = None, token: str | None = None,
                 if finding.segment_id not in lengths or finding.end > lengths[finding.segment_id]:
                     raise ValueError("invalid backend span")
             rules_started = time.monotonic()
-            findings = result.findings + detect_secrets(body.segments)
+            with stage_timing.stage("rules"):
+                findings = result.findings + detect_secrets(body.segments)
             timing["rules"] = (time.monotonic() - rules_started) * 1000
             return response(status="complete", findings=findings)
         except asyncio.CancelledError:

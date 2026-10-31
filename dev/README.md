@@ -178,13 +178,24 @@ rtk proxy python -m gateway
 `PII_DETECTOR_TOKEN`, `OPENAI_API_KEY`, `PII_MODEL_ID`다. 검사 URL은 HTTPS의
 `/v1/inspect`여야 한다. `PII_GATEWAY_PORT` 기본값은 `8765`, `PII_STATE_DIR`
 기본값은 사용자 홈의 `.local/state/ai-pii-gateway`이며 재지정 시 절대 경로를 쓴다.
-생성 목적지는 `https://api.openai.com/v1/responses`로 고정하고, 두 HTTP 클라이언트는
-`verify=True`, `trust_env=False`로 인증서 검증을 유지하며 환경 프록시를 사용하지 않는다.
+`PII_DETECTOR_CA_FILE`로 검사 서버 전용 PEM CA의 절대 경로를 지정할 수 있다.
+인증서 파일은 root/현재 사용자 소유의 일반 파일이어야 하며 크기·링크·쓰기 권한을
+검사한다. 상위 경로는 descriptor로 고정해 교체 경합을 막는다. 인증서 공개 파일의
+0644는 허용하지만 타 사용자 쓰기는 거절한다. CA 생략 시 시스템 신뢰를 사용한다.
+생성 목적지는 `https://api.openai.com/v1/responses`로 고정하고, 공급자 클라이언트는
+`verify=True`를 유지한다. 두 클라이언트의 `trust_env=False`로 환경 프록시를 사용하지 않는다.
 공급자 URL·바인딩·TLS 변경용 환경변수는 거절한다. 로컬 게이트웨이 `/readyz`는
 결과 저널의 기록 건강 상태를 나타내며 원격 검사 서버의 가용성·모델 준비를 조회하지 않는다.
 
-다음 사이클은 설치 흐름의 사용자 환경 검증 → 사건 재전송(C 계약 합의)
-→ 실제 M0 패키지·GPU 통합 → 실제 서버 배포·통합·성능 측정 순으로 진행한다.
+포트 충돌·손상 저널 등 실제 모듈 시작 실패는 고정된 안전한 진단으로 종료한다.
+로컬 HTTPS 검사와 별도 프로세스의 시작·인증·종료·저널 재시작을 검증했다.
+저널의 별도 프로세스 OS 파일 쓰기 제한 실험은 전달 중지·pending 보존·복구 후
+동일 ID 재전송을 확인한다. 이는 EFBIG 쓰기 실패 검증이며 실제 ENOSPC·전원 손실
+전체를 검증한 것은 아니다.
+
+다음 사이클은 실제 현재 M0의 GPU API 시험 배포·호출 검증과
+사건 재전송(C 계약 합의)·A 후보 인수를 진행한다. GPU 시험 접근은 최신 사용자
+지시에 따라 먼저 공유 작업·자원을 확인하며, A의 학습을 중단하거나 변경하지 않는다.
 모의 G0와 실제 외부 서비스 검증을 구분하며 자체 API 클라이언트로 CLI를 대체하지 않는다.
 
 배포 대상은 Ubuntu 24.04-gpu `gp1l4-g3`(L4 24GB)와 Ubuntu 24.04-base
@@ -194,7 +205,7 @@ GPU/CLI/서버 검증 진척도는 모의 개발 진척도와 분리해 보고�
 서버별 반복 작업은 [배포·검증 실행기](deployment/README.md)를 사용한다.
 `python -m deployment`는 `plan/preflight/deploy/verify/rollback`을 제공한다.
 GPU는 검사 서버, 일반 서버는 명시한 C 서비스 계약에만 적용한다. C 구현이 없는
-현재는 일반 서버의 읽기 전용 사전 확인만 가능하다. SSH 호스트 키·환경·모델은
+현재 일반 서버의 추가 접근·배포는 별도 사용자 지시를 기다린다. SSH 호스트 키·환경·모델은
 별도로 준비하며 서버 데이터나 패키지를 자동 삭제·설치하지 않는다.
 사용자 PC에서 서버 TLS·인증·실제 검사 응답을 확인하는 절차는
 [배포 HTTPS 검증](integration/DEPLOYED_VERIFICATION.md)을 따른다.
