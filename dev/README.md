@@ -77,7 +77,11 @@ CLI가 SSE를 요청하면 전체 응답 검사·저널 기록 후 안전한 텍
 
 `detector.runtime.ModelManager`는 로컬 패키지 검증, 진행 추론 drain,
 loader 호출·예열·교체 실패 복귀를 위한 기반이다. 로컬 GLiNER 어댑터와 검사 서버
-진입점은 구현했으며 실제 가중치 로딩·GPU 검증은 남아 있다. `detector.app.create_app`은
+진입점은 구현했고, 실제 engineering 패키지의 오프라인 CPU cold load와 합성 예열
+1회는 확인했다. [실제 CPU 결과·미완료 게이트](detector/M0_INTEGRATION_NOTES.md),
+[의존성 독립 검증·메타데이터 한계](detector/DEPENDENCIES.md),
+[운영 준비 절차](detector/DEPLOYMENT.md)를 참고한다. 현재 서버 기본 loader는 CPU이며
+CUDA 자동 선택·실제 GPU·원격 배포 검증은 남아 있다. `detector.app.create_app`은
 `manager=` 주입 시 readiness와 교체 상태를 동적으로 반영하고, 실제 검사한
 모델·임계값 버전을 응답한다. 기존 backend 직접 주입도 가능하다. `/readyz` 성공은 실제 모델
 패키지 로딩·GPU 예열·가중치와 버전의 일치를 증명하지 않는다. 검사 실행·대기열
