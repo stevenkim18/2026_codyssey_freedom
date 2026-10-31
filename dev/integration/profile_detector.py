@@ -63,8 +63,26 @@ def percentile(values, quantile):
     return ordered[math.ceil(quantile * len(ordered)) - 1]
 
 
+_STAGE_NAMES = ("queue", "inference", "rules", "total")
+
+
+def valid_stage_timing(value):
+    return (isinstance(value, dict) and set(value) == set(_STAGE_NAMES)
+            and all(type(number) in (int, float) and math.isfinite(number) and number >= 0
+                    for number in value.values()))
+
+
 def summarize(records, *, size, concurrency, warmed, planned=None):
     complete = [record["elapsed_ms"] for record in records if record["status"] == "complete"]
+    server_timings = [record["server_timing_breakdown_ms"] for record in records
+                      if record["status"] == "complete" and valid_stage_timing(record.get("server_timing_breakdown_ms"))]
+    excluded_timings = len(complete) - len(server_timings)
+    stage_summary = {}
+    for name in _STAGE_NAMES:
+        values = [value[name] for value in server_timings]
+        stage_summary[name] = {"sample_count":len(values),
+                               "p50_ms":percentile(values, 0.5) if values else None,
+                               "p95_ms":percentile(values, 0.95) if values else None}
     failures = len(records) - len(complete)
     not_started = max(0, (planned if planned is not None else len(records)) - len(records))
     p50, p95 = (percentile(complete, 0.5), percentile(complete, 0.95)) if complete else (None, None)
@@ -72,6 +90,8 @@ def summarize(records, *, size, concurrency, warmed, planned=None):
         assessment = "descriptive_only"
     elif failures or not_started:
         assessment = "failed_requests_present"
+    elif excluded_timings:
+        assessment = "invalid_server_timing_evidence"
     elif not warmed:
         assessment = "not_warmed"
     elif len(complete) < 20:
@@ -80,7 +100,9 @@ def summarize(records, *, size, concurrency, warmed, planned=None):
         assessment = "met_in_observed_sample" if p95 <= 500 else "not_met_in_observed_sample"
     return {"codepoints": size, "concurrency": concurrency, "complete_count": len(complete), "failure_count": failures,
             "not_started": not_started, "p50_ms": p50, "p95_ms": p95, "quantile_method": "nearest-rank: sorted[ceil(p*n)-1]",
-            "target_assessment": assessment, "stable_slo_established": False}
+            "target_assessment": assessment, "stable_slo_established": False,
+            "server_stage_timing_ms": stage_summary,
+            "server_timing_excluded_complete_count": excluded_timings}
 
 
 async def profile_client(client, service, plan):
@@ -130,7 +152,9 @@ async def profile_client(client, service, plan):
             else:
                 checked = validate_response(200, raw, request, service["model_version"], service["threshold_version"])
                 check_budget()
-                record.update(status="complete", finding_count=checked["finding_count"], server_timing_ms=checked["timing_ms"])
+                require(valid_stage_timing(checked["timing_breakdown_ms"]), "invalid_server_timing")
+                record.update(status="complete", finding_count=checked["finding_count"], server_timing_ms=checked["timing_ms"],
+                              server_timing_breakdown_ms=dict(checked["timing_breakdown_ms"]))
         except _RunBudgetExceeded:
             record.update(status="cancelled", error_code="whole_run_budget_exhausted")
             raise

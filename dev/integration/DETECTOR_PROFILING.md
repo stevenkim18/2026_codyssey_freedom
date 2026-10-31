@@ -29,6 +29,25 @@ rtk proxy /Users/oliverjoo/Dev/Anaconda/anaconda3/envs/py312/bin/python -m integ
 
 완료된 요청의 p50/p95는 **nearest-rank** 방식, 즉 정렬된 값의 `ceil(p × n) - 1` 인덱스로 계산한다. 실패·불완전·timeout·취소 요청을 정상 표본으로 바꾸지 않는다. 각 상태와 시작하지 못한 요청 수도 증거에 남긴다. 완료 표본의 percentile만 보고 전체 요청이 성공했다고 해석하지 않는다.
 
+검증된 complete 응답은 `server_timing_breakdown_ms`에 기존 공개 구간
+`queue`, `inference`, `rules`, `total`을 보존한다. 시나리오별
+`server_stage_timing_ms`는 각 구간의 `sample_count`, `p50_ms`, `p95_ms`를
+nearest-rank로 계산한다. 예열은 별도 요청 기록에 남기며 이 집계에 넣지 않는다.
+실패·incomplete·timeout·취소·미실행 요청도 구간 집계에 넣지 않는다. 따라서
+클라이언트 전체 결과의 failure/not_started 개수와 함께 해석해야 한다.
+
+구간 표본이 없으면 count는 0, percentile은 null이다. 누락·추가 구간, 음수,
+NaN/무한대, bool/문자열 등 잘못된 응답 값은 검사 실패로 처리하며 0ms로
+채우지 않는다. 요약 함수에 전달된 complete 기록 자체에 유효한 구간이 없으면
+`server_timing_excluded_complete_count`로 표시하고, 해당 조건의 관찰 목표 판정도
+`invalid_server_timing_evidence`로 막는다. 기존 실패·미실행 우선 판정은 유지한다.
+
+서버 구간 percentile은 정상 완료 표본에 한정된 설명 통계이며 클라이언트 지연
+또는 별도의 구간 SLO 판정이 아니다. 구간 값·percentile을 합산해 전체 시간을
+재구성하지 않는다. `inference`는 기존 API의 백엔드 대기 전체 구간이며 순수 GPU
+forward 시간이 아니다. opt-in 내부 세부 계측의 preprocessing/model_call 등은
+공개 API에 추가하지 않았으므로 이 도구의 원격 집계 대상이 아니다.
+
 2,000자·동시성 1에만 관찰 표본의 p95 ≤ 500ms 판정을 제공한다. 다음 조건을 모두 만족해야 한다.
 
 1. 해당 크기의 예열을 하나 이상 계획하고 모두 complete로 완료했다.
