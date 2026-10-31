@@ -21,11 +21,13 @@ Uvicorn의 import 버전(0.35.0)과 metadata(`None`) 차이가 남아 있다.
 ```sh
 conda activate py312
 cd dev
-rtk proxy python -m pytest -q --cov=gateway --cov=detector --cov=launcher --cov-branch \
+rtk proxy python -m pytest -q --cov=gateway --cov=detector --cov=launcher --cov=deployment \
+  --cov=integration.verify_deployed_services --cov-branch \
   --cov-report=term-missing --cov-report=json:.cache/coverage.json
 ```
 
-외부 API 키·네트워크·GPU 없이 기본 테스트를 실행한다. 제품 소스만 커버리지에
+외부 API 키·외부 네트워크·GPU 없이 기본 테스트를 실행한다. 배포·HTTPS 검증에는
+로컬 loopback HTTP(S) 소켓을 사용한다. 제품 소스와 지정한 HTTPS 검증 도구만 커버리지에
 포함하며 테스트 파일은 제외한다. 설치된 CLI 프로토콜 조사만 별도 명령으로 실행한다.
 
 ```sh
@@ -56,11 +58,11 @@ rtk proxy python integration/probe_cli.py
 | 요구·테스트 | 구현·증거 | 남은 검증 |
 |---|---|---|
 | R02/T03,T11 | 텍스트 전체 추출, 고정 CLI 도구 정의의 검사·정규화, 상태 참조·한도 거절 | 실제 외부 공급자 검증 |
-| R03/T05,T07 | 코드포인트 스팬·검사 상태/버전/ID, 토큰 창·공유 규칙 | 실제 M0·전체 구간 추론·품질 |
+| R03/T05,T07 | 코드포인트 스팬·검사 상태/버전/ID, 토큰 창·공유 규칙, 짧은 실제 M0 CPU 요청 | GPU·장문 실제 추론·품질 |
 | R04/T03,T05 | 차단 우선, 겹침 병합·역순 마스킹·최종 1회 재검사 | 실제 모델 품질 |
 | R05/T04 | 공급자 JSON 전체 수신·검사 후 정제된 JSON/SSE 재구성; 조기 응답 0바이트 | 실제 공급자 연결·고정 CLI 수용 |
 | R06/T06 | 타임아웃·취소·원문 오류 정제, 자동 외부 재전송 없음 | 다중 프로세스·네트워크 단절 실측 |
-| R07/T07 | 패키지 SHA-256·경로 검증, drain·예열·교체 실패 복귀 모의 검증 | A 평가 기준 통과·실제 모델 로딩 |
+| R07/T07 | 패키지 SHA-256·경로 검증, drain·예열·교체 실패 복귀 모의 검증, 실제 M0 CPU 로딩 | A 평가 기준 통과·실제 GPU 모델 로딩 |
 | R08/T08 | 원문 없는 저널, FULL commit, 제한된 재전송·부분 ack·재시작 복구 | C HTTP 계약·실제 중앙 전송 |
 | R10/T10 | 로컬 HTTP 토큰·origin/host 제한, 원격 HTTPS 목적지 제한 | loopback 실행 설정·실제 TLS·인증서·키 운영 |
 | R11/T06,T12 | 검사 실행 1개·대기 8개·총시간 제한, 모의 구간 계측 | GPU 상주·예열·메모리·p50/p95 |
@@ -77,8 +79,8 @@ CLI가 SSE를 요청하면 전체 응답 검사·저널 기록 후 안전한 텍
 
 `detector.runtime.ModelManager`는 로컬 패키지 검증, 진행 추론 drain,
 loader 호출·예열·교체 실패 복귀를 위한 기반이다. 로컬 GLiNER 어댑터와 검사 서버
-진입점은 구현했고, 실제 engineering 패키지의 오프라인 CPU cold load와 합성 예열
-1회는 확인했다. [실제 CPU 결과·미완료 게이트](detector/M0_INTEGRATION_NOTES.md),
+진입점은 구현했고, 실제 engineering 패키지의 오프라인 CPU cold load·합성 예열과
+ASGI 인증·readiness·짧은 검사 요청 2회를 확인했다. [실제 CPU 결과·미완료 게이트](detector/M0_INTEGRATION_NOTES.md),
 [의존성 독립 검증·메타데이터 한계](detector/DEPENDENCIES.md),
 [운영 준비 절차](detector/DEPLOYMENT.md)를 참고한다. 현재 서버 기본 loader는 CPU이며
 `PII_DETECTOR_DEVICE=cuda`로 GPU를 명시할 수 있다. CUDA 사용 불가·잘못된 tensor
@@ -141,6 +143,11 @@ telemetry는 허용 키·타입·길이를 검사한 뒤 외부 요청에서 제
 설정을 명시적인 `-c` 인자로 고정한다. `0.166.0`의 `exec --ignore-user-config`는
 프로필 파일도 무시하므로 프로필 이름만으로 보호 경로를 고정하면 안 된다.
 현재 실행 지원은 `exec` 검증 경로에 한정하며 대화형 CLI는 검증하지 않았다.
+
+사용자용 명령은 [보호 프로필 CLI](launcher/README.md)의
+`python -m launcher install|run|uninstall`을 사용한다. 버전을 확인한 실행 경로와
+전용 홈으로 보호 정책을 적용한다. 실제 Codex와 모의 서버의 설치·실행·제거는
+`integration/run_smoke.py`로 검증하며 개인 설정은 변경하지 않는다.
 
 초기 TCP 검증 중 이 프로필 동작을 놓쳐 기본 OpenAI 주소에 인증 없는 합성 요청이
 전송되고 401로 거절된 일이 있었다. 실제 API 키·실사용 입력은 사용하지 않았다.

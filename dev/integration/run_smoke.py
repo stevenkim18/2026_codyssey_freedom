@@ -1,7 +1,7 @@
 """Loopback TCP smoke tests; synthetic detector/provider only, no external API.
 
-Run explicitly: python integration/run_smoke.py from dev. The normal test suite
-uses ASGI transports and has no port, subprocess, API-key, or GPU requirement.
+Run explicitly: python integration/run_smoke.py from dev. All traffic stays on
+loopback; no real API key or GPU is used. The operator launcher is exercised.
 """
 from __future__ import annotations
 
@@ -28,7 +28,6 @@ from gateway.app import create_app as create_gateway
 from gateway.engine import Gateway
 from gateway.journal import Journal
 from gateway.transport import InspectionClient, UpstreamClient
-from launcher.profiles import install, uninstall, launch_arguments
 
 
 def _listener():
@@ -114,12 +113,17 @@ async def run():
                 if codex:
                     version_run = subprocess.run([codex, "--version"], capture_output=True, text=True, timeout=5)
                     assert version_run.returncode == 0 and "0.166.0" in version_run.stdout
-                    home = Path(directory) / "codex"
-                    install(home, port=gateway_port, model="gpt-6.1-sol", cli_version="0.166.0")
+                    home = Path(directory).resolve() / "codex"
                     env = {k: v for k, v in os.environ.items() if k in {"PATH", "TMPDIR", "LANG", "LC_ALL"}}
                     env.update(CODEX_HOME=str(home), PII_GATEWAY_LOCAL_TOKEN="synthetic-local",
+                        PYTHONPATH=str(Path(__file__).resolve().parents[1]),
                         HTTPS_PROXY=f"http://127.0.0.1:{gateway_port}", HTTP_PROXY=f"http://127.0.0.1:{gateway_port}",
                         ALL_PROXY=f"http://127.0.0.1:{gateway_port}", NO_PROXY="127.0.0.1,localhost")
+                    launcher = [sys.executable, "-m", "launcher"]
+                    installed = await asyncio.to_thread(subprocess.run,
+                        launcher + ["install", "--codex-home", str(home), "--port", str(gateway_port)],
+                        cwd=directory, env=env, capture_output=True, text=True, timeout=20)
+                    assert installed.returncode == 0 and json.loads(installed.stdout)["status"] == "installed"
                     cli_cases = [("normal", "Reply safely without tools.", "SAFE_SMOKE", None),
                         ("outbound_mask", "Read user@example.invalid without tools.", "SAFE_SMOKE", None),
                         ("outbound_block", "Read 900101-1234567 without tools.", "SAFE_SMOKE", "POLICY_BLOCK"),
@@ -131,9 +135,8 @@ async def run():
                         state["answer"] = answer
                         state["tool_output"] = name == "tool_output_block"
                         state["detector_failed"] = name == "detector_failure"
-                        command = launch_arguments("0.166.0", ["exec", "--ephemeral", "--skip-git-repo-check",
-                            "--sandbox", "read-only", "--json", prompt], codex_home=home)
-                        command[0] = codex
+                        command = launcher + ["run", "--codex-home", str(home), "--", "exec",
+                            "--ephemeral", "--skip-git-repo-check", "--sandbox", "read-only", "--json", prompt]
                         before = len(received)
                         result = await asyncio.to_thread(subprocess.run, command, cwd=directory, env=env,
                             input="", capture_output=True, text=True, timeout=20)
@@ -152,9 +155,12 @@ async def run():
                             assert "client_metadata" not in wire and "include" not in wire and "prompt_cache_key" not in wire
                             assert not any(item.get("type") == "additional_tools" for item in wire["input"])
                         checks.append("real_cli_" + name)
-                    uninstall(home)
+                    removed = await asyncio.to_thread(subprocess.run,
+                        launcher + ["uninstall", "--codex-home", str(home)], cwd=directory, env=env,
+                        capture_output=True, text=True, timeout=20)
+                    assert removed.returncode == 0 and json.loads(removed.stdout)["status"] == "uninstalled"
                     assert not (home / "pii-gateway.config.toml").exists()
-                    cli_result = "0.166.0 text-only profile: mock G0 normal/mask/block/SSE passed"
+                    cli_result = "0.166.0 operator install/run/uninstall: mock G0 normal/mask/block/SSE passed"
                 pending = journal.pending()
                 assert "@example.invalid" not in json.dumps(pending)
                 return {"environment": sys.executable, "checks": checks, "passed": len(checks),
