@@ -1,0 +1,8 @@
+{
+  "role": "gpu",
+  "root": "/home/service/codyssey-pii-gpu",
+  "python": "/home/service/anaconda3/envs/py312/bin/python",
+  "env_file": "/home/service/private/detector.env",
+  "device": "cuda",
+  "timeout": 300
+}

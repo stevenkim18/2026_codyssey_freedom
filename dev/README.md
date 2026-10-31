@@ -177,5 +177,11 @@ rtk proxy python -m gateway
 `s2-g3`(2 vCPU/8GB)다. 로컬 프록시·OpenAI 키는 사용자 PC에 둔다.
 GPU/CLI/서버 검증 진척도는 모의 개발 진척도와 분리해 보고한다.
 
+서버별 반복 작업은 [배포·검증 실행기](deployment/README.md)를 사용한다.
+`python -m deployment`는 `plan/preflight/deploy/verify/rollback`을 제공한다.
+GPU는 검사 서버, 일반 서버는 명시한 C 서비스 계약에만 적용한다. C 구현이 없는
+현재는 일반 서버의 읽기 전용 사전 확인만 가능하다. SSH 호스트 키·환경·모델은
+별도로 준비하며 서버 데이터나 패키지를 자동 삭제·설치하지 않는다.
+
 공식 프로토콜 참고: [Responses 게이트웨이 요구사항](https://learn.chatgpt.com/docs/enterprise/gateway-compatibility),
 [SSE 이벤트](https://developers.openai.com/api/reference/resources/responses/streaming-events).

@@ -1,0 +1,14 @@
+{
+  "role": "general",
+  "root": "/home/service/codyssey-pii-general",
+  "python": "/home/service/anaconda3/envs/py312/bin/python",
+  "env_file": "/home/service/private/events.env",
+  "module": "observability.server",
+  "health_url": "http://127.0.0.1:8767/healthz",
+  "ready_url": "http://127.0.0.1:8767/readyz",
+  "health_json": {"status": "alive"},
+  "ready_json": {"status": "ready"},
+  "device": "cpu",
+  "requirements": {"fastapi": "0.116.1", "uvicorn": "0.35.0"},
+  "timeout": 120
+}
