@@ -110,3 +110,30 @@ rtk proxy /Users/oliverjoo/Dev/Anaconda/anaconda3/envs/py312/bin/python -m pytes
 oracle TDD는 미구현 import RED 후 최초 4개 GREEN이었다. 독립 검토에서 Python 최적화 옵션으로 검사가 사라지고 실패 시 socket·환경변수가 복원되지 않는 결함을 재현했다. 명시적 검사·finally 복원·사례별 기대 상태를 추가하여 RED 17개에서 **22개 GREEN**으로 검증했고, 독립 리뷰어도 같은 22개를 통과했다. 비공백 누락·공백 간격·불완전 검사 중 예측 호출·계획 예산 초과와 전체 사례가 incomplete로 퇴행하는 경우를 검출한다.
 
 수정 후 새 프로세스의 실제 자산 검증은 9개 기대 상태를 모두 통과했다. 네트워크 시도 0회·24.3096초·최대 RSS 1,288,257,536 bytes를 관찰했다. 실제 자산 probe는 별도의 수동 통합 검증이며 합성 unit test의 커버리지 수치로 대체하지 않는다. native dependency가 stdout에도 메시지를 출력할 수 있어 기계 판독 증거는 --output JSON 파일을 사용한다. 모든 기존 캐시와 자산을 보존했다.
+
+
+## 2026-10-31 UTC 추가 검증: 재사용 가능한 실제 CPU ASGI runtime probe
+
+`integration/verify_m0_runtime.py`는 `ServerSettings.from_env → create_server → 기본 load_gliner → ModelManager`와 실제 ASGI lifespan을 사용한다. HTTPX ASGITransport로 외부 listener 없이 health·readiness·인증·검사 HTTP 계약을 검증한다. CLI는 CPU/CUDA를 명시적으로 선택하며 실제 가중치를 한 번 로드한다. 검증 전용 가짜 모델로 대체하지 않는다. CUDA 실행 경로는 구현했으나 아래에서 실행한 장치는 CPU뿐이다.
+
+독립 메모리/프로세스 점검 후 새 py312 프로세스 하나에서 CPU 스레드 2개, 새 빈 HF_HOME, offline 환경변수, socket 연결 거절 상태로 실행했다. 기본 서비스의 검사 제한 10초는 변경하지 않았다. package-engineering-02의 실제 가중치 로드·예열 후 다음을 확인했다.
+
+- 초기 `/readyz` 503 → 실제 lifespan 초기화 후 200. `/healthz` 200.
+- 잘못된 Bearer 토큰은 401과 정제된 `unauthorized` 본문만 반환한다.
+- `public demonstration` 및 원문 그대로의 `공개 예시 é 👩‍💻` 두 요청 모두 HTTP 200·complete. 모델/규칙 finding은 모두 0개였다. 이 합성 예시의 무탐지는 탐지 품질 증거가 아니다.
+- 응답 ID, schema, 모델/임계값 버전, 유한한 timing, finding이 있을 경우 원문 코드포인트 범위를 검증한다. 이번 실제 요청은 finding 0개이므로 **실제 양성 span 정확도를 검증한 결과는 아니다**. 양성/잘못된 span oracle은 합성 테스트로만 검증했다.
+- 실제 모델 parameter 장치는 CPU였고 `gpu_verified=false`, 네트워크 연결 시도 0회였다.
+- 모델 버전 `M0-1fcf13e85f4e-engineering`, 임계값 버전 `engineering-0.5-not-evaluated-v1`. A/B 최종 라벨·임계값 합의와 품질 평가는 미완료다.
+
+관찰값은 startup 39.8784초, 전체 59.1847초, 최대 RSS 3,303,424,000 bytes(macOS), 실제 두 검사 8,773.68ms 및 9,355.45ms였다. 두 요청이 10초 안에 끝났지만 여유가 작으며, 단일 CPU 관찰값은 p95·L4 성능·서비스 SLO 판정이 아니다. 실제 16,000자 신경망 검사, 동시 요청 부하, CUDA/L4, 서버 간 TLS 및 외부 CLI 배포는 수행하지 않았다. byte-fallback/regex 경고는 앞 절과 동일하게 남아 있다.
+
+증거 파일은 Git 제외 경로 `dev/.cache/m0-runtime-cpu-evidence-01.json`이며 stdout/stderr는 같은 디렉터리의 `m0-runtime-cpu-01.log`, `m0-runtime-cpu-01.stderr`에 보존했다. 파일에는 원문이나 finding 본문, 인증 토큰을 저장하지 않고 상태·개수·버전·시간·자원값을 기록한다. 기존 증거를 덮어쓰지 않는다. 실패 시 정제된 오류 코드로 종료하며 정상 증거로 처리하지 않는다. 종료/실패 모두 환경변수·socket 메서드·CPU thread 설정을 복원한다.
+
+재현(작업 디렉터리 dev, 출력은 새 경로 사용):
+
+```sh
+rtk proxy /Users/oliverjoo/Dev/Anaconda/anaconda3/envs/py312/bin/python -m integration.verify_m0_runtime .cache/m0-assets/1fcf13e85f4eef5394e1fcd406cf2ca9ea82351d/package-engineering-02 --device cpu --output .cache/m0-runtime-cpu-evidence-02.json
+rtk proxy /Users/oliverjoo/Dev/Anaconda/anaconda3/envs/py312/bin/python -m pytest integration/tests/test_m0_runtime_probe.py -q
+```
+
+TDD: 미구현 import 실패 → 22개 합성 테스트 통과. 잘못된/불완전 응답, stale ID/버전, 범위 밖 Unicode span, 비유한 timing/score, API timeout, Python -O 검증 유지, 환경/socket 복원, 정상/실패 ASGI lifespan을 검증한다. 별도 검토자의 22개 테스트 재실행도 통과했다. 합성 테스트와 위 실제 CPU 실행은 구분한다.
