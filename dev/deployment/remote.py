@@ -288,6 +288,76 @@ def checked_release(root, target, role):
     return path
 
 
+def retry_state(root, release, previous, role):
+    """Only known consistent state or the precise pre-switch interruption may resume."""
+    state = root / "state.json"
+    if not state.exists() and not state.is_symlink():
+        if previous is not None:
+            raise RemoteError("retry_state_mismatch")
+        return
+    try:
+        if state.is_symlink() or not state.is_file() or state.stat().st_nlink != 1 or state.stat().st_size > 65536:
+            raise ValueError
+        def unique(pairs):
+            result = {}
+            for key, value in pairs:
+                if key in result:
+                    raise ValueError
+                result[key] = value
+            return result
+        value = json.loads(state.read_text(), object_pairs_hook=unique)
+        if not isinstance(value, dict) or set(value) != {"current", "previous"}:
+            raise ValueError
+        if value["previous"] is not None and value["current"] in {None, value["previous"]}:
+            raise ValueError
+        for target in value.values():
+            if target is not None:
+                if not isinstance(target, str) or str(Path(target)) != target:
+                    raise ValueError
+                checked_release(root, target, role)
+        if value["current"] != previous and value != {"current":str(release), "previous":previous}:
+            raise ValueError
+        if str(release) == value["previous"]:
+            raise RemoteError("release_already_exists")
+    except RemoteError:
+        raise
+    except Exception:
+        raise RemoteError("retry_state_mismatch") from None
+
+
+def check_retry_release(root, release, role, data, members):
+    """Compare staging against the supplied digest-checked archive, never its own claims."""
+    if release.is_symlink() or not release.is_dir() or release.parent.is_symlink():
+        raise RemoteError("release_integrity_failed")
+    contents = {}
+    with tarfile.open(fileobj=io.BytesIO(data), mode="r:") as archive:
+        for member in members:
+            contents[member.name] = archive.extractfile(member).read()
+    metadata = release / "deployment-manifest.json"
+    complete = metadata.exists() or metadata.is_symlink()
+    if complete:
+        checked_release(root, str(release), role)
+        expected = {name:hashlib.sha256(content).hexdigest() for name, content in contents.items()}
+        if json.loads(metadata.read_text())["files"] != expected:
+            raise RemoteError("release_integrity_failed")
+    directories = {parent.as_posix() for name in contents for parent in PurePosixPath(name).parents if parent != PurePosixPath(".")}
+    for item in release.rglob("*"):
+        name = item.relative_to(release).as_posix()
+        if item.is_symlink():
+            raise RemoteError("release_integrity_failed")
+        if item.is_dir() and name in directories:
+            continue
+        if complete and name == "deployment-manifest.json":
+            continue
+        if (not item.is_file() or item.stat().st_nlink != 1 or name not in contents
+                or item.stat().st_size > len(contents[name])):
+            raise RemoteError("release_integrity_failed")
+        content = item.read_bytes()
+        if (complete and content != contents[name]) or not contents[name].startswith(content):
+            raise RemoteError("release_integrity_failed")
+    return complete
+
+
 def execute(request, *, prerequisite=preflight, control=command, check=None):
     mode, spec = request["mode"], request.get("spec")
     result = prerequisite(request)  # Every prerequisite gate precedes any write.
@@ -354,10 +424,17 @@ def execute(request, *, prerequisite=preflight, control=command, check=None):
     if previous and (not unit.exists() or not check(spec)):
         raise RemoteError("previous_service_not_healthy")
     release = root / "releases" / request["sha256"]
-    if release.exists():
+    complete = False
+    if release.exists() or release.is_symlink():
+        retry_state(root, release, previous, spec["role"])
+        complete = check_retry_release(root, release, spec["role"], data, members)
         if str(release) == previous:
             return {"status":"deployed", "role":spec["role"], "release":request["sha256"]}
-        raise RemoteError("release_already_exists")
+        if not complete:
+            # Exclusive container creation prevents replacement of earlier evidence.
+            preserved = root / ("preserved-stage-" + uuid.uuid4().hex)
+            preserved.mkdir(mode=0o700)
+            release.rename(preserved / release.name)
     root.mkdir(mode=0o700, parents=True, exist_ok=True)
     if not marker.exists():
         atomic_json(marker, {"manager":"codyssey-pii-v1", "role":spec["role"]})
@@ -365,18 +442,19 @@ def execute(request, *, prerequisite=preflight, control=command, check=None):
     if releases.is_symlink():
         raise RemoteError("unsafe_releases_directory")
     releases.mkdir(mode=0o700, exist_ok=True)
-    release.mkdir(mode=0o700)
-    file_hashes = {}
-    with tarfile.open(fileobj=io.BytesIO(data), mode="r:") as archive:
-        for member in members:
-            target = release / member.name
-            target.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-            with target.open("xb") as handle:
-                os.chmod(target, 0o600)
-                content = archive.extractfile(member).read()
-                handle.write(content)
-                file_hashes[member.name] = hashlib.sha256(content).hexdigest()
-    atomic_json(release / "deployment-manifest.json", {"manager":"codyssey-pii-v1","role":spec["role"],"sha256":request["sha256"],"files":file_hashes})
+    if not complete:
+        release.mkdir(mode=0o700)
+        file_hashes = {}
+        with tarfile.open(fileobj=io.BytesIO(data), mode="r:") as archive:
+            for member in members:
+                target = release / member.name
+                target.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+                with target.open("xb") as handle:
+                    os.chmod(target, 0o600)
+                    content = archive.extractfile(member).read()
+                    handle.write(content)
+                    file_hashes[member.name] = hashlib.sha256(content).hexdigest()
+        atomic_json(release / "deployment-manifest.json", {"manager":"codyssey-pii-v1","role":spec["role"],"sha256":request["sha256"],"files":file_hashes})
     checked_release(root, str(release), spec["role"])
     if not unit.exists():
         unit.parent.mkdir(parents=True, exist_ok=True, mode=0o700)

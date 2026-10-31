@@ -120,30 +120,29 @@ def test_cli_reports_only_fixed_codes_and_never_writes_output_file(baseline,caps
     assert snapshot(root) == before
 
 
-def test_interrupted_state_ahead_blocks_repeat_and_rollback_without_silent_repair(baseline):
-    tmp_path,root,first=baseline; second=deployment_request(tmp_path,"two")
-    result=subprocess.run([sys.executable,"-c",CRASH_SCRIPT,"state",str(tmp_path / "home")],
-                          input=json.dumps(second),text=True,capture_output=True,timeout=15)
-    assert result.returncode == 91
-    before=snapshot(root)
-    for request,code in ((second,"release_already_exists"),(second | {"mode":"rollback"},"rollback_state_mismatch")):
-        with pytest.raises(remote.RemoteError,match=code):
-            remote.execute(request,prerequisite=lambda _: {},control=lambda _:pytest.fail("must not restart"),check=lambda _:True)
-    assert snapshot(root) == before
-    assert_read_only(root,"state_ahead_of_current")
-
-
-def test_first_deploy_partial_stage_has_no_automatic_same_digest_retry(tmp_path,monkeypatch):
+@pytest.mark.parametrize("checkpoint", ["partial_file", "manifest", "state"])
+@pytest.mark.parametrize("first_install", [False, True])
+def test_same_digest_retry_recovers_interrupted_stage(tmp_path, monkeypatch, checkpoint, first_install):
     monkeypatch.setattr(remote.Path,"home",lambda:tmp_path / "home")
-    request=deployment_request(tmp_path)
-    result=subprocess.run([sys.executable,"-c",CRASH_SCRIPT,"partial_file",str(tmp_path / "home")],
+    first=deployment_request(tmp_path)
+    if not first_install:
+        remote.execute(first,prerequisite=lambda _: {},control=lambda _:"active",check=lambda _:True)
+    request=first if first_install else deployment_request(tmp_path,"two")
+    root=Path(request["spec"]["root"])
+    old=snapshot(root / "releases" / first["sha256"]) if not first_install else None
+    result=subprocess.run([sys.executable,"-c",CRASH_SCRIPT,checkpoint,str(tmp_path / "home")],
                           input=json.dumps(request),text=True,capture_output=True,timeout=15)
     assert result.returncode == 91
-    root=Path(request["spec"]["root"]); assert_read_only(root,"incomplete_staged")
-    before=snapshot(root)
-    with pytest.raises(remote.RemoteError,match="release_already_exists"):
-        remote.execute(request,prerequisite=lambda _: {},control=lambda _:pytest.fail("must not restart"),check=lambda _:True)
-    assert snapshot(root) == before
+    partial=snapshot(root / "releases" / request["sha256"])
+    assert remote.execute(request,prerequisite=lambda _: {},control=lambda _:"active",check=lambda _:True)["status"] == "deployed"
+    assert (root / "current").resolve().name == request["sha256"]
+    assert_read_only(root,"consistent")
+    if old is not None:
+        assert snapshot(root / "releases" / first["sha256"]) == old
+        assert remote.execute(request | {"mode":"rollback"},prerequisite=lambda _: {},control=lambda _:"active",check=lambda _:True)["release"] == first["sha256"]
+    if checkpoint == "partial_file":
+        preserved=list(root.glob("preserved-stage-*"))
+        assert len(preserved) == 1 and snapshot(preserved[0] / request["sha256"]) == partial
 
 
 @pytest.mark.parametrize("variant,classification",[("missing_state","state_missing"),("missing_current","state_ahead_of_current"),
@@ -227,3 +226,102 @@ def test_missing_recorded_failed_release_is_not_silently_consistent(baseline):
     _,root,_=baseline; state=root / "state.json"; value=json.loads(state.read_text())
     value["failed"]=str(root / "releases" / ("f"*64)); state.write_text(json.dumps(value))
     assert_read_only(root,"failed_release_missing")
+
+
+@pytest.mark.parametrize("variant", ["partial_bytes", "extra_file", "extra_dir", "file_symlink", "dir_symlink", "hardlink", "forged_manifest", "state_symlink", "state_duplicate", "state_missing", "state_mismatch"])
+def test_retry_rejects_untrusted_stage_or_state_without_mutation(baseline, variant):
+    import hashlib
+    tmp_path, root, first = baseline
+    request = deployment_request(tmp_path, "two")
+    checkpoint = "manifest" if variant == "forged_manifest" else "partial_file"
+    result = subprocess.run([sys.executable,"-c",CRASH_SCRIPT,checkpoint,str(tmp_path / "home")],
+                            input=json.dumps(request),text=True,capture_output=True,timeout=15)
+    assert result.returncode == 91
+    stage = root / "releases" / request["sha256"]
+    source = stage / "detector/__main__.py"
+    state = root / "state.json"
+    if variant == "partial_bytes": source.write_text("UNTRUSTED")
+    elif variant == "extra_file": (stage / "detector/unknown.py").write_text("UNTRUSTED")
+    elif variant == "extra_dir": (stage / "unknown").mkdir()
+    elif variant == "file_symlink":
+        source.rename(tmp_path / "saved-source"); source.symlink_to(tmp_path / "outside-secret")
+    elif variant == "dir_symlink":
+        (stage / "detector").rename(tmp_path / "saved-dir"); (stage / "detector").symlink_to(tmp_path / "saved-dir")
+    elif variant == "hardlink":
+        source.rename(tmp_path / "saved-source"); os.link(tmp_path / "saved-source", source)
+    elif variant == "forged_manifest":
+        source.write_text("UNTRUSTED")
+        manifest = stage / "deployment-manifest.json"; value = json.loads(manifest.read_text())
+        value["files"]["detector/__main__.py"] = hashlib.sha256(source.read_bytes()).hexdigest()
+        manifest.write_text(json.dumps(value))
+    elif variant == "state_symlink":
+        state.rename(tmp_path / "saved-state"); state.symlink_to(tmp_path / "saved-state")
+    elif variant == "state_duplicate": state.write_text('{"current":null,"current":null,"previous":null}')
+    elif variant == "state_missing": state.rename(tmp_path / "saved-state")
+    else: state.write_text(json.dumps({"current": None, "previous": None}))
+    before = snapshot(root)
+    with pytest.raises(remote.RemoteError):
+        remote.execute(request,prerequisite=lambda _: {},control=lambda _:pytest.fail("must not control service"),check=lambda _:True)
+    assert snapshot(root) == before
+    assert (tmp_path / "outside-secret").read_text() == "SYNTHETIC_SECRET"
+
+
+def test_preservation_destination_collision_cannot_replace_evidence(baseline, monkeypatch):
+    from types import SimpleNamespace
+    tmp_path, root, first = baseline
+    request = deployment_request(tmp_path,"two")
+    result = subprocess.run([sys.executable,"-c",CRASH_SCRIPT,"partial_file",str(tmp_path / "home")],
+                            input=json.dumps(request),text=True,capture_output=True,timeout=15)
+    assert result.returncode == 91
+    (root / "preserved-stage-fixed").mkdir()
+    (root / "preserved-stage-fixed/evidence").write_text("keep")
+    monkeypatch.setattr(remote.uuid, "uuid4", lambda: SimpleNamespace(hex="fixed"))
+    before = snapshot(root)
+    with pytest.raises(FileExistsError):
+        remote.execute(request,prerequisite=lambda _: {},control=lambda _:pytest.fail("must not control service"),check=lambda _:True)
+    assert snapshot(root) == before
+
+
+@pytest.mark.parametrize("failure", ["unhealthy_previous", "restart_failure"])
+def test_retry_service_failure_preserves_existing_and_partial_releases(baseline, monkeypatch, failure):
+    tmp_path, root, first = baseline
+    request = deployment_request(tmp_path,"two")
+    result = subprocess.run([sys.executable,"-c",CRASH_SCRIPT,"partial_file",str(tmp_path / "home")],
+                            input=json.dumps(request),text=True,capture_output=True,timeout=15)
+    assert result.returncode == 91
+    before = snapshot(root)
+    old = snapshot(root / "releases" / first["sha256"])
+    partial = snapshot(root / "releases" / request["sha256"])
+    monkeypatch.setattr(remote,"wait_ready",lambda spec,check:check(spec))
+    calls = []
+    def control(args):
+        calls.append(args)
+        if len(calls) == 2: raise RuntimeError("restart failed")
+        return "active"
+    with pytest.raises(remote.RemoteError, match="previous_service_not_healthy" if failure == "unhealthy_previous" else "deploy_failed_previous_restored"):
+        remote.execute(request,prerequisite=lambda _: {},control=control,check=lambda _:failure != "unhealthy_previous")
+    assert (root / "current").resolve().name == first["sha256"]
+    assert snapshot(root / "releases" / first["sha256"]) == old
+    if failure == "unhealthy_previous":
+        assert snapshot(root) == before and not calls
+    else:
+        preserved = list(root.glob("preserved-stage-*"))
+        assert snapshot(preserved[0] / request["sha256"]) == partial
+        remote.checked_release(root, str(root / "releases" / request["sha256"]), "gpu")
+
+
+@pytest.mark.parametrize("variant", ["absent_current_with_previous", "self_history"])
+def test_retry_refuses_impossible_history_without_discarding_rollback(baseline, variant):
+    tmp_path, root, first = baseline
+    request = deployment_request(tmp_path,"two")
+    result = subprocess.run([sys.executable,"-c",CRASH_SCRIPT,"partial_file",str(tmp_path / "home")],
+                            input=json.dumps(request),text=True,capture_output=True,timeout=15)
+    assert result.returncode == 91
+    old = str(root / "releases" / first["sha256"])
+    if variant == "absent_current_with_previous":
+        (root / "current").rename(root / "saved-current")
+    (root / "state.json").write_text(json.dumps({"current":None if variant == "absent_current_with_previous" else old,"previous":old}))
+    before = snapshot(root)
+    with pytest.raises(remote.RemoteError,match="retry_state_mismatch"):
+        remote.execute(request,prerequisite=lambda _: {},control=lambda _:"active",check=lambda _:True)
+    assert snapshot(root) == before
