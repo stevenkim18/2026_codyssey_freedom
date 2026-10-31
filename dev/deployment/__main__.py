@@ -11,8 +11,13 @@ from .core import DeploymentError, Spec, bundle, load_access, safe_path, ssh_arg
 from .askpass import password_session
 
 
+class SafeParser(argparse.ArgumentParser):
+    def error(self, message):
+        self.exit(2, "invalid_cli_arguments\n")
+
+
 def main(argv=None, *, run=subprocess.run):
-    parser = argparse.ArgumentParser(description="Managed user-service deployment; no dependency installation or deletion")
+    parser = SafeParser(description="Managed user-service deployment; no dependency installation or deletion")
     parser.add_argument("mode", choices=("plan", "preflight", "deploy", "verify", "rollback"))
     parser.add_argument("--role", required=True, choices=("gpu", "general"))
     parser.add_argument("--spec", type=Path, help="Nonsecret service JSON contract; required except read-only preflight")

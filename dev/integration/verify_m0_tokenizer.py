@@ -17,6 +17,11 @@ from types import SimpleNamespace
 import warnings
 
 
+class SafeParser(argparse.ArgumentParser):
+    def error(self, message):
+        self.exit(2, "invalid_cli_arguments\n")
+
+
 def _require(condition, code):
     if not condition:
         raise AssertionError(code)
@@ -176,7 +181,7 @@ def _run(package):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = SafeParser(description=__doc__)
     parser.add_argument("package", type=Path)
     parser.add_argument("--output", type=Path, help="new JSON evidence file (native libraries may also write stdout)")
     arguments = parser.parse_args()

@@ -20,6 +20,11 @@ from integration.verify_m0_runtime import validate_response
 LIMIT = 1024 * 1024
 
 
+class SafeParser(argparse.ArgumentParser):
+    def error(self, message):
+        self.exit(2, "invalid_cli_arguments\n")
+
+
 class VerificationError(Exception):
     """Fixed codes only; remote bodies, credentials and filesystem paths stay private."""
 
@@ -227,7 +232,7 @@ async def verify(config):
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = SafeParser(description=__doc__)
     parser.add_argument("config", type=Path, help="private JSON under .private (directory0700/file0600)")
     parser.add_argument("--output", type=Path, required=True, help="new evidence JSON; existing files preserved")
     args = parser.parse_args(argv)

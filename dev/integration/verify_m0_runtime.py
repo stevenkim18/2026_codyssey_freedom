@@ -20,6 +20,11 @@ import tempfile
 import time
 
 
+class SafeParser(argparse.ArgumentParser):
+    def error(self, message):
+        self.exit(2, "invalid_cli_arguments\n")
+
+
 class ProbeError(Exception):
     """Only fixed, content-free verification error codes escape this probe."""
 
@@ -147,7 +152,7 @@ def _execute(package, device):
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = SafeParser(description=__doc__)
     parser.add_argument("package", type=Path)
     parser.add_argument("--device", choices=("cpu", "cuda"), required=True)
     parser.add_argument("--output", type=Path, required=True, help="new JSON evidence file; existing files are preserved")
