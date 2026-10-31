@@ -1,0 +1,20 @@
+{
+  "name": "codyssey-security",
+  "interface": {
+    "displayName": "Codyssey Security"
+  },
+  "plugins": [
+    {
+      "name": "pii-gateway",
+      "source": {
+        "source": "local",
+        "path": "./dev/launcher/plugin"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
