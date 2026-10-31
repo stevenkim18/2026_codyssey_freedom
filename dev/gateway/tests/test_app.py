@@ -33,6 +33,16 @@ async def test_wire_masks_both_directions_and_never_echoes_raw_headers(setup_app
     assert journal.pending()[-1]["delivery_status"] == "delivered"
 
 
+async def test_safe_error_summary_contains_reason_for_cli_clients(setup_app):
+    app, upstream, _ = setup_app
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app), base_url="http://127.0.0.1") as client:
+        result = await client.post("/v1/responses", headers={"Authorization": "Bearer synthetic-local-token"},
+            json={"model": "mock-model", "input": "900101-1234567"})
+    assert result.status_code == 403 and upstream.received == []
+    assert "POLICY_BLOCK" in result.json()["error"]["message"]
+    assert "900101-1234567" not in result.text
+
+
 @pytest.mark.parametrize("headers,code", [
     ({}, 401), ({"Authorization": "Bearer wrong"}, 401),
     ({"Authorization": "Bearer synthetic-local-token", "Origin": "https://evil.invalid"}, 403),

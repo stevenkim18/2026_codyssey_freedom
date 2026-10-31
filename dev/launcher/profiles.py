@@ -2,6 +2,10 @@
 
 The pinned CLI is a protocol investigation target, NOT a compatibility claim.
 Profile creation does not bypass the gateway's unsupported-content rejection.
+This dedicated profile explicitly replaces default agent instructions with the
+reviewed bundled text-only instructions. Feature flags reduce tool exposure;
+the gateway must inspect definitions, force tool_choice=none and block all tool
+outputs. No flag combination alone establishes that safety property.
 """
 from __future__ import annotations
 
@@ -17,6 +21,8 @@ import tomllib
 
 PINNED_CLI = "0.166.0"
 PROFILE = "pii-gateway.config.toml"
+INSTRUCTIONS_FILE = Path(__file__).absolute().with_name("text_only_instructions.md")
+TEXT_ONLY_INSTRUCTIONS = b"You are a text-only assistant. Answer the user with plain text. Do not call tools."
 
 
 class ProfileError(Exception):
@@ -51,15 +57,38 @@ def _write(path, content):
         Path(temporary).unlink(missing_ok=True)
 
 
+def _instructions_path():
+    """Verify the source companion without creating files in the user's home."""
+    try:
+        path = Path(INSTRUCTIONS_FILE)
+        if not path.is_absolute():
+            raise ValueError
+        _regular(path)
+        with path.open("rb") as source:
+            content = source.read(len(TEXT_ONLY_INSTRUCTIONS) + 1)
+        if content != TEXT_ONLY_INSTRUCTIONS:
+            raise ValueError
+    except (OSError, TypeError, ValueError, ProfileError):
+        raise ProfileError("invalid protected instructions") from None
+    return path
+
+
 def _profile(port, model, cli_version):
     if (type(port) is not int or not 1 <= port <= 65535 or not isinstance(model, str)
             or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}", model)
             or cli_version != PINNED_CLI):
         raise ProfileError("unsupported profile configuration")
+    instructions = _instructions_path()
     return f'''# Protected text gateway; CLI compatibility gate remains required.
+# Explicitly uses the reviewed source-bundle instructions, not personal instructions.
+# Gateway inspection and tool-output rejection remain mandatory.
 model = {json.dumps(model)}
 model_provider = "pii-gateway"
 web_search = "disabled"
+model_instructions_file = {json.dumps(str(instructions))}
+project_doc_max_bytes = 0
+check_for_update_on_startup = false
+personality = "none"
 
 [model_providers.pii-gateway]
 name = "Protected PII Gateway"
@@ -75,6 +104,54 @@ shell_tool = false
 unified_exec = false
 apply_patch_freeform = false
 apps = false
+multi_agent = false
+request_permissions_tool = false
+view_image = false
+image_generation = false
+sleep_tool = false
+goals = false
+plugins = false
+remote_plugin = false
+skill_search = false
+tool_suggest = false
+skill_mcp_dependency_install = false
+memories = false
+hooks = false
+browser_use = false
+computer_use = false
+in_app_browser = false
+code_mode_host = false
+default_mode_request_user_input = false
+code_mode_only = false
+incremental_tools = false
+api_key_model_discovery = false
+api_key_cyber_access_programs = false
+
+[features.code_mode]
+enabled = false
+
+[agents]
+enabled = false
+
+[tools]
+
+[tools.experimental_request_user_input]
+enabled = false
+
+[tools.update_plan]
+enabled = false
+
+[skills]
+include_instructions = false
+
+[skills.bundled]
+enabled = false
+
+[analytics]
+enabled = false
+
+[feedback]
+enabled = false
 '''.encode()
 
 
@@ -178,7 +255,8 @@ def launch_arguments(cli_version, args, *, codex_home=None):
     if not args or args[0] != "exec":
         raise ProfileError("only the pinned exec protocol is under verification")
     # Provider/profile/config overrides could route around the protection profile.
-    forbidden = ("--config", "-c", "--profile", "-p", "--oss", "--local-provider", "--enable")
+    forbidden = ("--config", "-c", "--profile", "-p", "--oss", "--local-provider", "--enable",
+                 "--dangerously-bypass-approvals-and-sandbox", "--dangerously-bypass-hook-trust")
     if (any(arg == option or arg.startswith(option + "=") for arg in args for option in forbidden)
             or any(arg.startswith(("-c", "-p")) and not arg.startswith("--") for arg in args)):
         raise ProfileError("provider or feature override denied")

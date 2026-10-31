@@ -126,7 +126,12 @@ class Gateway:
                 raise GatewayError("UNSUPPORTED_PROTOCOL", 400) from None
             decision, version, threshold, inspection_id = await self._inspect(parsed.segments, "outbound", request_id, started)
             _require_active()
-            approved = parsed.replace(decision.segments)
+            try:
+                approved = parsed.replace(decision.segments)
+            except ProtocolError:
+                self._audit(request_id, inspection_id, "outbound", Decision("error"), version, started,
+                            error_code="UNSAFE_REPLACEMENT")
+                raise GatewayError("UNSAFE_REPLACEMENT") from None
             # A durable unknown result exists BEFORE dispatch, including crash windows.
             self._audit(request_id, inspection_id, "outbound", decision, version, started,
                         stage="delivery", delivery_status="unknown")

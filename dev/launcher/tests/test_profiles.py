@@ -9,6 +9,38 @@ import pytest
 from launcher.profiles import ProfileError, install, uninstall, launch_arguments
 
 
+def test_reviewed_text_profile_uses_source_companion_and_disables_observed_optional_capabilities(tmp_path):
+    install(tmp_path, port=8765, model="mock-model", cli_version="0.166.0")
+    config = tomllib.loads((tmp_path / "pii-gateway.config.toml").read_text())
+    companion = Path(config["model_instructions_file"])
+    expected = b"You are a text-only assistant. Answer the user with plain text. Do not call tools."
+    assert companion.is_absolute()
+    assert companion.name == "text_only_instructions.md"
+    assert companion.parent.name == "launcher"
+    assert companion.read_bytes() == expected
+    assert len(expected.decode()) == 82
+    assert not (tmp_path / "text_only_instructions.md").exists()
+    assert config["project_doc_max_bytes"] == 0
+    assert config["check_for_update_on_startup"] is False
+    assert config["personality"] == "none"
+    assert config["agents"]["enabled"] is False
+    for feature in ("multi_agent", "request_permissions_tool", "view_image", "image_generation", "sleep_tool", "goals",
+        "plugins", "remote_plugin", "skill_search", "tool_suggest", "skill_mcp_dependency_install", "memories",
+        "hooks", "browser_use", "computer_use", "in_app_browser", "code_mode_host", "default_mode_request_user_input",
+        "code_mode_only", "incremental_tools", "api_key_model_discovery", "api_key_cyber_access_programs"):
+        assert config["features"][feature] is False
+    assert config["features"]["code_mode"]["enabled"] is False
+    # Pinned 0.166.0 reports tools.view_image as ignored; the feature flag and
+    # gateway output filtering enforce the supported text profile instead.
+    assert "view_image" not in config["tools"]
+    assert config["tools"]["experimental_request_user_input"]["enabled"] is False
+    assert config["tools"]["update_plan"]["enabled"] is False
+    assert config["skills"]["bundled"]["enabled"] is False
+    assert config["skills"]["include_instructions"] is False
+    assert config["analytics"]["enabled"] is False
+    assert config["feedback"]["enabled"] is False
+
+
 def test_install_isolated_profile_and_restore_existing_file(tmp_path):
     codex_home = tmp_path / "codex"
     codex_home.mkdir()

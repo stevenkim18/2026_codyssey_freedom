@@ -62,7 +62,7 @@ def create_app(gateway, *, token, allowed_hosts=("127.0.0.1", "localhost", "::1"
     @app.exception_handler(GatewayError)
     async def safe_error(request, exc):
         return JSONResponse({"error": {"type": "gateway_error", "code": exc.code,
-                                      "message": "Protected gateway rejected the request."}},
+                                      "message": f"Protected gateway rejected the request: {exc.code}."}},
                             status_code=exc.status, headers={"Cache-Control": "no-store"})
 
     @app.get("/healthz")

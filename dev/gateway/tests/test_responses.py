@@ -92,3 +92,14 @@ def test_replacement_cannot_lose_or_reorder_segments(replacement):
 def test_incomplete_or_malformed_output_never_becomes_empty_allow(value):
     with pytest.raises(ProtocolError):
         parse_response(value)
+
+
+def test_pinned_cli_envelope_preserves_text_and_disables_tools():
+    parsed = parse_request({"model": "mock-model", "client_metadata": {"session_id": "synthetic-session"},
+        "input": [{"type": "message", "role": "user", "id": "msg_synthetic", "content": [
+            {"type": "input_text", "text": "😀 user@example.invalid"}]}],
+        "tool_choice": "auto", "stream": True}, {"mock-model"})
+    assert parsed.segments == [{"segment_id": "s0", "text": "😀 user@example.invalid"}]
+    assert parsed.body["tool_choice"] == "none"
+    assert "client_metadata" not in parsed.body
+    assert "id" not in parsed.body["input"][0]

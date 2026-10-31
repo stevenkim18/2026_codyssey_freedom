@@ -58,6 +58,9 @@ async def run():
     async def generate(request: Request):
         assert request.headers["Authorization"] == "Bearer synthetic-provider"
         received.append(await request.json())
+        if state.get("tool_output"):
+            return {"status": "completed", "output": [{"type": "custom_tool_call", "name": "exec",
+                "id": "ct_synthetic", "call_id": "call_synthetic", "input": "SYNTHETIC_TOOL_EXECUTION"}]}
         return {"status": "completed", "output": [{"type": "message", "role": "assistant",
             "content": [{"type": "output_text", "text": state["answer"]}]}]}
 
@@ -70,8 +73,9 @@ async def run():
             async with httpx.AsyncClient(trust_env=False) as detector_http, httpx.AsyncClient(trust_env=False) as supplier_http:
                 detector = create_detector(backend=backend, token="synthetic-detector", model_version="synthetic-m0", threshold_version="v1")
                 inspector = InspectionClient(detector_http, f"http://127.0.0.1:{detector_port}/v1/inspect", "synthetic-detector", allow_loopback_http=True)
-                upstream = UpstreamClient(supplier_http, f"http://127.0.0.1:{supplier_port}/v1/responses", "synthetic-provider", {"mock-model"}, allow_loopback_http=True)
-                gateway = create_gateway(Gateway(inspector, upstream, journal, allowed_models={"mock-model"}), token="synthetic-local")
+                allowed_models = {"mock-model", "gpt-6.1-sol"}
+                upstream = UpstreamClient(supplier_http, f"http://127.0.0.1:{supplier_port}/v1/responses", "synthetic-provider", allowed_models, allow_loopback_http=True)
+                gateway = create_gateway(Gateway(inspector, upstream, journal, allowed_models=allowed_models), token="synthetic-local")
                 for app, listener in zip((detector, supplier, gateway), sockets):
                     server = uvicorn.Server(uvicorn.Config(app, log_level="critical", access_log=False, lifespan="off"))
                     servers.append(server)
@@ -111,24 +115,46 @@ async def run():
                     version_run = subprocess.run([codex, "--version"], capture_output=True, text=True, timeout=5)
                     assert version_run.returncode == 0 and "0.166.0" in version_run.stdout
                     home = Path(directory) / "codex"
-                    install(home, port=gateway_port, model="mock-model", cli_version="0.166.0")
+                    install(home, port=gateway_port, model="gpt-6.1-sol", cli_version="0.166.0")
                     env = {k: v for k, v in os.environ.items() if k in {"PATH", "TMPDIR", "LANG", "LC_ALL"}}
                     env.update(CODEX_HOME=str(home), PII_GATEWAY_LOCAL_TOKEN="synthetic-local",
                         HTTPS_PROXY=f"http://127.0.0.1:{gateway_port}", HTTP_PROXY=f"http://127.0.0.1:{gateway_port}",
                         ALL_PROXY=f"http://127.0.0.1:{gateway_port}", NO_PROXY="127.0.0.1,localhost")
-                    command = launch_arguments("0.166.0", ["exec", "--ephemeral", "--skip-git-repo-check",
-                        "--sandbox", "read-only", "--json", "Reply to this synthetic prompt without tools."], codex_home=home)
-                    command[0] = codex
-                    before = len(received)
-                    result = await asyncio.to_thread(subprocess.run, command, cwd=directory, env=env,
-                        input="", capture_output=True, text=True, timeout=20)
-                    assert result.returncode != 0
-                    assert "UNSUPPORTED_PROTOCOL" in result.stdout + result.stderr, (result.stdout[-1500:], result.stderr[-1500:])
-                    assert len(received) == before
+                    cli_cases = [("normal", "Reply safely without tools.", "SAFE_SMOKE", None),
+                        ("outbound_mask", "Read user@example.invalid without tools.", "SAFE_SMOKE", None),
+                        ("outbound_block", "Read 900101-1234567 without tools.", "SAFE_SMOKE", "POLICY_BLOCK"),
+                        ("inbound_mask", "Reply safely without tools.", "answer@example.invalid", None),
+                        ("inbound_block", "Reply safely without tools.", "900101-1234567", "POLICY_BLOCK"),
+                        ("tool_output_block", "Reply safely without tools.", "SAFE_SMOKE", "UNSUPPORTED_OUTPUT"),
+                        ("detector_failure", "Reply safely without tools.", "SAFE_SMOKE", "INSPECTION_FAILED")]
+                    for name, prompt, answer, error in cli_cases:
+                        state["answer"] = answer
+                        state["tool_output"] = name == "tool_output_block"
+                        state["detector_failed"] = name == "detector_failure"
+                        command = launch_arguments("0.166.0", ["exec", "--ephemeral", "--skip-git-repo-check",
+                            "--sandbox", "read-only", "--json", prompt], codex_home=home)
+                        command[0] = codex
+                        before = len(received)
+                        result = await asyncio.to_thread(subprocess.run, command, cwd=directory, env=env,
+                            input="", capture_output=True, text=True, timeout=20)
+                        output = result.stdout + result.stderr
+                        if error:
+                            assert result.returncode != 0 and error in output, (name, result.returncode, output[-1200:])
+                        else:
+                            assert result.returncode == 0, (name, result.returncode, output[-1200:])
+                            assert "[REDACTED]" in result.stdout if name == "inbound_mask" else "SAFE_SMOKE" in result.stdout
+                        assert not any(raw in output for raw in ("user@example.invalid", "answer@example.invalid", "900101-1234567", "SYNTHETIC_TOOL_EXECUTION")), name
+                        assert len(received) - before == (0 if name in ("outbound_block", "detector_failure") else 1), name
+                        assert "@example.invalid" not in json.dumps(received), name
+                        if len(received) > before:
+                            wire = received[-1]
+                            assert wire["tool_choice"] == "none" and wire["store"] is False
+                            assert "client_metadata" not in wire and "include" not in wire and "prompt_cache_key" not in wire
+                            assert not any(item.get("type") == "additional_tools" for item in wire["input"])
+                        checks.append("real_cli_" + name)
                     uninstall(home)
                     assert not (home / "pii-gateway.config.toml").exists()
-                    checks.append("real_cli_profile_routes_to_gateway_and_rejects_unsupported_input")
-                    cli_result = "0.166.0 safely rejected; G0 incomplete"
+                    cli_result = "0.166.0 text-only profile: mock G0 normal/mask/block/SSE passed"
                 pending = journal.pending()
                 assert "@example.invalid" not in json.dumps(pending)
                 return {"environment": sys.executable, "checks": checks, "passed": len(checks),

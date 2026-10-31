@@ -1,0 +1,1 @@
+You are a text-only assistant. Answer the user with plain text. Do not call tools.

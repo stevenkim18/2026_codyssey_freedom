@@ -13,11 +13,13 @@ import tomllib
 
 import pytest
 
+from launcher import profiles
 from launcher.profiles import PINNED_CLI, PROFILE, ProfileError, install, launch_arguments, uninstall
 
 
 CONFIG = {"port": 8765, "model": "mock-model", "cli_version": PINNED_CLI}
 ORIGINAL = b'# synthetic personal profile\nmodel = "old-model"\n'
+REVIEWED_INSTRUCTIONS = b"You are a text-only assistant. Answer the user with plain text. Do not call tools."
 
 
 def existing_home(tmp_path):
@@ -287,8 +289,8 @@ def test_every_protection_setting_is_explicit_when_cli_ignores_profile_config(tm
     assert provider["supports_websockets"] is False
     assert provider["request_max_retries"] == provider["stream_max_retries"] == 0
     assert settings["web_search"] == "disabled"
-    assert settings["features"] == {"shell_tool": False, "unified_exec": False,
-                                     "apply_patch_freeform": False, "apps": False}
+    for feature in ("shell_tool", "unified_exec", "apply_patch_freeform", "apps"):
+        assert settings["features"][feature] is False
     assert "SYNTHETIC_EXTERNAL_KEY" not in repr(command)
     assert "synthetic-external.invalid" not in repr(command)
 
@@ -347,3 +349,79 @@ def test_installed_profile_symlink_is_rejected_at_launch_without_reading_target(
     with pytest.raises(ProfileError):
         launch_arguments(PINNED_CLI, ["exec", "synthetic prompt"], codex_home=tmp_path)
     assert victim.read_bytes().startswith(b"# Protected text gateway")
+
+
+@pytest.mark.parametrize("damage", ["missing", "changed", "newline_changed", "directory", "symlink", "hardlink", "read_failure"])
+def test_invalid_reviewed_instruction_bundle_never_changes_personal_profile(tmp_path, monkeypatch, damage):
+    home = existing_home(tmp_path)
+    companion = tmp_path / "text_only_instructions.md"
+    companion.write_bytes(REVIEWED_INSTRUCTIONS)
+    if damage == "missing": companion.unlink()
+    elif damage == "changed": companion.write_bytes(b"SYNTHETIC_UNREVIEWED_INSTRUCTIONS")
+    elif damage == "newline_changed": companion.write_bytes(REVIEWED_INSTRUCTIONS + b"\n")
+    elif damage == "directory":
+        companion.unlink()
+        companion.mkdir()
+    elif damage in ("symlink", "hardlink"):
+        target = tmp_path / "other-instructions"
+        target.write_bytes(REVIEWED_INSTRUCTIONS)
+        companion.unlink()
+        if damage == "symlink": companion.symlink_to(target)
+        else: os.link(target, companion)
+    monkeypatch.setattr(profiles, "INSTRUCTIONS_FILE", companion, raising=False)
+    if damage == "read_failure":
+        real_open = Path.open
+        def unavailable(path, *args, **kwargs):
+            if path == companion:
+                raise OSError("SYNTHETIC_PRIVATE_PATH_READ_ERROR")
+            return real_open(path, *args, **kwargs)
+        monkeypatch.setattr(Path, "open", unavailable)
+    with pytest.raises(ProfileError) as failure:
+        install(home, **CONFIG)
+    assert "SYNTHETIC" not in str(failure.value)
+    assert (home / PROFILE).read_bytes() == ORIGINAL
+    assert not (home / ".pii-gateway-install").exists()
+
+
+def test_launch_rechecks_instruction_bytes_and_uninstall_can_recover_with_broken_bundle(tmp_path, monkeypatch):
+    home = existing_home(tmp_path)
+    companion = tmp_path / "text_only_instructions.md"
+    companion.write_bytes(REVIEWED_INSTRUCTIONS)
+    monkeypatch.setattr(profiles, "INSTRUCTIONS_FILE", companion, raising=False)
+    install(home, **CONFIG)
+    installed = (home / PROFILE).read_bytes()
+    command = launch_arguments(PINNED_CLI, ["exec", "synthetic prompt"], codex_home=home)
+    config = command_configuration(command)
+    assert config["model_instructions_file"] == str(companion)
+    assert config["features"]["code_mode"]["enabled"] is False
+    companion.write_bytes(b"SYNTHETIC_MODIFIED_INSTRUCTION_BUNDLE")
+    with pytest.raises(ProfileError):
+        launch_arguments(PINNED_CLI, ["exec", "synthetic prompt"], codex_home=home)
+    assert (home / PROFILE).read_bytes() == installed
+    uninstall(home)
+    assert (home / PROFILE).read_bytes() == ORIGINAL
+
+
+def test_explicit_cli_assignments_preserve_all_reviewed_nested_profile_settings(tmp_path):
+    install(tmp_path, **CONFIG)
+    source = tomllib.loads((tmp_path / PROFILE).read_text())
+    command = launch_arguments(PINNED_CLI, ["exec", "synthetic prompt"], codex_home=tmp_path)
+    assert command_configuration(command) == source
+    assert "--profile" not in command
+    assert command.index("--ignore-user-config") > command.index("exec")
+
+
+def test_relative_instruction_bundle_path_fails_without_touching_profile(tmp_path, monkeypatch):
+    home = existing_home(tmp_path)
+    monkeypatch.setattr(profiles, "INSTRUCTIONS_FILE", Path("relative-instructions.md"))
+    with pytest.raises(ProfileError):
+        install(home, **CONFIG)
+    assert (home / PROFILE).read_bytes() == ORIGINAL
+    assert not (home / ".pii-gateway-install").exists()
+
+
+@pytest.mark.parametrize("flag", ["--dangerously-bypass-approvals-and-sandbox", "--dangerously-bypass-hook-trust"])
+def test_text_only_profile_rejects_caller_requested_bypass_flags(tmp_path, flag):
+    install(tmp_path, **CONFIG)
+    with pytest.raises(ProfileError):
+        launch_arguments(PINNED_CLI, ["exec", flag, "synthetic prompt"], codex_home=tmp_path)

@@ -66,6 +66,11 @@ def _collect(body, paths):
 
 
 def parse_request(value, allowed_models):
+    if isinstance(value, dict) and "client_metadata" in value:
+        # This is a separately validated pinned CLI envelope, not a permissive
+        # fallback for unsupported ordinary Responses fields.
+        from .cli_request import parse_cli_request
+        return parse_cli_request(value, allowed_models)
     _keys(value, {"model", "instructions", "input", "stream", "store", "tools", "tool_choice",
                   "parallel_tool_calls", "reasoning", "text", "max_output_tokens"}, {"model", "input"})
     if not isinstance(value["model"], str) or value["model"] not in allowed_models:
