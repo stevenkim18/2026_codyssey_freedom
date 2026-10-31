@@ -3,6 +3,44 @@
 기준: PRD v1.0의 B 담당 요구사항·관련 통합 작업. A 학습·평가와 C 서버·화면의
 진행률을 포함하지 않는다. 테스트 커버리지를 제품 완료율로 사용하지 않는다.
 
+## PR #2 병합 이후 로컬 배포 준비 — 2026-10-31
+
+- 사용자가 PR #2를 병합하고 작업 재개를 승인했다. 두 서버 모두 접속하지 않고
+  로컬 준비만 진행했다. 아래 기록은 시점별 이력이며 이전 PR의 WIP·대기 상태는
+  현재 상태가 아니다. 브랜치는 계속 보존한다.
+- 기본 M0 loader는 가중치 역직렬화 전에 안정판 PyTorch **2.10.0 이상**을
+  확인한다. 구버전·prerelease/dev·비정상/epoch 버전 거절을 독립 검증했다.
+  기존 패키지를 설치·변경하지 않았다. 해당 동결 후보는 **1,840 passed**다.
+- 역할별 불변 release packet의 plan/build/verify와 standalone 모델 staging을
+  추가했다. 제한된 USTAR 물리 header·정확한 파일/해시·중복 JSON·링크·권한·
+  원본 변경·잠금·충돌·중단 시 기존 내용 보존을 검증했다. 이 사이클의 동결
+  후보는 **1,944 passed**, 실제 Codex CLI의 loopback 모의 통합 **13개** 통과다.
+- 기존 M0 파일로 약 **1.16GB**의 모델 archive를 로컬에서 만들고 별도 새
+  프로세스에서 신뢰 manifest SHA와 standalone plan을 검증했다. 준비한 앱
+  archive와 새 packet CLI의 계획 해시도 일치했다. 텐서 로딩·GPU·배포는 없다.
+- 실제 로컬 Linux 보조 검증은 기존 캐시 이미지 하나의 Debian 13/aarch64,
+  Python 3.12.14·비root·network none·read-only root에서 수행했다. 실제 CLI
+  plan/apply/no-op·변조 거절·native renameat2 충돌 보존이 통과했다. 이후 변경한
+  CLI 인수 오류 가림은 Anaconda 테스트로 검증했다. Ubuntu 24.04/x86_64나
+  실제 대상 서버 적용을 검증한 것은 아니다.
+- packet 입력을 기존 배포 CLI에 연결했다. 별도 신뢰 manifest SHA·role·app/spec
+  재해시 확인 후 검증한 바이트를 유지한다. 독립 검토에서 다른 정상 release도
+  packet 검증 성공으로 처리할 수 있음을 발견했다. **8개 RED** 후 deploy/verify
+  응답 release SHA 일치를 강제했고, rollback의 이전 release 선택은 보존했다.
+  독립 packet 테스트 **28개**가 통과했다. 모든 transport는 합성이며 SSH는 없다.
+- 최종 제품 후보 전체 **1,972 passed**, dependency deprecation 경고 2개다.
+  gateway/detector/launcher/deployment 및 지정 integration 도구의 라인
+  **98.51%**(5016/5092), 분기 **97.03%**(1896/1954)다. 새 packet/staging 경계가
+  분모에 추가됐다. prepare는 **100% / 94.23%**, model_stage는
+  **97.61% / 93.18%**, 배포 CLI는 **98.53% / 96.88%**다. 자식 CLI와 Linux
+  native 실행 증거는 이 소스 커버리지와 구분하며 모델 품질·GPU·C 화면을 포함하지 않는다.
+- A의 고정 Git 스냅샷을 기준으로 [모델 인수 준비 자료](contracts/MODEL_HANDOFF.md)를
+  추가했다. 실제 M1·최종 매핑/임계값·평가/인수 합의와 C 구현·wire/ACK 계약은
+  아직 외부 입력이다. 새 M1을 M0 identity로 위장하거나 C 영역을 대신 구현하지 않았다.
+- B 로컬·모의 추정 **약 90%**, 실제 B/C 애플리케이션 배포 **0%**는 유지한다.
+  이번 운영 준비 완료를 실제 모델·서버 통합 완료로 환산하지 않는다. 새 필수
+  독립 로컬 구현 누락은 최종 검토에서 확인되지 않았으며 다음 연동은 위 입력에 의존한다.
+
 ## C 인계·TLS 로컬 배포 준비 검토 후보 — 2026-10-31
 
 - 완료된 변경만 index에서 분리한 후보 전체 **1,826 passed**, 실제 Codex

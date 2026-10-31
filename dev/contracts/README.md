@@ -46,6 +46,9 @@ pinned CLI checks have separate evidence; they do not prove remote deployment.
 
 ## Local model package contract
 
+See [A → B model intake checklist](MODEL_HANDOFF.md) for the current evidence,
+pending A/B decisions and local preparation gates; it does not approve a candidate.
+
 `model-package.schema.json` is B-owned and generated from
 `detector.runtime.package_schema()`. It is a local package intake contract for
 `ModelManager`, not a completed handoff or an adopted A/B model package.
