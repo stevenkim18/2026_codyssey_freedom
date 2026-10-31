@@ -52,7 +52,7 @@ def verified_binary(run):
 def main(argv=None, *, run=subprocess.run):
     parser = SafeParser(description="Install, run or restore the verified text-only Codex gateway profile")
     actions = parser.add_subparsers(dest="action", required=True)
-    for name in ("install", "run", "uninstall"):
+    for name in ("install", "run", "uninstall", "doctor"):
         action = actions.add_parser(name)
         action.add_argument("--codex-home", help="Dedicated directory; default CODEX_HOME/pii-gateway-home or ~/.codex/pii-gateway-home")
         if name == "install":
@@ -60,9 +60,16 @@ def main(argv=None, *, run=subprocess.run):
             action.add_argument("--model", default="gpt-6.1-sol")
         if name == "run":
             action.add_argument("arguments", nargs=argparse.REMAINDER, help="After --, supply exec and supported Codex arguments")
+        if name == "doctor":
+            action.add_argument("--gateway-url", help="Explicit local probe; must match installed http://127.0.0.1:PORT")
     try:
         options = parser.parse_args(argv)
         home = selected_home(options.codex_home)
+        if options.action == "doctor":
+            from .doctor import diagnose
+            code, report = diagnose(home, lambda: verified_binary(run), options.gateway_url)
+            print(json.dumps(report))
+            return code
         if options.action == "uninstall":
             # No marker means there is no owned installation to recover. Leave
             # any independent/restored profile intact; never guess ownership.

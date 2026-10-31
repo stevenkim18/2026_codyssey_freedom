@@ -106,3 +106,19 @@ GLiNER 0.2.29의 Conda 채널 부재에 따른 pip fallback 판단은 별도 패
 첫 import 과정에는 Fontconfig의 sandbox 밖 캐시 쓰기 불가 경고가 있었고 기능 오류는 아니었다. 이후 `XDG_CACHE_HOME`과 `MPLCONFIGDIR`를 프로젝트의 무시되는 `dev/.cache` 아래로 지정한 fresh process는 위 기능 확인을 종료 코드 0으로 마쳤다. 패키지나 전역 캐시 설정을 수정하지 않았다.
 
 이로써 GLiNER 패키지의 독립 cold-process 발견·버전/경로 확인, 검토 artifact 일치, 공개 config/splitter와 실제 processor의 기본 실행을 확인했다. 이 독립 설치 검증에는 M0 가중치 로딩·예열을 포함하지 않았다. 후속 별도 프로세스에서 수행한 실제 M0 CPU cold-load·합성 예열 1회는 [M0 통합 기록](M0_INTEGRATION_NOTES.md)의 추가 검증 절에 기록했다. GPU·전체 detector 서비스 경로·한국어 품질·성능 및 배포 서버 검증은 미완료이며 위 Starlette/Uvicorn 메타데이터 불일치도 그대로 남아 있다.
+
+## GPU 시험 배포의 protobuf 보완 — 2026-10-31
+
+위 기록은 로컬 설치 시점의 범위다. 이후 GPU B `py312`의 실제 M0 초기화에서
+fast tokenizer 변환용 Python protobuf 누락을 확인했다. 기존 native libprotobuf
+6.31.1에 맞춰 Conda 검색·dry-run을 수행했고, 제거·교체 없이
+`protobuf 6.31.1 py312hb8af0ac_2` 하나만 추가했다. 기존 Python·PyTorch·CUDA 및
+다른 패키지의 version/build가 유지됨을 전후 inventory로 대조했다.
+
+설치 담당자의 종료 코드 외에 별도 새 프로세스로 interpreter/prefix·모듈 위치·
+metadata/import 버전·protobuf 직렬화/복원을 검증했다. 실제 배포 패키지의 fast
+tokenizer도 offline으로 생성해 Unicode token/offset 형식을 확인했다. 이후 기본
+loader의 실제 CUDA 모델 로딩·예열과 Mac의 HTTPS API 경로까지 통과했다.
+[GPU 시험 결과](../deployment/GPU_TRIAL_RESULTS.md)는 이 후속 검증과 미검증 품질·
+성능 범위를 구분한다. 로컬 Anaconda 환경의 기존 metadata 불일치를 이 설치로
+수리한 것은 아니다.

@@ -5,6 +5,7 @@ import subprocess
 import sys
 
 import httpx
+import pytest
 
 from gateway.server import create_server
 from gateway.settings import Settings
@@ -64,3 +65,19 @@ def test_main_reports_missing_configuration_without_logging_values(monkeypatch, 
     monkeypatch.setattr(server.os, "environ", {})
     assert server.main() == 2
     assert capsys.readouterr().err.strip() == "Gateway startup rejected: invalid or unavailable secure configuration."
+
+
+@pytest.mark.parametrize("failure,expected", [(SystemExit(0), 0), (SystemExit(None), 0),
+    (SystemExit(1), 2), (OSError("SYNTHETIC_PRIVATE_BIND_DETAIL"), 2)])
+def test_runner_exit_and_bind_errors_have_safe_process_contract(tmp_path, monkeypatch, capsys, failure, expected):
+    from gateway.tests.test_settings import environment
+    config = Settings.from_env(environment() | {"PII_STATE_DIR": str(tmp_path / "state")})
+    monkeypatch.setattr(server.Settings, "from_env", lambda env: config)
+    def fail(*args, **kwargs):
+        raise failure
+    monkeypatch.setattr(server.uvicorn, "run", fail)
+    assert server.main() == expected
+    output = capsys.readouterr()
+    assert output.out == ""
+    assert "SYNTHETIC_PRIVATE_BIND_DETAIL" not in output.err
+    assert output.err.strip() == ("Gateway startup rejected: invalid or unavailable secure configuration." if expected else "")
