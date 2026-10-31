@@ -1,10 +1,21 @@
 {
   "schema_version": "1.0",
   "plan_id": "a-m0-m1-initial-v1",
-  "status": "not_executed",
+  "status": "stage7_5_offline_evaluation_completed_pending_b_runtime_acceptance",
+  "stage7_5_execution_artifacts": {
+    "evaluation_plan": "model/configs/stage7_5-evaluation-plan.json",
+    "recovery_evidence": "model/reports/stage7_5-recovery-v2.json",
+    "dev_selection": "model/reports/stage7_5-selection-v1.json",
+    "frozen_service_holdout_manifest": "model/evaluation/service-holdout-v2-r2.frozen.manifest.json",
+    "service_final_summary": "model/reports/stage7_5-service-final-v1.json",
+    "official_final_summary": "model/reports/stage7_5-official-final-v1.json",
+    "final_report": "model/report_v1.md",
+    "graphs_manifest": "model/graph/graph-data.json",
+    "final_verdict": "pending_runtime_acceptance"
+  },
   "assets_lock": "assets.lock.json",
   "seed": 42,
-  "seed_status": "Selected for future sampling and training; no samples selected yet",
+  "seed_status": "Initial 5k sample (train_5k.jsonl, 4996 unique) evaluated in Stage 7.5; balanced 5k sample prepared in stage7_5-sample-v1.json (not yet trained)",
   "training": {
     "source_split": "train",
     "initial_sample_count": 5000,

@@ -1,0 +1,33 @@
+{
+  "scope": "Planning only; no predictions, scoring, model or threshold selection. Dev plans are identical wherever original planner succeeded.",
+  "results": {
+    "dev": {
+      "documents": 28347,
+      "original_planner_incomplete": 0,
+      "new_planner_incomplete": 0,
+      "source_sha256": "6a60cb889f2641039569a871c3c8ef2f1c45cc70464c7a90f6c5c3aa4a03a1b4",
+      "fallback_window_audits": []
+    },
+    "service": {
+      "documents": 300,
+      "original_planner_incomplete": 1,
+      "new_planner_incomplete": 0,
+      "source_sha256": "26c21a0293ff71c49be9d36ee9749c3d85249f545713c24dcb49027758f7db87",
+      "fallback_window_audits": [
+        {
+          "windows": 2,
+          "max_words": 208,
+          "max_subtokens_including_labels": 509,
+          "all_nonwhitespace_codepoints_covered": true
+        }
+      ]
+    },
+    "official": {
+      "documents": 28142,
+      "original_planner_incomplete": 0,
+      "new_planner_incomplete": 0,
+      "source_sha256": "219c023f69832f9089d59df00368320fc76be81e05ee602cf0909289cd456add",
+      "fallback_window_audits": []
+    }
+  }
+}

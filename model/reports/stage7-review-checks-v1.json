@@ -1,0 +1,131 @@
+{
+  "schema_version": "1.0",
+  "review_date": "2026-10-31",
+  "reviewed_commit": "a1d9177aff01fcf6f3081aae4ebb737cf83dedfc",
+  "decision": "stage_7_5_required",
+  "scope": "local code, artifacts and CPU checks; no SSH, GPU inference or training performed",
+  "tests": {
+    "command": "model/.cache/conversion-venv/bin/python -m pytest model/tests -q",
+    "passed": 173,
+    "reported_seconds": 0.23,
+    "scope": "existing tests; does not certify the evaluation runners"
+  },
+  "record_checks": [
+    {
+      "record": "m0-baseline-record",
+      "score": "m0-service-test-score",
+      "schema_valid": true,
+      "overall_counts_and_rates_match": true,
+      "per_type_matches": true
+    },
+    {
+      "record": "m0-dev-record",
+      "score": "m0-dev-score",
+      "schema_valid": true,
+      "overall_counts_and_rates_match": true,
+      "per_type_matches": true
+    },
+    {
+      "record": "m1-service-test-record",
+      "score": "m1-service-test-score",
+      "schema_valid": true,
+      "overall_counts_and_rates_match": true,
+      "per_type_matches": true
+    },
+    {
+      "record": "m1-dev-record",
+      "score": "m1-dev-score",
+      "schema_valid": true,
+      "overall_counts_and_rates_match": true,
+      "per_type_matches": true
+    }
+  ],
+  "dev_gold_matches_original_audit": {
+    "m0-dev-record": true,
+    "m1-dev-record": true
+  },
+  "service_draft": {
+    "sha256_matches_manifest": true,
+    "mechanical_errors": [],
+    "unreviewed_documents": 300,
+    "status": "draft_needs_review",
+    "frozen": false,
+    "official_overlap_in_this_review": "not rescanned; prior manifest records 0"
+  },
+  "m0_service_recomputed": {
+    "score_identical": true,
+    "normal_false_block": {
+      "metrics_version": "policy-metrics-v1",
+      "mode": "model_only",
+      "normal_documents": 100,
+      "actions": {
+        "allow": 92,
+        "mask": 7,
+        "block": 1,
+        "error": 0
+      },
+      "false_block_count": 1,
+      "false_block_rate": 0.01,
+      "false_block_rate_wilson_95": {
+        "low": 0.0017674320446096452,
+        "high": 0.05448619674900669,
+        "method": "wilson",
+        "z": 1.959964
+      },
+      "false_block_or_error_rate": 0.01
+    }
+  },
+  "service_comparison": {
+    "saved_comparison_reproduced": true,
+    "decision_without_runtime_acceptance": {
+      "verdict": "reject",
+      "reasons": [
+        "normal_false_block_increase_within_limit"
+      ],
+      "gates": {
+        "critical_micro_recall_not_below_baseline": true,
+        "overall_f1_not_below_baseline": true,
+        "normal_false_block_increase_within_limit": false
+      }
+    },
+    "critical_regressions": [
+      "KR_BANK_ACCOUNT",
+      "CREDIT_CARD"
+    ]
+  },
+  "incomplete_status_reproduction": {
+    "method": "Executed the AST-extracted run_inference body from each submitted runner with a synthetic backend returning status=incomplete and findings=[]; no model loaded",
+    "m0_runner_accepted_as_empty_predictions": true,
+    "m1_runner_accepted_as_empty_predictions": true,
+    "actual_historical_incomplete_count": "unknown; runners did not persist status"
+  },
+  "missing_local_evidence": [
+    "M1 per-document predictions/status",
+    "actual GPU TrainingArguments and trainer_state.json",
+    "epoch-wise dev selection history",
+    "actual M1 checkpoint SHA-256",
+    "official test_track_a scores",
+    "model_plus_same_rules and masking residual results",
+    "B runtime acceptance"
+  ],
+  "input_sha256": {
+    "model/to_agy.md": "e6b2ee9c860cb732b5bcda02266c5135c73e1ae65f248d0e92cca0820bf89e9f",
+    "docs/AI_PII_Gateway_PRD_v1.md": "0d45411e60dd866086fe72f54bd4e3f9c6fcd2fd9f36a4929cab4a6006c4d7e8",
+    "model/training/run_stage6_m1.py": "b02a10991b23f858aba7060c3fa4e60ac8d36b67bf27f802f3e91bf4be597eb5",
+    "model/evaluation/evaluate_m0.py": "e20ad040bde081269d43d5fc9d20443a10fffc57e608741df4af054a44b6305b",
+    "model/evaluation/service-test-v1.manifest.json": "083abaa66063cd3ffc89e29206a1a10c373f53fb29d0ed6e88b97cccece54170",
+    "model/evaluation/service_testset/service-test-v1.draft.jsonl": "559e87c0efb12509270a90d4ad77a76d0335d19a86dd68fd734ab76f15e094cb",
+    "model/reports/m0-service-test-preds.jsonl": "3d9ccf8d2814883703a8b308d783a61f0a2edbc0361522aea89614b648751e96",
+    "model/reports/data-audit-v2.json": "2a7d55bdb10977b34f8b664501b98fa12a674b3a572864d9b5df14b532325dab",
+    "model/reports/m1-vs-m0-comparison.json": "984d288471263c0e88fd215b83fe23cb10e3e983e772b74df32bcdd6b9509cf9",
+    "model/reports/m1-vs-m0-decision.json": "f5beca293e162885cb3eac595e2a9319e3f9577a0f0e249d1ff45ae0e8782549",
+    "model/reports/m0-baseline-record.json": "5219202c8d097613c0f5d6a8b8df62530370a653cf97a7d3b25fecd9249580e0",
+    "model/reports/m0-service-test-score.json": "58c324338a56bfeaac08db2310fbcab57bdbcf95643cf44395aaa9d4e40e031a",
+    "model/reports/m0-dev-record.json": "e6948fabed02ca0090e3d230c6d0972852959f1fddc969d264c32c38e3c1a255",
+    "model/reports/m0-dev-score.json": "424099764c67af9447ca4c381f99e115b3df887273086166b6a2cdf6dd9fff87",
+    "model/reports/m1-service-test-record.json": "6500e098971f6566c9baff2c0e7c949416ae1601817ef1ad0521beeb106fe85f",
+    "model/reports/m1-service-test-score.json": "04e03e8c590a091b006deef46d2506393b1b107bbe446fb700e063ee15eb6355",
+    "model/reports/m1-dev-record.json": "1ca95e0eebd130aced9a45e07eeb6c631fa06dd339262bd7ea18e26cdbf249a1",
+    "model/reports/m1-dev-score.json": "342af31b32a2e79c893ca3c20eead9e052039f1e23962687cad648f9f40c0dfa"
+  }
+}

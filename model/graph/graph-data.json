@@ -1,0 +1,2085 @@
+{
+  "scope": "Measured aggregates; dev is selection only. Offline timings exclude network and B client acceptance.",
+  "training_history": [
+    {
+      "epoch": 0.07923930269413629,
+      "grad_norm": 598.9593505859375,
+      "learning_rate": 7.5590551181102365e-06,
+      "loss": 71.1466,
+      "step": 50
+    },
+    {
+      "epoch": 0.15847860538827258,
+      "grad_norm": 402.6724853515625,
+      "learning_rate": 1.889763779527559e-05,
+      "loss": 25.0295,
+      "step": 100
+    },
+    {
+      "epoch": 0.23771790808240886,
+      "grad_norm": 504.7007751464844,
+      "learning_rate": 2.9947136563876655e-05,
+      "loss": 15.2983,
+      "step": 150
+    },
+    {
+      "epoch": 0.31695721077654515,
+      "grad_norm": 1568.90625,
+      "learning_rate": 2.8625550660792953e-05,
+      "loss": 14.7217,
+      "step": 200
+    },
+    {
+      "epoch": 0.39619651347068147,
+      "grad_norm": 695.9129028320312,
+      "learning_rate": 2.7303964757709253e-05,
+      "loss": 11.9695,
+      "step": 250
+    },
+    {
+      "epoch": 0.4754358161648177,
+      "grad_norm": 598.6778564453125,
+      "learning_rate": 2.598237885462555e-05,
+      "loss": 9.287,
+      "step": 300
+    },
+    {
+      "epoch": 0.554675118858954,
+      "grad_norm": 479.97210693359375,
+      "learning_rate": 2.4660792951541852e-05,
+      "loss": 8.2961,
+      "step": 350
+    },
+    {
+      "epoch": 0.6339144215530903,
+      "grad_norm": 803.1714477539062,
+      "learning_rate": 2.333920704845815e-05,
+      "loss": 7.3325,
+      "step": 400
+    },
+    {
+      "epoch": 0.7131537242472267,
+      "grad_norm": 794.28369140625,
+      "learning_rate": 2.201762114537445e-05,
+      "loss": 6.3126,
+      "step": 450
+    },
+    {
+      "epoch": 0.7923930269413629,
+      "grad_norm": 597.1368408203125,
+      "learning_rate": 2.0696035242290748e-05,
+      "loss": 4.6918,
+      "step": 500
+    },
+    {
+      "epoch": 0.8716323296354992,
+      "grad_norm": 1281.8123779296875,
+      "learning_rate": 1.937444933920705e-05,
+      "loss": 5.9279,
+      "step": 550
+    },
+    {
+      "epoch": 0.9508716323296355,
+      "grad_norm": 168.4305877685547,
+      "learning_rate": 1.8052863436123346e-05,
+      "loss": 4.8672,
+      "step": 600
+    },
+    {
+      "epoch": 1.0301109350237718,
+      "grad_norm": 66.21114349365234,
+      "learning_rate": 1.673127753303965e-05,
+      "loss": 3.622,
+      "step": 650
+    },
+    {
+      "epoch": 1.109350237717908,
+      "grad_norm": 1024.49658203125,
+      "learning_rate": 1.5409691629955948e-05,
+      "loss": 1.71,
+      "step": 700
+    },
+    {
+      "epoch": 1.1885895404120443,
+      "grad_norm": 3256.740478515625,
+      "learning_rate": 1.4088105726872247e-05,
+      "loss": 2.2922,
+      "step": 750
+    },
+    {
+      "epoch": 1.2678288431061806,
+      "grad_norm": 3.8700833320617676,
+      "learning_rate": 1.2766519823788548e-05,
+      "loss": 2.5993,
+      "step": 800
+    },
+    {
+      "epoch": 1.3470681458003169,
+      "grad_norm": 0.721535325050354,
+      "learning_rate": 1.1444933920704847e-05,
+      "loss": 2.6997,
+      "step": 850
+    },
+    {
+      "epoch": 1.4263074484944531,
+      "grad_norm": 1844.8934326171875,
+      "learning_rate": 1.0123348017621146e-05,
+      "loss": 2.7626,
+      "step": 900
+    },
+    {
+      "epoch": 1.5055467511885894,
+      "grad_norm": 3995.0546875,
+      "learning_rate": 8.801762114537446e-06,
+      "loss": 2.0274,
+      "step": 950
+    },
+    {
+      "epoch": 1.5847860538827259,
+      "grad_norm": 96.70736694335938,
+      "learning_rate": 7.480176211453745e-06,
+      "loss": 1.1323,
+      "step": 1000
+    },
+    {
+      "epoch": 1.6640253565768621,
+      "grad_norm": 2.626119375228882,
+      "learning_rate": 6.158590308370044e-06,
+      "loss": 2.4855,
+      "step": 1050
+    },
+    {
+      "epoch": 1.7432646592709984,
+      "grad_norm": 0.9129101634025574,
+      "learning_rate": 4.837004405286343e-06,
+      "loss": 1.5657,
+      "step": 1100
+    },
+    {
+      "epoch": 1.8225039619651349,
+      "grad_norm": 5.619784832000732,
+      "learning_rate": 3.515418502202643e-06,
+      "loss": 3.8032,
+      "step": 1150
+    },
+    {
+      "epoch": 1.9017432646592711,
+      "grad_norm": 1003.0316772460938,
+      "learning_rate": 2.1938325991189428e-06,
+      "loss": 3.8791,
+      "step": 1200
+    },
+    {
+      "epoch": 1.9809825673534074,
+      "grad_norm": 1.08513605594635,
+      "learning_rate": 8.722466960352423e-07,
+      "loss": 1.2245,
+      "step": 1250
+    }
+  ],
+  "samples": {
+    "original_used": {
+      "exists": true,
+      "bytes": 26033181,
+      "sha256": "a1936a858d8cfea593792681e796f5ef50d96c8e9b376745adb732f327030506",
+      "documents": 5000,
+      "unique_ids": 5000,
+      "unique_texts": 4996,
+      "domains": {
+        "chat": 402,
+        "document": 389,
+        "education": 352,
+        "email_thread": 444,
+        "employment": 415,
+        "financial": 462,
+        "government": 429,
+        "insurance": 374,
+        "legal": 493,
+        "medical": 415,
+        "support_ticket": 385,
+        "telecommunications": 440
+      },
+      "entities_by_type": {
+        "CREDIT_CARD": 407,
+        "DATE_OF_BIRTH": 884,
+        "EMAIL_ADDRESS": 1585,
+        "IP_ADDRESS": 654,
+        "KR_BANK_ACCOUNT": 1016,
+        "KR_DRIVER_LICENSE": 409,
+        "KR_LOCATION": 1172,
+        "KR_NHIS": 450,
+        "KR_PASSPORT": 306,
+        "KR_PHONE_NUMBER": 1953,
+        "KR_RRN": 2211,
+        "KR_VEHICLE_PLATE": 469,
+        "NRP": 457,
+        "ORGANIZATION": 1255,
+        "PERSON": 8352,
+        "PERSONAL_ATTRIBUTE": 53,
+        "URL": 760,
+        "USERNAME": 386
+      }
+    },
+    "new_not_trained": {
+      "documents": 5000,
+      "unique_texts": 5000,
+      "windows": 5058,
+      "domains": {
+        "chat": 417,
+        "document": 417,
+        "education": 417,
+        "email_thread": 417,
+        "employment": 417,
+        "financial": 417,
+        "government": 417,
+        "insurance": 417,
+        "legal": 416,
+        "medical": 416,
+        "support_ticket": 416,
+        "telecommunications": 416
+      },
+      "entities_by_type": {
+        "CREDIT_CARD": 401,
+        "DATE_OF_BIRTH": 861,
+        "EMAIL_ADDRESS": 1627,
+        "IP_ADDRESS": 632,
+        "KR_BANK_ACCOUNT": 1085,
+        "KR_DRIVER_LICENSE": 477,
+        "KR_LOCATION": 1184,
+        "KR_NHIS": 403,
+        "KR_PASSPORT": 315,
+        "KR_PHONE_NUMBER": 2000,
+        "KR_RRN": 2142,
+        "KR_VEHICLE_PLATE": 477,
+        "NRP": 449,
+        "ORGANIZATION": 1295,
+        "PERSON": 8348,
+        "PERSONAL_ATTRIBUTE": 55,
+        "URL": 686,
+        "USERNAME": 423
+      }
+    }
+  },
+  "dev": [
+    {
+      "name": "dev-m0-v1",
+      "profiles": [
+        {
+          "threshold": 0.35,
+          "f1": 0.6104466925187333,
+          "critical_recall": 0.7768914777543524,
+          "normal_failure": 0.0
+        },
+        {
+          "threshold": 0.5,
+          "f1": 0.6300469989154096,
+          "critical_recall": 0.7470929600730292,
+          "normal_failure": 0.0
+        },
+        {
+          "threshold": 0.65,
+          "f1": 0.6190119328990603,
+          "critical_recall": 0.6757156208567889,
+          "normal_failure": 0.0
+        },
+        {
+          "threshold": 0.8,
+          "f1": 0.5969956245239234,
+          "critical_recall": 0.5967093394770588,
+          "normal_failure": 0.0
+        }
+      ]
+    },
+    {
+      "name": "dev-m1-epoch1-v1",
+      "profiles": [
+        {
+          "threshold": 0.35,
+          "f1": 0.9610761237034953,
+          "critical_recall": 0.9999782651220414,
+          "normal_failure": 0.05
+        },
+        {
+          "threshold": 0.5,
+          "f1": 0.9632361122148931,
+          "critical_recall": 0.9999565302440827,
+          "normal_failure": 0.05
+        },
+        {
+          "threshold": 0.65,
+          "f1": 0.9644837344817841,
+          "critical_recall": 0.9999130604881653,
+          "normal_failure": 0.05
+        },
+        {
+          "threshold": 0.8,
+          "f1": 0.9656167654644826,
+          "critical_recall": 0.9998261209763307,
+          "normal_failure": 0.05
+        }
+      ]
+    },
+    {
+      "name": "dev-m1-epoch2-v1",
+      "profiles": [
+        {
+          "threshold": 0.35,
+          "f1": 0.9770597634513936,
+          "critical_recall": 0.9999565302440827,
+          "normal_failure": 0.05
+        },
+        {
+          "threshold": 0.5,
+          "f1": 0.9777458087537975,
+          "critical_recall": 0.9999565302440827,
+          "normal_failure": 0.05
+        },
+        {
+          "threshold": 0.65,
+          "f1": 0.9784880493632495,
+          "critical_recall": 0.9999347953661241,
+          "normal_failure": 0.05
+        },
+        {
+          "threshold": 0.8,
+          "f1": 0.9792894046962272,
+          "critical_recall": 0.9999347953661241,
+          "normal_failure": 0.05
+        }
+      ]
+    }
+  ],
+  "final": {
+    "service": [
+      {
+        "experiment_id": "final-service-m0-v1",
+        "documents": 300,
+        "inference_status_counts": {
+          "complete": 300,
+          "incomplete": 0,
+          "error": 0
+        },
+        "score": {
+          "metric_id": "char_span_exact_v1",
+          "duplicates": "multiset",
+          "document_count": 300,
+          "overall_micro": {
+            "tp": 345,
+            "fp": 147,
+            "fn": 65,
+            "gold": 410,
+            "predicted": 492,
+            "precision": 0.7012195121951219,
+            "recall": 0.8414634146341463,
+            "f1": 0.7649667405764967
+          },
+          "per_type": {
+            "CREDIT_CARD": {
+              "tp": 46,
+              "fp": 9,
+              "fn": 4,
+              "gold": 50,
+              "predicted": 55,
+              "precision": 0.8363636363636363,
+              "recall": 0.92,
+              "f1": 0.8761904761904762,
+              "recall_wilson_95": {
+                "low": 0.8116175297192756,
+                "high": 0.9684504861306886,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "DATE_OF_BIRTH": {
+              "tp": 16,
+              "fp": 2,
+              "fn": 0,
+              "gold": 16,
+              "predicted": 18,
+              "precision": 0.8888888888888888,
+              "recall": 1.0,
+              "f1": 0.9411764705882353,
+              "recall_wilson_95": {
+                "low": 0.8063923170025951,
+                "high": 1.0,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "EMAIL_ADDRESS": {
+              "tp": 37,
+              "fp": 0,
+              "fn": 3,
+              "gold": 40,
+              "predicted": 37,
+              "precision": 1.0,
+              "recall": 0.925,
+              "f1": 0.961038961038961,
+              "recall_wilson_95": {
+                "low": 0.8013576634835684,
+                "high": 0.9741639744267374,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "IP_ADDRESS": {
+              "tp": 14,
+              "fp": 0,
+              "fn": 0,
+              "gold": 14,
+              "predicted": 14,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "recall_wilson_95": {
+                "low": 0.7846891945970195,
+                "high": 0.9999999999999999,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_BANK_ACCOUNT": {
+              "tp": 35,
+              "fp": 2,
+              "fn": 5,
+              "gold": 40,
+              "predicted": 37,
+              "precision": 0.9459459459459459,
+              "recall": 0.875,
+              "f1": 0.9090909090909091,
+              "recall_wilson_95": {
+                "low": 0.7388788003201471,
+                "high": 0.9454049978360052,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_DRIVER_LICENSE": {
+              "tp": 12,
+              "fp": 27,
+              "fn": 2,
+              "gold": 14,
+              "predicted": 39,
+              "precision": 0.3076923076923077,
+              "recall": 0.8571428571428571,
+              "f1": 0.4528301886792453,
+              "recall_wilson_95": {
+                "low": 0.600586202762663,
+                "high": 0.959906079092351,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_LOCATION": {
+              "tp": 15,
+              "fp": 0,
+              "fn": 2,
+              "gold": 17,
+              "predicted": 15,
+              "precision": 1.0,
+              "recall": 0.8823529411764706,
+              "f1": 0.9375,
+              "recall_wilson_95": {
+                "low": 0.6566364919396065,
+                "high": 0.9671202265340099,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_NHIS": {
+              "tp": 14,
+              "fp": 1,
+              "fn": 0,
+              "gold": 14,
+              "predicted": 15,
+              "precision": 0.9333333333333333,
+              "recall": 1.0,
+              "f1": 0.9655172413793104,
+              "recall_wilson_95": {
+                "low": 0.7846891945970195,
+                "high": 0.9999999999999999,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_PASSPORT": {
+              "tp": 0,
+              "fp": 1,
+              "fn": 14,
+              "gold": 14,
+              "predicted": 1,
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "recall_wilson_95": {
+                "low": 0.0,
+                "high": 0.21531080540298042,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_PHONE_NUMBER": {
+              "tp": 38,
+              "fp": 3,
+              "fn": 2,
+              "gold": 40,
+              "predicted": 41,
+              "precision": 0.926829268292683,
+              "recall": 0.95,
+              "f1": 0.9382716049382716,
+              "recall_wilson_95": {
+                "low": 0.8349612250489412,
+                "high": 0.9861793327384413,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_RRN": {
+              "tp": 32,
+              "fp": 0,
+              "fn": 8,
+              "gold": 40,
+              "predicted": 32,
+              "precision": 1.0,
+              "recall": 0.8,
+              "f1": 0.8888888888888888,
+              "recall_wilson_95": {
+                "low": 0.6524269352437855,
+                "high": 0.8950001032811363,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_VEHICLE_PLATE": {
+              "tp": 1,
+              "fp": 0,
+              "fn": 15,
+              "gold": 16,
+              "predicted": 1,
+              "precision": 1.0,
+              "recall": 0.0625,
+              "f1": 0.11764705882352941,
+              "recall_wilson_95": {
+                "low": 0.011119344641247308,
+                "high": 0.283287377981482,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "NRP": {
+              "tp": 14,
+              "fp": 0,
+              "fn": 1,
+              "gold": 15,
+              "predicted": 14,
+              "precision": 1.0,
+              "recall": 0.9333333333333333,
+              "f1": 0.9655172413793104,
+              "recall_wilson_95": {
+                "low": 0.7018346989112435,
+                "high": 0.9881331046384677,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "ORGANIZATION": {
+              "tp": 14,
+              "fp": 17,
+              "fn": 1,
+              "gold": 15,
+              "predicted": 31,
+              "precision": 0.45161290322580644,
+              "recall": 0.9333333333333333,
+              "f1": 0.6086956521739131,
+              "recall_wilson_95": {
+                "low": 0.7018346989112435,
+                "high": 0.9881331046384677,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "PERSON": {
+              "tp": 17,
+              "fp": 75,
+              "fn": 0,
+              "gold": 17,
+              "predicted": 92,
+              "precision": 0.18478260869565216,
+              "recall": 1.0,
+              "f1": 0.3119266055045872,
+              "recall_wilson_95": {
+                "low": 0.8156818626193445,
+                "high": 1.0,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "PERSONAL_ATTRIBUTE": {
+              "tp": 11,
+              "fp": 3,
+              "fn": 6,
+              "gold": 17,
+              "predicted": 14,
+              "precision": 0.7857142857142857,
+              "recall": 0.6470588235294118,
+              "f1": 0.7096774193548387,
+              "recall_wilson_95": {
+                "low": 0.4130036331490377,
+                "high": 0.8269027970331224,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "URL": {
+              "tp": 14,
+              "fp": 2,
+              "fn": 0,
+              "gold": 14,
+              "predicted": 16,
+              "precision": 0.875,
+              "recall": 1.0,
+              "f1": 0.9333333333333333,
+              "recall_wilson_95": {
+                "low": 0.7846891945970195,
+                "high": 0.9999999999999999,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "USERNAME": {
+              "tp": 15,
+              "fp": 5,
+              "fn": 2,
+              "gold": 17,
+              "predicted": 20,
+              "precision": 0.75,
+              "recall": 0.8823529411764706,
+              "f1": 0.8108108108108109,
+              "recall_wilson_95": {
+                "low": 0.6566364919396065,
+                "high": 0.9671202265340099,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            }
+          },
+          "critical_micro": {
+            "tp": 188,
+            "fp": 14,
+            "fn": 22,
+            "gold": 210,
+            "predicted": 202,
+            "types": [
+              "KR_RRN",
+              "KR_BANK_ACCOUNT",
+              "CREDIT_CARD",
+              "KR_PHONE_NUMBER",
+              "EMAIL_ADDRESS"
+            ],
+            "precision": 0.9306930693069307,
+            "recall": 0.8952380952380953,
+            "f1": 0.912621359223301
+          }
+        },
+        "gateway": {
+          "model_only": {
+            "protocol": "B-gateway-one-reinspection-v1",
+            "mode": "model_only",
+            "scope": "all supplied documents; no external transmission",
+            "actions": {
+              "block": 76,
+              "error": 92,
+              "mask": 34,
+              "allow": 98
+            },
+            "normal_false_block": {
+              "false_blocks": 1,
+              "normal_documents": 100,
+              "explicit_blocks": 0,
+              "fail_closed_errors": 1,
+              "reinspection_failures": 1,
+              "rate": 0.01,
+              "wilson_95": {
+                "low": 0.0017674320446096452,
+                "high": 0.05448619674900669,
+                "method": "wilson",
+                "z": 1.959964
+              },
+              "definition": "normal documents not forwarded due to block OR error; differs from v1 block-only"
+            },
+            "normal_wrong_masks": 10,
+            "forwarded_protected_gold_entities": 54,
+            "residual_protected_entities": 22,
+            "residual_rate": 0.4074074074074074,
+            "residual_scope": "protected gold in allow or successfully masked documents; blocked/error documents not forwarded",
+            "B_runtime_acceptance": null,
+            "cached_reinspection_calls": 0,
+            "latency_scope": "Cached mode timings are not independent end-to-end latency measurements; use uncached model_only traces."
+          },
+          "model_plus_same_rules": {
+            "protocol": "B-gateway-one-reinspection-v1",
+            "mode": "model_plus_same_rules",
+            "scope": "all supplied documents; no external transmission",
+            "actions": {
+              "block": 76,
+              "error": 92,
+              "mask": 34,
+              "allow": 98
+            },
+            "normal_false_block": {
+              "false_blocks": 1,
+              "normal_documents": 100,
+              "explicit_blocks": 0,
+              "fail_closed_errors": 1,
+              "reinspection_failures": 1,
+              "rate": 0.01,
+              "wilson_95": {
+                "low": 0.0017674320446096452,
+                "high": 0.05448619674900669,
+                "method": "wilson",
+                "z": 1.959964
+              },
+              "definition": "normal documents not forwarded due to block OR error; differs from v1 block-only"
+            },
+            "normal_wrong_masks": 10,
+            "forwarded_protected_gold_entities": 54,
+            "residual_protected_entities": 22,
+            "residual_rate": 0.4074074074074074,
+            "residual_scope": "protected gold in allow or successfully masked documents; blocked/error documents not forwarded",
+            "B_runtime_acceptance": null,
+            "cached_reinspection_calls": 126,
+            "latency_scope": "Cached mode timings are not independent end-to-end latency measurements; use uncached model_only traces."
+          }
+        }
+      },
+      {
+        "experiment_id": "final-service-m1-v1",
+        "documents": 300,
+        "inference_status_counts": {
+          "complete": 300,
+          "incomplete": 0,
+          "error": 0
+        },
+        "score": {
+          "metric_id": "char_span_exact_v1",
+          "duplicates": "multiset",
+          "document_count": 300,
+          "overall_micro": {
+            "tp": 383,
+            "fp": 64,
+            "fn": 27,
+            "gold": 410,
+            "predicted": 447,
+            "precision": 0.8568232662192393,
+            "recall": 0.9341463414634147,
+            "f1": 0.8938156359393232
+          },
+          "per_type": {
+            "CREDIT_CARD": {
+              "tp": 46,
+              "fp": 9,
+              "fn": 4,
+              "gold": 50,
+              "predicted": 55,
+              "precision": 0.8363636363636363,
+              "recall": 0.92,
+              "f1": 0.8761904761904762,
+              "recall_wilson_95": {
+                "low": 0.8116175297192756,
+                "high": 0.9684504861306886,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "DATE_OF_BIRTH": {
+              "tp": 15,
+              "fp": 1,
+              "fn": 1,
+              "gold": 16,
+              "predicted": 16,
+              "precision": 0.9375,
+              "recall": 0.9375,
+              "f1": 0.9375,
+              "recall_wilson_95": {
+                "low": 0.716712622018518,
+                "high": 0.9888806553587528,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "EMAIL_ADDRESS": {
+              "tp": 40,
+              "fp": 0,
+              "fn": 0,
+              "gold": 40,
+              "predicted": 40,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "recall_wilson_95": {
+                "low": 0.9123783975415363,
+                "high": 1.0,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "IP_ADDRESS": {
+              "tp": 14,
+              "fp": 0,
+              "fn": 0,
+              "gold": 14,
+              "predicted": 14,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "recall_wilson_95": {
+                "low": 0.7846891945970195,
+                "high": 0.9999999999999999,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_BANK_ACCOUNT": {
+              "tp": 36,
+              "fp": 0,
+              "fn": 4,
+              "gold": 40,
+              "predicted": 36,
+              "precision": 1.0,
+              "recall": 0.9,
+              "f1": 0.9473684210526315,
+              "recall_wilson_95": {
+                "low": 0.7694822464406407,
+                "high": 0.9604204715925885,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_DRIVER_LICENSE": {
+              "tp": 13,
+              "fp": 0,
+              "fn": 1,
+              "gold": 14,
+              "predicted": 13,
+              "precision": 1.0,
+              "recall": 0.9285714285714286,
+              "f1": 0.9629629629629629,
+              "recall_wilson_95": {
+                "low": 0.6853129533326209,
+                "high": 0.9872777848933957,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_LOCATION": {
+              "tp": 14,
+              "fp": 2,
+              "fn": 3,
+              "gold": 17,
+              "predicted": 16,
+              "precision": 0.875,
+              "recall": 0.8235294117647058,
+              "f1": 0.8484848484848485,
+              "recall_wilson_95": {
+                "low": 0.5897054122922163,
+                "high": 0.938088734108536,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_NHIS": {
+              "tp": 14,
+              "fp": 2,
+              "fn": 0,
+              "gold": 14,
+              "predicted": 16,
+              "precision": 0.875,
+              "recall": 1.0,
+              "f1": 0.9333333333333333,
+              "recall_wilson_95": {
+                "low": 0.7846891945970195,
+                "high": 0.9999999999999999,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_PASSPORT": {
+              "tp": 14,
+              "fp": 0,
+              "fn": 0,
+              "gold": 14,
+              "predicted": 14,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "recall_wilson_95": {
+                "low": 0.7846891945970195,
+                "high": 0.9999999999999999,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_PHONE_NUMBER": {
+              "tp": 38,
+              "fp": 1,
+              "fn": 2,
+              "gold": 40,
+              "predicted": 39,
+              "precision": 0.9743589743589743,
+              "recall": 0.95,
+              "f1": 0.9620253164556962,
+              "recall_wilson_95": {
+                "low": 0.8349612250489412,
+                "high": 0.9861793327384413,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_RRN": {
+              "tp": 39,
+              "fp": 13,
+              "fn": 1,
+              "gold": 40,
+              "predicted": 52,
+              "precision": 0.75,
+              "recall": 0.975,
+              "f1": 0.8478260869565217,
+              "recall_wilson_95": {
+                "low": 0.8711863091181636,
+                "high": 0.9955731685462955,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_VEHICLE_PLATE": {
+              "tp": 15,
+              "fp": 1,
+              "fn": 1,
+              "gold": 16,
+              "predicted": 16,
+              "precision": 0.9375,
+              "recall": 0.9375,
+              "f1": 0.9375,
+              "recall_wilson_95": {
+                "low": 0.716712622018518,
+                "high": 0.9888806553587528,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "NRP": {
+              "tp": 15,
+              "fp": 3,
+              "fn": 0,
+              "gold": 15,
+              "predicted": 18,
+              "precision": 0.8333333333333334,
+              "recall": 1.0,
+              "f1": 0.9090909090909091,
+              "recall_wilson_95": {
+                "low": 0.7961166964035129,
+                "high": 1.0,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "ORGANIZATION": {
+              "tp": 14,
+              "fp": 18,
+              "fn": 1,
+              "gold": 15,
+              "predicted": 32,
+              "precision": 0.4375,
+              "recall": 0.9333333333333333,
+              "f1": 0.5957446808510638,
+              "recall_wilson_95": {
+                "low": 0.7018346989112435,
+                "high": 0.9881331046384677,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "PERSON": {
+              "tp": 17,
+              "fp": 13,
+              "fn": 0,
+              "gold": 17,
+              "predicted": 30,
+              "precision": 0.5666666666666667,
+              "recall": 1.0,
+              "f1": 0.723404255319149,
+              "recall_wilson_95": {
+                "low": 0.8156818626193445,
+                "high": 1.0,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "PERSONAL_ATTRIBUTE": {
+              "tp": 8,
+              "fp": 1,
+              "fn": 9,
+              "gold": 17,
+              "predicted": 9,
+              "precision": 0.8888888888888888,
+              "recall": 0.47058823529411764,
+              "f1": 0.6153846153846154,
+              "recall_wilson_95": {
+                "low": 0.2616510631137911,
+                "high": 0.6903676508497769,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "URL": {
+              "tp": 14,
+              "fp": 0,
+              "fn": 0,
+              "gold": 14,
+              "predicted": 14,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "recall_wilson_95": {
+                "low": 0.7846891945970195,
+                "high": 0.9999999999999999,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "USERNAME": {
+              "tp": 17,
+              "fp": 0,
+              "fn": 0,
+              "gold": 17,
+              "predicted": 17,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "recall_wilson_95": {
+                "low": 0.8156818626193445,
+                "high": 1.0,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            }
+          },
+          "critical_micro": {
+            "tp": 199,
+            "fp": 23,
+            "fn": 11,
+            "gold": 210,
+            "predicted": 222,
+            "types": [
+              "KR_RRN",
+              "KR_BANK_ACCOUNT",
+              "CREDIT_CARD",
+              "KR_PHONE_NUMBER",
+              "EMAIL_ADDRESS"
+            ],
+            "precision": 0.8963963963963963,
+            "recall": 0.9476190476190476,
+            "f1": 0.9212962962962963
+          }
+        },
+        "gateway": {
+          "model_only": {
+            "protocol": "B-gateway-one-reinspection-v1",
+            "mode": "model_only",
+            "scope": "all supplied documents; no external transmission",
+            "actions": {
+              "block": 93,
+              "mask": 57,
+              "error": 57,
+              "allow": 93
+            },
+            "normal_false_block": {
+              "false_blocks": 2,
+              "normal_documents": 100,
+              "explicit_blocks": 2,
+              "fail_closed_errors": 0,
+              "reinspection_failures": 0,
+              "rate": 0.02,
+              "wilson_95": {
+                "low": 0.0055019675006616475,
+                "high": 0.07001179131757478,
+                "method": "wilson",
+                "z": 1.959964
+              },
+              "definition": "normal documents not forwarded due to block OR error; differs from v1 block-only"
+            },
+            "normal_wrong_masks": 5,
+            "forwarded_protected_gold_entities": 79,
+            "residual_protected_entities": 6,
+            "residual_rate": 0.0759493670886076,
+            "residual_scope": "protected gold in allow or successfully masked documents; blocked/error documents not forwarded",
+            "B_runtime_acceptance": null,
+            "cached_reinspection_calls": 0,
+            "latency_scope": "Cached mode timings are not independent end-to-end latency measurements; use uncached model_only traces."
+          },
+          "model_plus_same_rules": {
+            "protocol": "B-gateway-one-reinspection-v1",
+            "mode": "model_plus_same_rules",
+            "scope": "all supplied documents; no external transmission",
+            "actions": {
+              "block": 93,
+              "mask": 57,
+              "error": 57,
+              "allow": 93
+            },
+            "normal_false_block": {
+              "false_blocks": 2,
+              "normal_documents": 100,
+              "explicit_blocks": 2,
+              "fail_closed_errors": 0,
+              "reinspection_failures": 0,
+              "rate": 0.02,
+              "wilson_95": {
+                "low": 0.0055019675006616475,
+                "high": 0.07001179131757478,
+                "method": "wilson",
+                "z": 1.959964
+              },
+              "definition": "normal documents not forwarded due to block OR error; differs from v1 block-only"
+            },
+            "normal_wrong_masks": 5,
+            "forwarded_protected_gold_entities": 79,
+            "residual_protected_entities": 6,
+            "residual_rate": 0.0759493670886076,
+            "residual_scope": "protected gold in allow or successfully masked documents; blocked/error documents not forwarded",
+            "B_runtime_acceptance": null,
+            "cached_reinspection_calls": 114,
+            "latency_scope": "Cached mode timings are not independent end-to-end latency measurements; use uncached model_only traces."
+          }
+        }
+      }
+    ],
+    "service_offline_latency": [
+      {
+        "model": "M0",
+        "p50_ms": 21.245806012302637,
+        "p95_ms": 94.96087064617313,
+        "p99_ms": 188.20822954177856
+      },
+      {
+        "model": "M1",
+        "p50_ms": 20.865482510998845,
+        "p95_ms": 94.54420211259276,
+        "p99_ms": 183.76361755421382
+      }
+    ],
+    "official": [
+      {
+        "experiment_id": "final-official-m0-v1",
+        "documents": 28142,
+        "inference_status_counts": {
+          "complete": 28142,
+          "incomplete": 0,
+          "error": 0
+        },
+        "score": {
+          "metric_id": "char_span_exact_v1",
+          "duplicates": "multiset",
+          "document_count": 28142,
+          "overall_micro": {
+            "tp": 84671,
+            "fp": 48478,
+            "fn": 36505,
+            "gold": 121176,
+            "predicted": 133149,
+            "precision": 0.635911647853157,
+            "recall": 0.69874397570476,
+            "f1": 0.6658488154919886
+          },
+          "per_type": {
+            "CREDIT_CARD": {
+              "tp": 2266,
+              "fp": 1,
+              "fn": 0,
+              "gold": 2266,
+              "predicted": 2267,
+              "precision": 0.9995588883987648,
+              "recall": 1.0,
+              "f1": 0.99977939554379,
+              "recall_wilson_95": {
+                "low": 0.9983076091652723,
+                "high": 1.0,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "DATE_OF_BIRTH": {
+              "tp": 2326,
+              "fp": 144,
+              "fn": 565,
+              "gold": 2891,
+              "predicted": 2470,
+              "precision": 0.9417004048582996,
+              "recall": 0.8045658941542719,
+              "f1": 0.867748554374184,
+              "recall_wilson_95": {
+                "low": 0.7897111103108996,
+                "high": 0.8186123592170427,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "EMAIL_ADDRESS": {
+              "tp": 11820,
+              "fp": 81,
+              "fn": 225,
+              "gold": 12045,
+              "predicted": 11901,
+              "precision": 0.993193849256365,
+              "recall": 0.9813200498132005,
+              "f1": 0.987221247807567,
+              "recall_wilson_95": {
+                "low": 0.9787442158694194,
+                "high": 0.9835889710655977,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "IP_ADDRESS": {
+              "tp": 1676,
+              "fp": 540,
+              "fn": 34,
+              "gold": 1710,
+              "predicted": 2216,
+              "precision": 0.7563176895306859,
+              "recall": 0.9801169590643275,
+              "f1": 0.8537952114111055,
+              "recall_wilson_95": {
+                "low": 0.972344656810073,
+                "high": 0.9857369624032993,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_BANK_ACCOUNT": {
+              "tp": 4055,
+              "fp": 506,
+              "fn": 26,
+              "gold": 4081,
+              "predicted": 4561,
+              "precision": 0.8890594167945626,
+              "recall": 0.993629012496937,
+              "f1": 0.9384401758852118,
+              "recall_wilson_95": {
+                "low": 0.9906811042384368,
+                "high": 0.9956484854302431,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_DRIVER_LICENSE": {
+              "tp": 1737,
+              "fp": 2693,
+              "fn": 2,
+              "gold": 1739,
+              "predicted": 4430,
+              "precision": 0.39209932279909704,
+              "recall": 0.9988499137435307,
+              "f1": 0.5631382720051872,
+              "recall_wilson_95": {
+                "low": 0.995816213602306,
+                "high": 0.9996845481902615,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_LOCATION": {
+              "tp": 3736,
+              "fp": 959,
+              "fn": 1436,
+              "gold": 5172,
+              "predicted": 4695,
+              "precision": 0.7957401490947816,
+              "recall": 0.7223511214230471,
+              "f1": 0.7572717137934529,
+              "recall_wilson_95": {
+                "low": 0.7099844189948384,
+                "high": 0.73438777019836,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_NHIS": {
+              "tp": 2306,
+              "fp": 1166,
+              "fn": 0,
+              "gold": 2306,
+              "predicted": 3472,
+              "precision": 0.6641705069124424,
+              "recall": 1.0,
+              "f1": 0.7982000692281066,
+              "recall_wilson_95": {
+                "low": 0.998336916645718,
+                "high": 1.0,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_PASSPORT": {
+              "tp": 686,
+              "fp": 27,
+              "fn": 3318,
+              "gold": 4004,
+              "predicted": 713,
+              "precision": 0.9621318373071529,
+              "recall": 0.17132867132867133,
+              "f1": 0.2908628365486538,
+              "recall_wilson_95": {
+                "low": 0.15997406204933087,
+                "high": 0.18331333417051185,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_PHONE_NUMBER": {
+              "tp": 11448,
+              "fp": 695,
+              "fn": 34,
+              "gold": 11482,
+              "predicted": 12143,
+              "precision": 0.9427653792308326,
+              "recall": 0.9970388434070719,
+              "f1": 0.9691428571428572,
+              "recall_wilson_95": {
+                "low": 0.9958651034018817,
+                "high": 0.9978801124677188,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_RRN": {
+              "tp": 3393,
+              "fp": 311,
+              "fn": 8655,
+              "gold": 12048,
+              "predicted": 3704,
+              "precision": 0.916036717062635,
+              "recall": 0.28162350597609564,
+              "f1": 0.430802437785678,
+              "recall_wilson_95": {
+                "low": 0.27366250829173416,
+                "high": 0.2897237162986746,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_VEHICLE_PLATE": {
+              "tp": 750,
+              "fp": 25,
+              "fn": 1555,
+              "gold": 2305,
+              "predicted": 775,
+              "precision": 0.967741935483871,
+              "recall": 0.32537960954446854,
+              "f1": 0.487012987012987,
+              "recall_wilson_95": {
+                "low": 0.3065572642203071,
+                "high": 0.3447830229598932,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "NRP": {
+              "tp": 543,
+              "fp": 42,
+              "fn": 1757,
+              "gold": 2300,
+              "predicted": 585,
+              "precision": 0.9282051282051282,
+              "recall": 0.23608695652173914,
+              "f1": 0.37642980935875214,
+              "recall_wilson_95": {
+                "low": 0.21918020203153785,
+                "high": 0.2538738159348301,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "ORGANIZATION": {
+              "tp": 4650,
+              "fp": 10072,
+              "fn": 3362,
+              "gold": 8012,
+              "predicted": 14722,
+              "precision": 0.3158538242086673,
+              "recall": 0.5803794308537195,
+              "f1": 0.40907891264185803,
+              "recall_wilson_95": {
+                "low": 0.5695375046312293,
+                "high": 0.5911443160618356,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "PERSON": {
+              "tp": 26180,
+              "fp": 29855,
+              "fn": 14665,
+              "gold": 40845,
+              "predicted": 56035,
+              "precision": 0.46720799500312304,
+              "recall": 0.6409597257926307,
+              "f1": 0.5404624277456648,
+              "recall_wilson_95": {
+                "low": 0.6362943923344253,
+                "high": 0.6455985473121268,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "PERSONAL_ATTRIBUTE": {
+              "tp": 0,
+              "fp": 530,
+              "fn": 0,
+              "gold": 0,
+              "predicted": 530,
+              "precision": 0.0,
+              "recall": null,
+              "f1": 0.0,
+              "recall_wilson_95": null
+            },
+            "URL": {
+              "tp": 5680,
+              "fp": 51,
+              "fn": 0,
+              "gold": 5680,
+              "predicted": 5731,
+              "precision": 0.9911010294887455,
+              "recall": 1.0,
+              "f1": 0.9955306283410744,
+              "recall_wilson_95": {
+                "low": 0.999324143907059,
+                "high": 1.0,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "USERNAME": {
+              "tp": 1419,
+              "fp": 780,
+              "fn": 871,
+              "gold": 2290,
+              "predicted": 2199,
+              "precision": 0.645293315143247,
+              "recall": 0.619650655021834,
+              "f1": 0.6322120739585654,
+              "recall_wilson_95": {
+                "low": 0.5995823180263271,
+                "high": 0.6393182380161375,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            }
+          },
+          "critical_micro": {
+            "tp": 32982,
+            "fp": 1594,
+            "fn": 8940,
+            "gold": 41922,
+            "predicted": 34576,
+            "types": [
+              "KR_RRN",
+              "KR_BANK_ACCOUNT",
+              "CREDIT_CARD",
+              "KR_PHONE_NUMBER",
+              "EMAIL_ADDRESS"
+            ],
+            "precision": 0.9538986580286904,
+            "recall": 0.786746815514527,
+            "f1": 0.862297053517739
+          }
+        },
+        "gateway": {
+          "model_only": {
+            "protocol": "B-gateway-one-reinspection-v1",
+            "mode": "model_only",
+            "scope": "all supplied documents; no external transmission",
+            "actions": {
+              "error": 20107,
+              "mask": 2874,
+              "block": 5161
+            },
+            "normal_false_block": {
+              "false_blocks": 0,
+              "normal_documents": 0,
+              "explicit_blocks": 0,
+              "fail_closed_errors": 0,
+              "reinspection_failures": 0,
+              "rate": null,
+              "wilson_95": null,
+              "definition": "normal documents not forwarded due to block OR error; differs from v1 block-only"
+            },
+            "normal_wrong_masks": 0,
+            "forwarded_protected_gold_entities": 9061,
+            "residual_protected_entities": 1983,
+            "residual_rate": 0.21885001655446418,
+            "residual_scope": "protected gold in allow or successfully masked documents; blocked/error documents not forwarded",
+            "B_runtime_acceptance": null,
+            "cached_reinspection_calls": 0,
+            "latency_scope": "Cached mode timings are not independent end-to-end latency measurements; use uncached model_only traces."
+          },
+          "model_plus_same_rules": {
+            "protocol": "B-gateway-one-reinspection-v1",
+            "mode": "model_plus_same_rules",
+            "scope": "all supplied documents; no external transmission",
+            "actions": {
+              "error": 20107,
+              "mask": 2874,
+              "block": 5161
+            },
+            "normal_false_block": {
+              "false_blocks": 0,
+              "normal_documents": 0,
+              "explicit_blocks": 0,
+              "fail_closed_errors": 0,
+              "reinspection_failures": 0,
+              "rate": null,
+              "wilson_95": null,
+              "definition": "normal documents not forwarded due to block OR error; differs from v1 block-only"
+            },
+            "normal_wrong_masks": 0,
+            "forwarded_protected_gold_entities": 9061,
+            "residual_protected_entities": 1983,
+            "residual_rate": 0.21885001655446418,
+            "residual_scope": "protected gold in allow or successfully masked documents; blocked/error documents not forwarded",
+            "B_runtime_acceptance": null,
+            "cached_reinspection_calls": 22981,
+            "latency_scope": "Cached mode timings are not independent end-to-end latency measurements; use uncached model_only traces."
+          }
+        }
+      },
+      {
+        "experiment_id": "final-official-m1-v1",
+        "documents": 28142,
+        "inference_status_counts": {
+          "complete": 28142,
+          "incomplete": 0,
+          "error": 0
+        },
+        "score": {
+          "metric_id": "char_span_exact_v1",
+          "duplicates": "multiset",
+          "document_count": 28142,
+          "overall_micro": {
+            "tp": 120297,
+            "fp": 2288,
+            "fn": 879,
+            "gold": 121176,
+            "predicted": 122585,
+            "precision": 0.9813353999265816,
+            "recall": 0.9927460883343237,
+            "f1": 0.9870077658033893
+          },
+          "per_type": {
+            "CREDIT_CARD": {
+              "tp": 2266,
+              "fp": 0,
+              "fn": 0,
+              "gold": 2266,
+              "predicted": 2266,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "recall_wilson_95": {
+                "low": 0.9983076091652723,
+                "high": 1.0,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "DATE_OF_BIRTH": {
+              "tp": 2891,
+              "fp": 1,
+              "fn": 0,
+              "gold": 2891,
+              "predicted": 2892,
+              "precision": 0.9996542185338866,
+              "recall": 1.0,
+              "f1": 0.9998270793705689,
+              "recall_wilson_95": {
+                "low": 0.9986729985265649,
+                "high": 0.9999999999999999,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "EMAIL_ADDRESS": {
+              "tp": 12045,
+              "fp": 0,
+              "fn": 0,
+              "gold": 12045,
+              "predicted": 12045,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "recall_wilson_95": {
+                "low": 0.9996811760786788,
+                "high": 0.9999999999999998,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "IP_ADDRESS": {
+              "tp": 1710,
+              "fp": 0,
+              "fn": 0,
+              "gold": 1710,
+              "predicted": 1710,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "recall_wilson_95": {
+                "low": 0.9977585681211124,
+                "high": 1.0,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_BANK_ACCOUNT": {
+              "tp": 4081,
+              "fp": 0,
+              "fn": 0,
+              "gold": 4081,
+              "predicted": 4081,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "recall_wilson_95": {
+                "low": 0.9990595818907627,
+                "high": 1.0,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_DRIVER_LICENSE": {
+              "tp": 1739,
+              "fp": 0,
+              "fn": 0,
+              "gold": 1739,
+              "predicted": 1739,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "recall_wilson_95": {
+                "low": 0.9977958644134151,
+                "high": 1.0,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_LOCATION": {
+              "tp": 5074,
+              "fp": 225,
+              "fn": 98,
+              "gold": 5172,
+              "predicted": 5299,
+              "precision": 0.9575391583317607,
+              "recall": 0.9810518174787316,
+              "f1": 0.9691528984815204,
+              "recall_wilson_95": {
+                "low": 0.9769632769557062,
+                "high": 0.9844262940987965,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_NHIS": {
+              "tp": 2306,
+              "fp": 0,
+              "fn": 0,
+              "gold": 2306,
+              "predicted": 2306,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "recall_wilson_95": {
+                "low": 0.998336916645718,
+                "high": 1.0,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_PASSPORT": {
+              "tp": 4004,
+              "fp": 0,
+              "fn": 0,
+              "gold": 4004,
+              "predicted": 4004,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "recall_wilson_95": {
+                "low": 0.999041514261303,
+                "high": 0.9999999999999999,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_PHONE_NUMBER": {
+              "tp": 11482,
+              "fp": 0,
+              "fn": 0,
+              "gold": 11482,
+              "predicted": 11482,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "recall_wilson_95": {
+                "low": 0.9996655483279088,
+                "high": 0.9999999999999999,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_RRN": {
+              "tp": 12045,
+              "fp": 0,
+              "fn": 3,
+              "gold": 12048,
+              "predicted": 12045,
+              "precision": 1.0,
+              "recall": 0.9997509960159362,
+              "f1": 0.999875482505292,
+              "recall_wilson_95": {
+                "low": 0.9992680935674914,
+                "high": 0.9999153126435119,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "KR_VEHICLE_PLATE": {
+              "tp": 2304,
+              "fp": 3,
+              "fn": 1,
+              "gold": 2305,
+              "predicted": 2307,
+              "precision": 0.9986996098829649,
+              "recall": 0.9995661605206074,
+              "f1": 0.9991326973113617,
+              "recall_wilson_95": {
+                "low": 0.9975465484492617,
+                "high": 0.9999234125743391,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "NRP": {
+              "tp": 2264,
+              "fp": 15,
+              "fn": 36,
+              "gold": 2300,
+              "predicted": 2279,
+              "precision": 0.9934181658622203,
+              "recall": 0.9843478260869565,
+              "f1": 0.9888621969862416,
+              "recall_wilson_95": {
+                "low": 0.9784077332401626,
+                "high": 0.9886727016617582,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "ORGANIZATION": {
+              "tp": 7819,
+              "fp": 1314,
+              "fn": 193,
+              "gold": 8012,
+              "predicted": 9133,
+              "precision": 0.8561261359903646,
+              "recall": 0.97591113330005,
+              "f1": 0.9121026538349373,
+              "recall_wilson_95": {
+                "low": 0.9723188194385995,
+                "high": 0.9790473021493763,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "PERSON": {
+              "tp": 40698,
+              "fp": 730,
+              "fn": 147,
+              "gold": 40845,
+              "predicted": 41428,
+              "precision": 0.9823790672974799,
+              "recall": 0.996401028277635,
+              "f1": 0.9893403668275133,
+              "recall_wilson_95": {
+                "low": 0.995771756051161,
+                "high": 0.9969369365764842,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "URL": {
+              "tp": 5680,
+              "fp": 0,
+              "fn": 0,
+              "gold": 5680,
+              "predicted": 5680,
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "recall_wilson_95": {
+                "low": 0.999324143907059,
+                "high": 1.0,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "USERNAME": {
+              "tp": 1889,
+              "fp": 0,
+              "fn": 401,
+              "gold": 2290,
+              "predicted": 1889,
+              "precision": 1.0,
+              "recall": 0.8248908296943231,
+              "f1": 0.9040440296721703,
+              "recall_wilson_95": {
+                "low": 0.8087840507095742,
+                "high": 0.8399094299312789,
+                "method": "wilson",
+                "z": 1.959964
+              }
+            },
+            "PERSONAL_ATTRIBUTE": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "gold": 0,
+              "predicted": 0,
+              "precision": null,
+              "recall": null,
+              "f1": null,
+              "recall_wilson_95": null
+            }
+          },
+          "critical_micro": {
+            "tp": 41919,
+            "fp": 0,
+            "fn": 3,
+            "gold": 41922,
+            "predicted": 41919,
+            "types": [
+              "KR_RRN",
+              "KR_BANK_ACCOUNT",
+              "CREDIT_CARD",
+              "KR_PHONE_NUMBER",
+              "EMAIL_ADDRESS"
+            ],
+            "precision": 1.0,
+            "recall": 0.9999284385286962,
+            "f1": 0.9999642179840412
+          }
+        },
+        "gateway": {
+          "model_only": {
+            "protocol": "B-gateway-one-reinspection-v1",
+            "mode": "model_only",
+            "scope": "all supplied documents; no external transmission",
+            "actions": {
+              "error": 11921,
+              "block": 13745,
+              "mask": 2476
+            },
+            "normal_false_block": {
+              "false_blocks": 0,
+              "normal_documents": 0,
+              "explicit_blocks": 0,
+              "fail_closed_errors": 0,
+              "reinspection_failures": 0,
+              "rate": null,
+              "wilson_95": null,
+              "definition": "normal documents not forwarded due to block OR error; differs from v1 block-only"
+            },
+            "normal_wrong_masks": 0,
+            "forwarded_protected_gold_entities": 6325,
+            "residual_protected_entities": 60,
+            "residual_rate": 0.009486166007905139,
+            "residual_scope": "protected gold in allow or successfully masked documents; blocked/error documents not forwarded",
+            "B_runtime_acceptance": null,
+            "cached_reinspection_calls": 0,
+            "latency_scope": "Cached mode timings are not independent end-to-end latency measurements; use uncached model_only traces."
+          },
+          "model_plus_same_rules": {
+            "protocol": "B-gateway-one-reinspection-v1",
+            "mode": "model_plus_same_rules",
+            "scope": "all supplied documents; no external transmission",
+            "actions": {
+              "error": 11921,
+              "block": 13745,
+              "mask": 2476
+            },
+            "normal_false_block": {
+              "false_blocks": 0,
+              "normal_documents": 0,
+              "explicit_blocks": 0,
+              "fail_closed_errors": 0,
+              "reinspection_failures": 0,
+              "rate": null,
+              "wilson_95": null,
+              "definition": "normal documents not forwarded due to block OR error; differs from v1 block-only"
+            },
+            "normal_wrong_masks": 0,
+            "forwarded_protected_gold_entities": 6325,
+            "residual_protected_entities": 60,
+            "residual_rate": 0.009486166007905139,
+            "residual_scope": "protected gold in allow or successfully masked documents; blocked/error documents not forwarded",
+            "B_runtime_acceptance": null,
+            "cached_reinspection_calls": 14397,
+            "latency_scope": "Cached mode timings are not independent end-to-end latency measurements; use uncached model_only traces."
+          }
+        }
+      }
+    ],
+    "official_offline_latency": [
+      {
+        "model": "M0",
+        "p50_ms": 47.918514523189515,
+        "p95_ms": 51.06610441580414,
+        "p99_ms": 52.47992726624943
+      },
+      {
+        "model": "M1",
+        "p50_ms": 44.68710202490911,
+        "p95_ms": 49.672986823134124,
+        "p99_ms": 50.87655865587294
+      }
+    ]
+  },
+  "service_paired_ci": {
+    "method": "paired document bootstrap, NumPy PCG64; normal subset stratified",
+    "iterations": 1000,
+    "seed": 42,
+    "documents": 300,
+    "metrics": {
+      "overall_f1": {
+        "estimate_pp": 12.884889536282651,
+        "low_pp": 9.144202416131995,
+        "high_pp": 16.625905330474474,
+        "valid_iterations": 1000
+      },
+      "critical_micro_recall": {
+        "estimate_pp": 5.23809523809523,
+        "low_pp": 2.4740459482841404,
+        "high_pp": 8.45087940578796,
+        "valid_iterations": 1000
+      },
+      "recall:KR_RRN": {
+        "estimate_pp": 17.499999999999993,
+        "low_pp": 6.653061224489795,
+        "high_pp": 29.792553191489358,
+        "valid_iterations": 1000
+      },
+      "recall:KR_BANK_ACCOUNT": {
+        "estimate_pp": 2.500000000000002,
+        "low_pp": 0.0,
+        "high_pp": 7.900071123755332,
+        "valid_iterations": 1000
+      },
+      "recall:CREDIT_CARD": {
+        "estimate_pp": 0.0,
+        "low_pp": 0.0,
+        "high_pp": 0.0,
+        "valid_iterations": 1000
+      },
+      "recall:KR_PHONE_NUMBER": {
+        "estimate_pp": 0.0,
+        "low_pp": 0.0,
+        "high_pp": 0.0,
+        "valid_iterations": 1000
+      },
+      "recall:EMAIL_ADDRESS": {
+        "estimate_pp": 7.499999999999996,
+        "low_pp": 0.0,
+        "high_pp": 16.666666666666664,
+        "valid_iterations": 1000
+      },
+      "normal_failure_rate": {
+        "estimate_pp": 1.0,
+        "low_pp": -2.0,
+        "high_pp": 5.0,
+        "valid_iterations": 1000
+      }
+    },
+    "limitations": "Conditional on this synthetic/template-derived benchmark. Document dependence and sample size limit generalization.",
+    "normal_documents": 100
+  },
+  "official_paired_ci": {
+    "method": "paired document bootstrap, NumPy PCG64; normal subset stratified",
+    "iterations": 1000,
+    "seed": 42,
+    "documents": 28142,
+    "metrics": {
+      "overall_f1": {
+        "estimate_pp": 32.11589503114007,
+        "low_pp": 31.91518276524072,
+        "high_pp": 32.30204380935522,
+        "valid_iterations": 1000
+      },
+      "critical_micro_recall": {
+        "estimate_pp": 21.31816230141692,
+        "low_pp": 20.948755037825048,
+        "high_pp": 21.642310567547188,
+        "valid_iterations": 1000
+      },
+      "recall:KR_RRN": {
+        "estimate_pp": 71.81274900398405,
+        "low_pp": 70.97632973407474,
+        "high_pp": 72.60536766952956,
+        "valid_iterations": 1000
+      },
+      "recall:KR_BANK_ACCOUNT": {
+        "estimate_pp": 0.6370987503062975,
+        "low_pp": 0.4119140121951312,
+        "high_pp": 0.8698079288286026,
+        "valid_iterations": 1000
+      },
+      "recall:CREDIT_CARD": {
+        "estimate_pp": 0.0,
+        "low_pp": 0.0,
+        "high_pp": 0.0,
+        "valid_iterations": 1000
+      },
+      "recall:KR_PHONE_NUMBER": {
+        "estimate_pp": 0.29611565929280603,
+        "low_pp": 0.20140724890734707,
+        "high_pp": 0.3989983163680055,
+        "valid_iterations": 1000
+      },
+      "recall:EMAIL_ADDRESS": {
+        "estimate_pp": 1.8679950186799466,
+        "low_pp": 1.6418151676629535,
+        "high_pp": 2.1242131943155456,
+        "valid_iterations": 1000
+      },
+      "normal_failure_rate": {
+        "estimate_pp": null,
+        "low_pp": null,
+        "high_pp": null,
+        "valid_iterations": 0
+      }
+    },
+    "limitations": "Conditional on this synthetic/template-derived benchmark. Document dependence and sample size limit generalization.",
+    "normal_documents": 0
+  },
+  "source_sha256": {
+    "model/reports/stage7_5-recovery-v2.json": "9ee2906c45f020e51b7a877dcab618204d30b8646c8c92bbb1ecda42583164ad",
+    "model/reports/stage7_5-sample-v1.json": "f74627aff7220c5d44ef8ad79801b04b51edd35faef480f02d86b4e94c64fb32",
+    "model/.cache/stage7_5-20261031/dev-recovered-v1/runs/dev-m0-v1/result.json": "1e7ca80584d30f2bbb10dcea2f721b518f7fa0b1ddc0b1c5881e2f7e51bbee22",
+    "model/.cache/stage7_5-20261031/dev-recovered-v1/runs/dev-m1-epoch1-v1/result.json": "5fbad316f56ccc13dc27f1ef299cf9e9c7a0238ef629de354f6d7e1a323ec880",
+    "model/.cache/stage7_5-20261031/dev-recovered-v1/runs/dev-m1-epoch2-v1/result.json": "a650405b8d4733f12c14db9d7a508e974008bc8c188691e9ed55df99ef2f62f7",
+    "model/.cache/stage7_5-20261031/final-combined-v1/final-service-m0-v1/result.json": "96ba1ace3ff39ee5216eb246fcb6c2f5cfa9dfbe2d59cb8e3c5b91eb861f35eb",
+    "model/.cache/stage7_5-20261031/final-combined-v1/final-service-m1-v1/result.json": "f38ef64474f736245d431fde62365046550cd06b1b4da337bd97aee9466107ab",
+    "model/.cache/stage7_5-20261031/final-combined-v1/final-official-m0-v1/result.json": "78e6563667beaf15b11ac01ad448c92632b1abf525d9101ac4a9a4d0a225cc94",
+    "model/.cache/stage7_5-20261031/final-combined-v1/final-official-m1-v1/result.json": "767ec7b5362f24f3afaf5949d55a87536ff2c4184c3e8b1e213ffc0d7bbf602c",
+    "model/reports/stage7_5-service-final-v1.json": "80b3258f153f9e4b50bb5095c86704b3801a5c9309385d68b807159c2179e3b8",
+    "model/reports/stage7_5-official-final-v1.json": "de2af5c7bf6d105aefeb9540609c8e031ddf004490ab8e4b31025f3ffe236bd3"
+  }
+}

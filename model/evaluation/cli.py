@@ -6,7 +6,7 @@
     python -m model.evaluation decide candidate.json baseline.json [--runtime-accepted]
 
 ``gold.jsonl`` rows: ``{"document_id", "text", "entities": [{"type","start","end"}]}``.
-``pred.jsonl`` rows: ``{"document_id", "findings": [{"type","start","end","score"}]}``.
+``pred.jsonl`` rows: ``{"document_id", "status":"complete", "findings": [...]}``.
 Scores computed here are scores of the *supplied predictions*; with synthetic input
 they demonstrate the tool, not any model's quality.
 """
@@ -17,6 +17,7 @@ from pathlib import Path
 
 from . import compare as compare_mod
 from . import metrics, policy_metrics, records
+from .runner import InferenceRunError, validate_prediction_coverage
 
 
 def _jsonl(path):
@@ -30,10 +31,23 @@ def _load_json(path):
 
 def cmd_score(args):
     gold_rows, pred_rows = _jsonl(args.gold), _jsonl(args.pred)
+    legacy=False
+    if args.allow_legacy_predictions and pred_rows and all('status' not in row for row in pred_rows):
+        legacy=True
+        pred_rows=[dict(row,status='complete') for row in pred_rows]
+    try:
+        validate_prediction_coverage(gold_rows,pred_rows)
+    except InferenceRunError as exc:
+        print(json.dumps({'valid':False,'error':str(exc),'scope':'No score: predictions/status do not cover all documents.'}))
+        return 2
     lengths = {r['document_id']: len(r['text']) for r in gold_rows}
     gold = [(r['document_id'], e['type'], e['start'], e['end']) for r in gold_rows for e in r['entities']]
     pred = [(r['document_id'], f['type'], f['start'], f['end']) for r in pred_rows for f in r['findings']]
     result = metrics.score(gold, pred, document_lengths=lengths, critical_types=records.CRITICAL_TYPES)
+    result['document_count']=len(gold_rows)
+    result['execution_status_verified']=not legacy
+    if legacy:
+        result['scope']='Historical prediction re-count only; execution status is unverified, not final evaluation evidence.'
     result['macro'] = metrics.macro_f1(result['per_type'])
     if 'critical_micro' in result:
         rec = result['critical_micro']
@@ -82,6 +96,8 @@ def main(argv=None):
     p.add_argument('--pred', required=True)
     p.add_argument('--with-policy', action='store_true')
     p.add_argument('--rules', action='store_true', help="also report model_plus_same_rules (B's secret rules)")
+    p.add_argument('--allow-legacy-predictions',action='store_true',
+                   help='Explicit historical re-count without original execution status; not final evidence')
     p.set_defaults(func=cmd_score)
     p = sub.add_parser('check-record')
     p.add_argument('record')

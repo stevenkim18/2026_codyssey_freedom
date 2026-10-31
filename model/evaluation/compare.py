@@ -94,6 +94,10 @@ def replacement_decision(candidate, baseline, *, resolved_regressions=None, runt
         return {'verdict': 'pending', 'reasons': reasons, 'gates': {}}
     if reasons:
         return {'verdict': 'not_comparable', 'reasons': reasons, 'gates': {}}
+    if any(record.get('execution_evidence') and record['execution_evidence'].get('purpose')!='final'
+           for record in (candidate,baseline)):
+        return {'verdict':'pending','reasons':['final_evaluation_not_recorded'],
+                'gates':{'final_evaluation_recorded':False}}
     delta = compare(candidate, baseline)['delta']
     gates = {}
     for name, value, minimum in (('critical_micro_recall_not_below_baseline', delta['critical_micro_recall_pp'], 0.0),

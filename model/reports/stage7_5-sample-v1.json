@@ -1,0 +1,240 @@
+{
+  "schema_version": "1.0",
+  "selection_configuration": {
+    "algorithm": "domain_priority_type_anchors_v1",
+    "count": 5000,
+    "domains": [
+      "chat",
+      "document",
+      "education",
+      "email_thread",
+      "employment",
+      "financial",
+      "government",
+      "insurance",
+      "legal",
+      "medical",
+      "support_ticket",
+      "telecommunications"
+    ],
+    "implementation_sha256": "45ecd773bf22725b1fbb3ef7d069bcb8f8d7232a853a26595872c1d50ac4ec3c",
+    "label_mapping": [
+      [
+        "KR_RRN",
+        "Korean resident registration number"
+      ],
+      [
+        "CREDIT_CARD",
+        "credit card number"
+      ],
+      [
+        "PERSON",
+        "person"
+      ],
+      [
+        "EMAIL_ADDRESS",
+        "email address"
+      ],
+      [
+        "KR_PHONE_NUMBER",
+        "phone number"
+      ],
+      [
+        "KR_BANK_ACCOUNT",
+        "bank account number"
+      ],
+      [
+        "KR_LOCATION",
+        "address"
+      ],
+      [
+        "DATE_OF_BIRTH",
+        "date of birth"
+      ],
+      [
+        "KR_DRIVER_LICENSE",
+        "driver's license number"
+      ],
+      [
+        "KR_PASSPORT",
+        "passport number"
+      ],
+      [
+        "KR_NHIS",
+        "national health insurance number"
+      ],
+      [
+        "KR_VEHICLE_PLATE",
+        "license plate number"
+      ],
+      [
+        "USERNAME",
+        "username"
+      ],
+      [
+        "PERSONAL_ATTRIBUTE",
+        "personal attribute"
+      ],
+      [
+        "ORGANIZATION",
+        "organization"
+      ],
+      [
+        "URL",
+        "URL"
+      ],
+      [
+        "IP_ADDRESS",
+        "IP address"
+      ],
+      [
+        "NRP",
+        "nationality religious or political group"
+      ]
+    ],
+    "planner": {
+      "added_special_tokens": [
+        "[FLERT]",
+        "<<ENT>>",
+        "<<SEP>>"
+      ],
+      "b_helper_module": "dev.detector.gliner_backend",
+      "b_helper_source_sha256": "48619e8444815f9b8caa2a03e53941fee37b1ba50d3fdb496f30ecc97082099f",
+      "backbone_revision": "a0484667b22365f84929a935b5e50a51f71f159d",
+      "config_sha256": "2088bee85f50849dea2ab4cf411ab5cf3aaaf7c8a45c23412035978b2bc02801",
+      "config_type": "GLiNERConfig",
+      "configuration_overrides": {
+        "encoder_config_inlined": true,
+        "model_max_length": 512
+      },
+      "gliner_version": "0.2.29",
+      "label_order": [
+        "KR_RRN",
+        "CREDIT_CARD",
+        "PERSON",
+        "EMAIL_ADDRESS",
+        "KR_PHONE_NUMBER",
+        "KR_BANK_ACCOUNT",
+        "KR_LOCATION",
+        "DATE_OF_BIRTH",
+        "KR_DRIVER_LICENSE",
+        "KR_PASSPORT",
+        "KR_NHIS",
+        "KR_VEHICLE_PLATE",
+        "USERNAME",
+        "PERSONAL_ATTRIBUTE",
+        "ORGANIZATION",
+        "URL",
+        "IP_ADDRESS",
+        "NRP"
+      ],
+      "max_input_codepoints": 16000,
+      "max_plan_checks": 2048,
+      "max_span": 12,
+      "max_subtokens": 512,
+      "max_windows": 4096,
+      "max_words": 384,
+      "model_label_order": [
+        "Korean resident registration number",
+        "credit card number",
+        "person",
+        "email address",
+        "phone number",
+        "bank account number",
+        "address",
+        "date of birth",
+        "driver's license number",
+        "passport number",
+        "national health insurance number",
+        "license plate number",
+        "username",
+        "personal attribute",
+        "organization",
+        "URL",
+        "IP address",
+        "nationality religious or political group"
+      ],
+      "model_weights_loaded": false,
+      "normalization": "none",
+      "offset_unit": "unicode_codepoint",
+      "prediction_available": false,
+      "preprocessing_version": "a-seg-candidate-ko_atomic_suffix_v3",
+      "processor_type": "UniEncoderSpanProcessor",
+      "scope": "Actual tokenizer/processor and B window planning only; no model weights, predictions, GPU or quality validation. Candidate splitter ko_atomic_suffix_v3 replaces only word splitting.",
+      "sentencepiece_version": "0.2.1",
+      "splitter_id": "ko_atomic_suffix_v3",
+      "splitter_input": "original text only",
+      "tokenizer_load_options": {
+        "local_files_only": true,
+        "trust_remote_code": false
+      },
+      "tokenizer_source_files_sha256": {
+        "config.json": "bcffcd343dc5efa5ef2d5a58d2b405eed108f01cc45b48d0a907b333ec41801f",
+        "spm.model": "13c8d666d62a7bc4ac8f040aab68e942c861f93303156cc28f5c7e885d86d6e3",
+        "tokenizer_config.json": "3f3978e0c036f2c2588cac34a6047cbb0af0b0dc1814254e291028529805496d"
+      },
+      "tokenizer_type": "DebertaV2TokenizerFast",
+      "tokenizers_version": "0.22.2",
+      "torch_version": "2.10.0",
+      "transformers_version": "4.57.3"
+    },
+    "seed": 42,
+    "source_sha256": "c484cff4823c8a8f291d08520aee4b6955d7e0dd34f96db62a4e75d0b91429a5"
+  },
+  "source_scan": {
+    "documents": 243711,
+    "unique_texts": 240425,
+    "duplicate_texts_excluded": 3286
+  },
+  "summary": {
+    "documents": 5000,
+    "unique_texts": 5000,
+    "windows": 5058,
+    "domains": {
+      "chat": 417,
+      "document": 417,
+      "education": 417,
+      "email_thread": 417,
+      "employment": 417,
+      "financial": 417,
+      "government": 417,
+      "insurance": 417,
+      "legal": 416,
+      "medical": 416,
+      "support_ticket": 416,
+      "telecommunications": 416
+    },
+    "entities_by_type": {
+      "CREDIT_CARD": 401,
+      "DATE_OF_BIRTH": 861,
+      "EMAIL_ADDRESS": 1627,
+      "IP_ADDRESS": 632,
+      "KR_BANK_ACCOUNT": 1085,
+      "KR_DRIVER_LICENSE": 477,
+      "KR_LOCATION": 1184,
+      "KR_NHIS": 403,
+      "KR_PASSPORT": 315,
+      "KR_PHONE_NUMBER": 2000,
+      "KR_RRN": 2142,
+      "KR_VEHICLE_PLATE": 477,
+      "NRP": 449,
+      "ORGANIZATION": 1295,
+      "PERSON": 8348,
+      "PERSONAL_ATTRIBUTE": 55,
+      "URL": 686,
+      "USERNAME": 423
+    }
+  },
+  "conversion_rejections_in_candidate_pool": {
+    "unaligned_entity_boundary": 138,
+    "entity_exceeds_max_width": 9,
+    "partial_entity_in_window": 1
+  },
+  "files_sha256": {
+    "train.sample.jsonl": "ace31c1694874e652b9a8179298ebb1db52f572eb4922d6330d047eafdbe4cc9",
+    "train.gliner.jsonl": "1b371a8cafc07fd1dec848ec162ea0ea91452ef464beb8127c8095c81d1d643b",
+    "selection.jsonl": "c94c4e2f36a493c8a8f8694380193d21ad77b6bd58619770996903db6e009846"
+  },
+  "scope": "train-only preparation; no training, model selection or final-test scoring performed",
+  "local_cache_directory": "model/.cache/stage7_5-20261031/train-5k-v1"
+}

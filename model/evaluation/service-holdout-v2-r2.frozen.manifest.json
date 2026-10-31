@@ -1,0 +1,84 @@
+{
+  "dataset_version": "service-holdout-v2-frozen",
+  "sha256": "26c21a0293ff71c49be9d36ee9749c3d85249f545713c24dcb49027758f7db87",
+  "draft_sha256": "8e32bcff5b5909fe54b55a226b10341a5dac7be14949b92be44533e3c69a62d3",
+  "review_decisions_sha256": "7299fb4ee273cdfac08b623c5e6e69f9c51f1d60086e45ec08693efe78cd2c4c",
+  "reviewer": "user; explicit 300-case r2 review and freeze approval in chat",
+  "frozen": true,
+  "frozen_at_utc": "2026-10-31T14:29:36.076428+00:00",
+  "validation": {
+    "validator_version": "service-cases-validator-v1",
+    "status": "ready_to_freeze",
+    "errors": [],
+    "warnings": [],
+    "counts": {
+      "documents": 300,
+      "by_direction": {
+        "request": 150,
+        "response": 150
+      },
+      "normal_documents": 100,
+      "documents_with_gold": 200,
+      "entities_by_type": {
+        "KR_RRN": 40,
+        "CREDIT_CARD": 50,
+        "PERSON": 17,
+        "EMAIL_ADDRESS": 40,
+        "KR_PHONE_NUMBER": 40,
+        "KR_BANK_ACCOUNT": 40,
+        "KR_LOCATION": 17,
+        "DATE_OF_BIRTH": 16,
+        "KR_DRIVER_LICENSE": 14,
+        "KR_PASSPORT": 14,
+        "KR_NHIS": 14,
+        "KR_VEHICLE_PLATE": 16,
+        "USERNAME": 17,
+        "PERSONAL_ATTRIBUTE": 17,
+        "ORGANIZATION": 15,
+        "URL": 14,
+        "IP_ADDRESS": 14,
+        "NRP": 15
+      },
+      "tags": {
+        "amounts_and_quantities": 10,
+        "boundary": 30,
+        "business_calendar": 10,
+        "chunk_boundary": 10,
+        "code": 30,
+        "csv": 20,
+        "daily_and_work_prose": 10,
+        "hard_digits": 30,
+        "has_pii": 200,
+        "json": 20,
+        "long": 20,
+        "markdown": 30,
+        "mixed_language": 40,
+        "multi_entity": 200,
+        "normal": 100,
+        "numeric_lookalikes": 10,
+        "ordinary_korean_nouns": 10,
+        "organization_like_common_words": 10,
+        "particle": 40,
+        "plain": 20,
+        "source_code": 10,
+        "table": 20,
+        "tables_and_lists": 10,
+        "technical_configuration": 10,
+        "yaml": 20
+      },
+      "long_documents_ge_600_chars": 20,
+      "distinct_skeletons": 300,
+      "max_instances_per_skeleton": 1,
+      "review_status": {
+        "reviewed": 300
+      },
+      "unreviewed_documents": 0
+    },
+    "official_overlap": {
+      "exact_text": 0,
+      "long_surface": [],
+      "long_surface_entities": 0
+    },
+    "frozen": false
+  }
+}

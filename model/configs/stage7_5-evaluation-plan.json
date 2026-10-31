@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "plan_id": "stage7_5-controlled-dev-v1",
+  "locked_at_utc": "2026-10-31T14:46:40.557536+00:00",
+  "holdout_manifest": "model/evaluation/service-holdout-v2-r2.frozen.manifest.json",
+  "holdout_sha256": "26c21a0293ff71c49be9d36ee9749c3d85249f545713c24dcb49027758f7db87",
+  "dev_data_manifest": "model/reports/stage7_5-dev-data-v1.json",
+  "dev_documents": 28347,
+  "candidate_weights": [
+    "m0-pinned",
+    "m1-checkpoint-631",
+    "m1-checkpoint-1262"
+  ],
+  "same_threshold_grid_per_weight": [
+    0.35,
+    0.5,
+    0.65,
+    0.8
+  ],
+  "inference": "one minimum-threshold decode per weight; dev profiles filter these predictions. Final runs chosen threshold directly.",
+  "comparison": "Primary M0/M1 pair uses the SAME selected threshold; labels, rules, policy, splitter, windowing and metric implementations fixed.",
+  "selection_rule": {
+    "eligible": "M1 dev critical micro recall and overall F1 >= paired M0; per-critical recall >= paired M0; normal block-or-error increase <=1 percentage point.",
+    "rank": "Among eligible (M1 epoch, shared threshold) pairs maximize the minimum of M0/M1 overall F1, then M1 F1, then critical recall, then lower normal failure rate; deterministic epoch/threshold tie-break.",
+    "fallback": "If no eligible pair, choose the highest ranked dev pair under the same objective, explicitly flag no dev gate pass; final validation may reject M1 and retain M0."
+  },
+  "normal_failure_definition": "B Gateway._inspect, including one reinspection; normal block OR fail-closed error. Both models use this new protocol.",
+  "dev_gateway_scope": "normal documents only; residual scores on positive dev are first-pass diagnostics, not final gateway evaluation.",
+  "final_policy": "After selection, run pinned official test and human-reviewed frozen service holdout once per selected model; no test-based retuning.",
+  "B_adoption_and_runtime_acceptance": null,
+  "no_new_training_started": true
+}

@@ -1,0 +1,20 @@
+{
+  "status": "stage7_5_offline_evaluation_and_reporting_complete",
+  "previous_checkpoint_stopped_at_utc": "2026-10-31T15:50:42.297139+00:00",
+  "completed_at_utc": "2026-10-31T16:45:00+00:00",
+  "five_hour_remaining_percent_at_previous_stop": 9,
+  "own_gpu_process_confirmed_exited": true,
+  "service_final": "Both models 300/300 complete; see stage7_5-service-final-v1.json",
+  "official_m0": "28142/28142 complete including gateway policy/reinspection; see stage7_5-official-final-v1.json",
+  "official_m1": "28142/28142 complete including gateway policy/reinspection; see stage7_5-official-final-v1.json",
+  "selected_configuration": "stage7_5-selection-v1.json (M1 checkpoint-1262, threshold=0.5, splitter=ko_atomic_suffix_v3); unchanged after final data exposure",
+  "local_cache": "model/.cache/stage7_5-20261031 (dev-recovered-v1, final-recovered-v2, official-handoff-v1, final-combined-v1)",
+  "remote_evaluation_workspace": "/home1/ncloud/stage7_5_20261031_codex_v5/runs/official-handoff-v1",
+  "final_verdict": "pending_runtime_acceptance (offline numeric gates passed on frozen service holdout and official test_track_a; keep M0 in production until B runtime/splitter/reinspection acceptance completes)",
+  "remaining_stage8_b_acceptance": [
+    "B adoption of ko_atomic_suffix_v3 and boundary-safe window coverage in production runtime (b_splitter_adoption=False currently).",
+    "B end-to-end client p95 latency (<= 500ms), memory footprint, and REINSPECTION_FAILED operational policy acceptance (runtime_acceptance=None currently)."
+  ],
+  "model_weights_and_B_processes_unchanged": true,
+  "git_commit_push_performed": false
+}
