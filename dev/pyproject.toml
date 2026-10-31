@@ -1,0 +1,14 @@
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["gateway/tests", "detector/tests", "integration/tests", "launcher/tests", "deployment/tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+addopts = "-ra"
+
+[tool.coverage.run]
+branch = true
+omit = ["*/tests/*"]
+
+[tool.coverage.report]
+show_missing = true
+skip_empty = true

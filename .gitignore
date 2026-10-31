@@ -230,6 +230,12 @@ htmlcov/
 # ────────────────────────────────────────────────────────────
 # 13. 기타
 # ────────────────────────────────────────────────────────────
+# 개인 서버 접속 정보 및 SSH 호스트 기록 (커밋 금지)
+/dev/.private/
+/dev/.private/server-access.local.json
+/dev/.private/known_hosts
+/dev/.private/known_hosts.old
+
 *.bak
 *.tmp
 *.temp

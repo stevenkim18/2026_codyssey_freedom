@@ -1,0 +1,261 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ai-pii-gateway:inspection:1.0",
+  "title": "B-owned inspection API v1.0",
+  "description": "POST /v1/inspect. Unicode codepoint offsets, end exclusive. Only complete responses authorize policy evaluation.",
+  "x-owner": "B",
+  "x-max-total-codepoints": 16000,
+  "$defs": {
+    "Segment": {
+      "additionalProperties": false,
+      "properties": {
+        "segment_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Segment Id",
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "segment_id",
+        "text"
+      ],
+      "title": "Segment",
+      "type": "object"
+    },
+    "InspectionRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "request_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Request Id",
+          "type": "string"
+        },
+        "inspection_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Inspection Id",
+          "type": "string"
+        },
+        "direction": {
+          "enum": [
+            "outbound",
+            "inbound"
+          ],
+          "title": "Direction",
+          "type": "string"
+        },
+        "segments": {
+          "items": {
+            "$ref": "#/$defs/Segment"
+          },
+          "maxItems": 256,
+          "minItems": 1,
+          "title": "Segments",
+          "type": "array"
+        }
+      },
+      "required": [
+        "schema_version",
+        "request_id",
+        "inspection_id",
+        "direction",
+        "segments"
+      ],
+      "title": "InspectionRequest",
+      "type": "object"
+    },
+    "Finding": {
+      "additionalProperties": false,
+      "properties": {
+        "segment_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Segment Id",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "KR_RRN",
+            "CREDIT_CARD",
+            "API_KEY",
+            "PRIVATE_KEY",
+            "PERSON",
+            "EMAIL_ADDRESS",
+            "KR_PHONE_NUMBER",
+            "KR_BANK_ACCOUNT",
+            "KR_LOCATION",
+            "DATE_OF_BIRTH",
+            "KR_DRIVER_LICENSE",
+            "KR_PASSPORT",
+            "KR_NHIS",
+            "KR_VEHICLE_PLATE",
+            "USERNAME",
+            "PERSONAL_ATTRIBUTE",
+            "ORGANIZATION",
+            "URL",
+            "IP_ADDRESS",
+            "NRP"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "start": {
+          "minimum": 0,
+          "title": "Start",
+          "type": "integer"
+        },
+        "end": {
+          "minimum": 1,
+          "title": "End",
+          "type": "integer"
+        },
+        "score": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Score",
+          "type": "number"
+        },
+        "detector": {
+          "enum": [
+            "model",
+            "rule"
+          ],
+          "title": "Detector",
+          "type": "string"
+        }
+      },
+      "required": [
+        "segment_id",
+        "type",
+        "start",
+        "end",
+        "score",
+        "detector"
+      ],
+      "title": "Finding",
+      "type": "object"
+    },
+    "InspectionResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "request_id": {
+          "title": "Request Id",
+          "type": "string"
+        },
+        "inspection_id": {
+          "title": "Inspection Id",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "complete",
+            "incomplete",
+            "error"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "findings": {
+          "items": {
+            "$ref": "#/$defs/Finding"
+          },
+          "title": "Findings",
+          "type": "array"
+        },
+        "model_version": {
+          "title": "Model Version",
+          "type": "string"
+        },
+        "threshold_version": {
+          "title": "Threshold Version",
+          "type": "string"
+        },
+        "timing_ms": {
+          "minimum": 0,
+          "title": "Timing Ms",
+          "type": "number"
+        },
+        "timing_breakdown_ms": {
+          "additionalProperties": {
+            "minimum": 0,
+            "type": "number"
+          },
+          "title": "Timing Breakdown Ms",
+          "type": "object"
+        },
+        "error_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Error Code"
+        }
+      },
+      "required": [
+        "request_id",
+        "inspection_id",
+        "status",
+        "findings",
+        "model_version",
+        "threshold_version",
+        "timing_ms",
+        "timing_breakdown_ms"
+      ],
+      "title": "InspectionResponse",
+      "type": "object"
+    },
+    "ApiError": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "const": "error",
+          "default": "error",
+          "title": "Status",
+          "type": "string"
+        },
+        "error_code": {
+          "title": "Error Code",
+          "type": "string"
+        }
+      },
+      "required": [
+        "error_code"
+      ],
+      "title": "ApiError",
+      "type": "object"
+    }
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/InspectionRequest"
+    },
+    {
+      "$ref": "#/$defs/InspectionResponse"
+    },
+    {
+      "$ref": "#/$defs/ApiError"
+    }
+  ]
+}
