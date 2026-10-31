@@ -137,7 +137,19 @@ Codex 화면에는 이렇게 표시됩니다.
 
 ## 📸 화면
 
-### 차단 사건 대시보드
+### 1. 플러그인 설치
+
+<img width="800" alt="저장소를 내려받아 Codex 플러그인을 설치하는 터미널 화면" src="docs/images/install.gif" />
+
+### 2. Codex에서 전송 전 차단
+
+주민등록번호는 전송을 막고, 이메일은 전송을 멈춘 뒤 가린 문장을 안내합니다. 가린 문장을 다시 보내면 그 문장만 LLM으로 전달됩니다.
+
+<img width="800" alt="Codex CLI에서 주민등록번호와 이메일 전송이 멈추는 터미널 화면" src="docs/images/codex-usage.gif" />
+
+격리 환경의 실제 Codex CLI 0.166.0과 실제 플러그인 훅을 녹화했습니다. 모든 값은 가상이고, 마지막 답변은 로컬 모의 LLM의 응답입니다. 모의 LLM이 받은 요청에 주민등록번호와 이메일 원문은 없었습니다.
+
+### 3. 차단 사건 대시보드
 
 <img width="900" alt="차단 사건 대시보드" src="docs/images/dashboard.png" />
 
@@ -178,7 +190,9 @@ codex plugin add pii-gateway@codyssey-security
 codex
 ```
 
-처음 실행하면 **Hooks need review** 화면이 나옵니다. **2. Trust all and continue**를 선택하세요. 승인하지 않으면 훅이 동작하지 않아 입력이 검사 없이 전송됩니다.
+Git 저장소에서 처음 실행하면 **Folder access** 화면이 먼저 나올 수 있습니다. **1. Trust and continue**를 선택하세요.
+
+이어서 **Hooks need review** 화면이 나오면 **2. Trust all and continue**를 선택하세요. 승인하지 않으면 훅이 동작하지 않아 입력이 검사 없이 전송됩니다.
 
 첫 입력에서 `PII 보호 켜짐` 표시가 나오면 정상입니다. 대시보드는 자동으로 실행되며, 표시된 주소 `http://127.0.0.1:8787`을 브라우저에서 엽니다. 그다음 가상의 값으로 시험합니다.
 
