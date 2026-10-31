@@ -10,6 +10,7 @@ from pathlib import Path
 import warnings
 from typing import get_args
 
+from . import timing as stage_timing
 from .runtime import ModelPackage, _verify_package
 from .schemas import BackendResult, Finding, PIIType, Segment
 
@@ -160,42 +161,45 @@ class GLiNERBackend:
 
     def _inspect(self, segments):
         try:
-            parsed = [Segment.model_validate(segment) for segment in segments]
-            if (not parsed or len({segment.segment_id for segment in parsed}) != len(parsed)
-                    or sum(len(segment.text) for segment in parsed) > self.manifest["preprocessing"]["max_input_codepoints"]):
-                raise ValueError
-            try:
-                checks_remaining = [self.max_plan_checks]
-                plans = [(segment, self._plan(segment.text, checks_remaining)) for segment in parsed]
-                if sum(len(windows) for _, windows in plans) > self.max_windows:
-                    raise _CoverageError
-            except Exception:
-                return BackendResult(status="incomplete")
+            with stage_timing.stage("preprocessing"):
+                parsed = [Segment.model_validate(segment) for segment in segments]
+                if (not parsed or len({segment.segment_id for segment in parsed}) != len(parsed)
+                        or sum(len(segment.text) for segment in parsed) > self.manifest["preprocessing"]["max_input_codepoints"]):
+                    raise ValueError
+                try:
+                    checks_remaining = [self.max_plan_checks]
+                    plans = [(segment, self._plan(segment.text, checks_remaining)) for segment in parsed]
+                    if sum(len(windows) for _, windows in plans) > self.max_windows:
+                        raise _CoverageError
+                except Exception:
+                    return BackendResult(status="incomplete")
             findings = {}
             for segment, windows in plans:
                 for start, end in windows:
                     text = segment.text[start:end]
-                    with warnings.catch_warnings(record=True) as emitted:
-                        warnings.simplefilter("always")
-                        raw = self.model.predict_entities(text, self.labels[:], flat_ner=False, multi_label=True,
-                                                          threshold=min(self.thresholds.values()))
-                    if any("truncat" in str(warning.message).lower() for warning in emitted):
-                        raise ValueError
-                    if not isinstance(raw, list):
-                        raise ValueError
-                    for entity in raw:
-                        kind = self.canonical[entity["label"]]
-                        finding = Finding(segment_id=segment.segment_id, type=kind, start=entity["start"],
-                                          end=entity["end"], score=entity["score"], detector="model")
-                        if finding.end > len(text) or entity["text"] != text[finding.start:finding.end]:
+                    with stage_timing.stage("model_call"):
+                        with warnings.catch_warnings(record=True) as emitted:
+                            warnings.simplefilter("always")
+                            raw = self.model.predict_entities(text, self.labels[:], flat_ner=False, multi_label=True,
+                                                              threshold=min(self.thresholds.values()))
+                    with stage_timing.stage("postprocessing"):
+                        if any("truncat" in str(warning.message).lower() for warning in emitted):
                             raise ValueError
-                        if finding.score < self.thresholds[kind]:
-                            continue
-                        finding.start += start
-                        finding.end += start
-                        key = (finding.segment_id, finding.start, finding.end, finding.type)
-                        if key not in findings or finding.score > findings[key].score:
-                            findings[key] = finding
+                        if not isinstance(raw, list):
+                            raise ValueError
+                        for entity in raw:
+                            kind = self.canonical[entity["label"]]
+                            finding = Finding(segment_id=segment.segment_id, type=kind, start=entity["start"],
+                                              end=entity["end"], score=entity["score"], detector="model")
+                            if finding.end > len(text) or entity["text"] != text[finding.start:finding.end]:
+                                raise ValueError
+                            if finding.score < self.thresholds[kind]:
+                                continue
+                            finding.start += start
+                            finding.end += start
+                            key = (finding.segment_id, finding.start, finding.end, finding.type)
+                            if key not in findings or finding.score > findings[key].score:
+                                findings[key] = finding
             return BackendResult(findings=list(findings.values()))
         except Exception:
             raise ModelBackendError("gliner_inference_failed") from None

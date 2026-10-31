@@ -9,6 +9,7 @@ from pathlib import Path, PurePosixPath
 import platform
 import re
 import socket
+import ssl
 import stat
 import subprocess
 import sys
@@ -75,6 +76,57 @@ def environment(path):
     return values
 
 
+def tls_context(spec):
+    """Load only an explicit regular CA file or the system trust store."""
+    ca = spec.get("tls_ca_file")
+    if ca is not None:
+        path = Path(ca)
+        if (not path.is_absolute() or path.resolve() != path or path.is_symlink()
+                or not path.is_file() or not 0 < path.stat().st_size <= 1024 * 1024):
+            raise RemoteError("invalid_detector_tls")
+    return ssl.create_default_context(cafile=ca)
+
+
+def detector_transport(spec, values):
+    """Check external TLS inputs before probing an app or changing a release."""
+    from urllib.parse import urlsplit
+    try:
+        host = spec.get("bind_host", "127.0.0.1")
+        if host not in {"127.0.0.1", "0.0.0.0"} or values.get("PII_DETECTOR_HOST", "127.0.0.1") != host:
+            raise ValueError
+        cert, key = values.get("PII_DETECTOR_TLS_CERT_FILE"), values.get("PII_DETECTOR_TLS_KEY_FILE")
+        if (cert is None) != (key is None):
+            raise ValueError
+        scheme = "https" if cert is not None else "http"
+        if host == "0.0.0.0" and scheme != "https":
+            raise ValueError
+        for name in ("health_url", "ready_url"):
+            url = urlsplit(spec[name])
+            if url.scheme != scheme or url.hostname != "127.0.0.1":
+                raise ValueError
+        if cert is None:
+            if spec.get("tls_ca_file") is not None:
+                raise ValueError
+            return
+        for item in (cert, key):
+            path = Path(item)
+            if (not path.is_absolute() or path.resolve() != path or path.is_symlink()
+                    or not path.is_file() or not 0 < path.stat().st_size <= 1024 * 1024
+                    or Path(spec["root"]) == path or Path(spec["root"]) in path.parents):
+                raise ValueError
+        info = Path(key).stat()
+        if stat.S_IMODE(info.st_mode) != 0o600 or info.st_uid != os.getuid() or info.st_nlink != 1:
+            raise ValueError
+        def no_password():
+            raise ValueError
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        context.minimum_version = ssl.TLSVersion.TLSv1_2
+        context.load_cert_chain(cert, key, password=no_password)
+        tls_context(spec)
+    except Exception:
+        raise RemoteError("invalid_detector_tls") from None
+
+
 def preflight(request):
     spec = request.get("spec")
     expected = request.get("expected_hostname")
@@ -90,7 +142,8 @@ def preflight(request):
         return result
     values = environment(spec["env_file"])
     if spec["role"] == "gpu":
-        allowed = {"PII_DETECTOR_TOKEN", "PII_MODEL_PACKAGE", "PII_DETECTOR_PORT", "PII_DETECTOR_DEVICE"}
+        allowed = {"PII_DETECTOR_TOKEN", "PII_MODEL_PACKAGE", "PII_DETECTOR_PORT", "PII_DETECTOR_DEVICE",
+                   "PII_DETECTOR_HOST", "PII_DETECTOR_TLS_CERT_FILE", "PII_DETECTOR_TLS_KEY_FILE"}
         if (set(values) - allowed or not values.get("PII_DETECTOR_TOKEN")
                 or values.get("PII_DETECTOR_DEVICE", "cpu") != spec["device"]):
             raise RemoteError("invalid_detector_environment")
@@ -101,6 +154,7 @@ def preflight(request):
         port = str(urlsplit(spec["ready_url"]).port)
         if values.get("PII_DETECTOR_PORT", "8766") != port or str(urlsplit(spec["health_url"]).port) != port:
             raise RemoteError("detector_port_mismatch")
+        detector_transport(spec, values)
     result.update(application_probe(spec))
     command(["systemctl", "--user", "show-environment"])
     return result
@@ -163,7 +217,10 @@ def healthy(spec, control=command):
         pid = control(["systemctl", "--user", "show", unit_name(spec), "--property=MainPID", "--value"])
         if not owns_endpoints(spec, pid):
             return False
-        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())
+        handlers = [urllib.request.ProxyHandler({}), NoRedirect()]
+        if any(spec[name].startswith("https:") for name in ("health_url", "ready_url")):
+            handlers.append(urllib.request.HTTPSHandler(context=tls_context(spec)))
+        opener = urllib.request.build_opener(*handlers)
         for key in ("health", "ready"):
             with opener.open(spec[key+"_url"], timeout=2) as response:
                 if response.status != 200:
@@ -180,7 +237,7 @@ def healthy(spec, control=command):
 
 
 def owns_endpoints(spec, pid, proc=Path("/proc")):
-    """Require the managed Python main process to own both loopback listeners."""
+    """Require the main process to own the configured IPv4 listener address."""
     from urllib.parse import urlsplit
     try:
         if not pid.isascii() or not pid.isdecimal() or int(pid) < 1:
@@ -196,10 +253,13 @@ def owns_endpoints(spec, pid, proc=Path("/proc")):
         ports = {urlsplit(spec[key+"_url"]).port for key in ("health", "ready")}
         owned = {os.readlink(fd) for fd in (process / "fd").iterdir()}
         found = set()
+        expected_address = {"127.0.0.1": "0100007F", "0.0.0.0": "00000000"}.get(spec.get("bind_host", "127.0.0.1"))
+        if expected_address is None:
+            return False
         for line in (proc / "net/tcp").read_text().splitlines()[1:]:
             fields = line.split()
             address, port = fields[1].split(":")
-            if fields[3] == "0A" and address == "0100007F" and "socket:["+fields[9]+"]" in owned:
+            if fields[3] == "0A" and address == expected_address and "socket:["+fields[9]+"]" in owned:
                 found.add(int(port, 16))
         return ports <= found
     except Exception:
@@ -288,6 +348,76 @@ def checked_release(root, target, role):
     return path
 
 
+def retry_state(root, release, previous, role):
+    """Only known consistent state or the precise pre-switch interruption may resume."""
+    state = root / "state.json"
+    if not state.exists() and not state.is_symlink():
+        if previous is not None:
+            raise RemoteError("retry_state_mismatch")
+        return
+    try:
+        if state.is_symlink() or not state.is_file() or state.stat().st_nlink != 1 or state.stat().st_size > 65536:
+            raise ValueError
+        def unique(pairs):
+            result = {}
+            for key, value in pairs:
+                if key in result:
+                    raise ValueError
+                result[key] = value
+            return result
+        value = json.loads(state.read_text(), object_pairs_hook=unique)
+        if not isinstance(value, dict) or set(value) != {"current", "previous"}:
+            raise ValueError
+        if value["previous"] is not None and value["current"] in {None, value["previous"]}:
+            raise ValueError
+        for target in value.values():
+            if target is not None:
+                if not isinstance(target, str) or str(Path(target)) != target:
+                    raise ValueError
+                checked_release(root, target, role)
+        if value["current"] != previous and value != {"current":str(release), "previous":previous}:
+            raise ValueError
+        if str(release) == value["previous"]:
+            raise RemoteError("release_already_exists")
+    except RemoteError:
+        raise
+    except Exception:
+        raise RemoteError("retry_state_mismatch") from None
+
+
+def check_retry_release(root, release, role, data, members):
+    """Compare staging against the supplied digest-checked archive, never its own claims."""
+    if release.is_symlink() or not release.is_dir() or release.parent.is_symlink():
+        raise RemoteError("release_integrity_failed")
+    contents = {}
+    with tarfile.open(fileobj=io.BytesIO(data), mode="r:") as archive:
+        for member in members:
+            contents[member.name] = archive.extractfile(member).read()
+    metadata = release / "deployment-manifest.json"
+    complete = metadata.exists() or metadata.is_symlink()
+    if complete:
+        checked_release(root, str(release), role)
+        expected = {name:hashlib.sha256(content).hexdigest() for name, content in contents.items()}
+        if json.loads(metadata.read_text())["files"] != expected:
+            raise RemoteError("release_integrity_failed")
+    directories = {parent.as_posix() for name in contents for parent in PurePosixPath(name).parents if parent != PurePosixPath(".")}
+    for item in release.rglob("*"):
+        name = item.relative_to(release).as_posix()
+        if item.is_symlink():
+            raise RemoteError("release_integrity_failed")
+        if item.is_dir() and name in directories:
+            continue
+        if complete and name == "deployment-manifest.json":
+            continue
+        if (not item.is_file() or item.stat().st_nlink != 1 or name not in contents
+                or item.stat().st_size > len(contents[name])):
+            raise RemoteError("release_integrity_failed")
+        content = item.read_bytes()
+        if (complete and content != contents[name]) or not contents[name].startswith(content):
+            raise RemoteError("release_integrity_failed")
+    return complete
+
+
 def execute(request, *, prerequisite=preflight, control=command, check=None):
     mode, spec = request["mode"], request.get("spec")
     result = prerequisite(request)  # Every prerequisite gate precedes any write.
@@ -354,10 +484,17 @@ def execute(request, *, prerequisite=preflight, control=command, check=None):
     if previous and (not unit.exists() or not check(spec)):
         raise RemoteError("previous_service_not_healthy")
     release = root / "releases" / request["sha256"]
-    if release.exists():
+    complete = False
+    if release.exists() or release.is_symlink():
+        retry_state(root, release, previous, spec["role"])
+        complete = check_retry_release(root, release, spec["role"], data, members)
         if str(release) == previous:
             return {"status":"deployed", "role":spec["role"], "release":request["sha256"]}
-        raise RemoteError("release_already_exists")
+        if not complete:
+            # Exclusive container creation prevents replacement of earlier evidence.
+            preserved = root / ("preserved-stage-" + uuid.uuid4().hex)
+            preserved.mkdir(mode=0o700)
+            release.rename(preserved / release.name)
     root.mkdir(mode=0o700, parents=True, exist_ok=True)
     if not marker.exists():
         atomic_json(marker, {"manager":"codyssey-pii-v1", "role":spec["role"]})
@@ -365,18 +502,19 @@ def execute(request, *, prerequisite=preflight, control=command, check=None):
     if releases.is_symlink():
         raise RemoteError("unsafe_releases_directory")
     releases.mkdir(mode=0o700, exist_ok=True)
-    release.mkdir(mode=0o700)
-    file_hashes = {}
-    with tarfile.open(fileobj=io.BytesIO(data), mode="r:") as archive:
-        for member in members:
-            target = release / member.name
-            target.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-            with target.open("xb") as handle:
-                os.chmod(target, 0o600)
-                content = archive.extractfile(member).read()
-                handle.write(content)
-                file_hashes[member.name] = hashlib.sha256(content).hexdigest()
-    atomic_json(release / "deployment-manifest.json", {"manager":"codyssey-pii-v1","role":spec["role"],"sha256":request["sha256"],"files":file_hashes})
+    if not complete:
+        release.mkdir(mode=0o700)
+        file_hashes = {}
+        with tarfile.open(fileobj=io.BytesIO(data), mode="r:") as archive:
+            for member in members:
+                target = release / member.name
+                target.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+                with target.open("xb") as handle:
+                    os.chmod(target, 0o600)
+                    content = archive.extractfile(member).read()
+                    handle.write(content)
+                    file_hashes[member.name] = hashlib.sha256(content).hexdigest()
+        atomic_json(release / "deployment-manifest.json", {"manager":"codyssey-pii-v1","role":spec["role"],"sha256":request["sha256"],"files":file_hashes})
     checked_release(root, str(release), spec["role"])
     if not unit.exists():
         unit.parent.mkdir(parents=True, exist_ok=True, mode=0o700)

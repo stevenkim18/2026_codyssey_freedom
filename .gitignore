@@ -170,6 +170,8 @@ journal/
 logs/
 *.log
 *.log.*
+# C 대시보드 개발용 합성 fixture만 공유하며 실제 운영 로그는 계속 제외한다.
+!/docs/dashboard_example_dataset.log
 profile_results/
 *.prof
 *.lprof

@@ -97,12 +97,17 @@ From `dev`, set the three variables shown in `detector/.env.example` and run:
 rtk proxy python -m detector
 ```
 
-The entrypoint binds only `127.0.0.1` and disables access logs. Configuration
+The entrypoint defaults to `127.0.0.1` and disables access logs. Configuration
 errors exit safely; package/load/warmup failure leaves liveness available and
 readiness at 503. There is no model download, dotenv auto-load, or fake fallback.
-Remote TLS termination and Ubuntu GPU deployment are not configured by this
-local entrypoint. See `M0_INTEGRATION_NOTES.md` for pinned primary sources and
-the remaining real-model gates.
+The default entrypoint remains HTTP loopback. Optional direct Uvicorn TLS uses
+`PII_DETECTOR_TLS_CERT_FILE` and `PII_DETECTOR_TLS_KEY_FILE` together. Setting
+`PII_DETECTOR_HOST=0.0.0.0` requires that TLS pair; the token remains mandatory.
+Certificate/key loading and private-key ownership/mode checks precede startup.
+See [GPU TLS preparation](../deployment/GPU_TLS.md) for the local-tested deployment
+contract and pending operator certificate/remote verification steps. No GPU server
+was changed by this implementation. See `M0_INTEGRATION_NOTES.md` for pinned primary
+sources and the remaining real-model gates.
 
 Run from `dev`:
 
@@ -133,3 +138,48 @@ runtime tests cover package verification and lifecycle rollback with fake loader
 Actual M0 loading, GPU, tokenization/window coverage, model warmup, TLS transport,
 real model replacement/rollback, A's label mapping and service evaluation, real
 CLI, performance and deployment are **unverified** and remain separate gates.
+
+### R11/T12 opt-in internal stage observation
+
+`create_app(timing_observer=callback)` optionally passes a content-free snapshot
+into a trusted synchronous callback. It is disabled by default, sends no telemetry,
+and changes no response fields. The callback must be fast and nonblocking; its
+exceptions are swallowed without printing raw errors or changing response status.
+The existing public `queue/inference/rules/total` keys remain unchanged; queue
+expiry now reports actual elapsed waiting rather than zero.
+
+Internal snapshots contain only a fixed scope/outcome, `total_ms`, and fixed
+stage names. Each stage has `elapsed_ms`, `completed`, `failed`, and
+`active_at_snapshot`. Completed/failed count whether the measured block exited
+normally or exceptionally; a coverage failure caught inside preprocessing can
+finish that block normally while the request outcome remains `incomplete`.
+No text, findings, IDs, labels, tokens, paths, or exception messages are included.
+
+- `queue`: semaphore acquisition, including queue expiry and cancellation.
+- `preprocessing`: adapter input validation, word splitting, window planning and
+  repeated no-truncation tokenizer coverage checks.
+- `model_call`: wall time around `predict_entities`, including its internal
+  tokenization, forward pass and decoding. This is **not pure forward/kernel time**;
+  it does not add CUDA synchronization or alter model invocation options.
+- `postprocessing`: warning/output validation, span conversion, threshold handling
+  and deduplication for each model window.
+- `rules`: secret rule scanning.
+
+`total_ms` covers the request handler until its response/error/cancellation
+snapshot. It excludes authentication/body parsing, transport, response transmission,
+callback execution and any native work still draining after timeout. Model stages
+require the GLiNER adapter; arbitrary injected backends can therefore have no such
+samples. Counts of zero mean no observed block, not proof of zero-cost execution.
+
+The collector follows ContextVar propagation through asyncio tasks and the existing
+`to_thread` runtime. A lock serializes updates and the final snapshot freezes the
+shared collector. Active intervals are clipped at that instant and marked active;
+late thread completion cannot change the report or feed another request's metrics.
+Existing slot ownership and cancellation draining are unchanged. Nested intervals
+may overlap, and uninstrumented work remains, so stage sums are not forced to equal
+total. These local wall observations are not p50/p95, GPU utilization, SLO evidence,
+or a substitute for client-side latency and first-safe-output measurements.
+
+`detector/tests/test_stage_timing.py` covers deterministic intervals, composite model
+calls, exceptional exits, frozen late workers, cancellation, timeout and callback
+isolation with synthetic backends. Real L4 measurements remain a separate gate.
