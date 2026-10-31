@@ -15,7 +15,6 @@
 # 1. 개인별 상용 LLM / AI 에이전트 설정 파일
 #    팀원마다 ChatGPT, Claude, Gemini, Copilot 등
 #    서로 다른 LLM을 사용하므로 개인 설정은 공유하지 않음
-#    ※ 프로젝트 루트의 AGENTS.md는 공용 프로젝트 컨텍스트이므로 추적
 # ────────────────────────────────────────────────────────────
 
 # Claude
@@ -61,11 +60,11 @@ CODEX.md
 chatgpt.md
 CHATGPT.md
 
-# 범용 에이전트 설정 (dev/ 하위 개인 설정만 무시)
-dev/**/AGENTS.md
-dev/**/agents.md
-dev/**/agent.md
-dev/**/AGENT.md
+# 범용 에이전트 설정 (루트 및 모든 하위 경로 전체 무시)
+AGENTS.md
+agents.md
+agent.md
+AGENT.md
 
 # ────────────────────────────────────────────────────────────
 # 2. Python
