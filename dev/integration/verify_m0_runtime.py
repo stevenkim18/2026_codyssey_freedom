@@ -34,6 +34,25 @@ def _require(condition, code):
         raise ProbeError(code)
 
 
+def rss_evidence(native=None):
+    """Process lifetime high-water mark, not current RSS or model allocation."""
+    native = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss if native is None else native
+    unit = "bytes" if sys.platform == "darwin" else "KiB" if sys.platform.startswith("linux") else "unknown"
+    return {"platform": sys.platform, "native_unit": unit, "high_water_native": native,
+            "high_water_bytes": native * (1024 if unit == "KiB" else 1) if unit != "unknown" else None,
+            "semantics": "process_lifetime_high_water_not_current_rss"}
+
+
+def execution_plan(device):
+    return {"status": "planned_only", "requested_device": device, "planned_inspections": 2,
+            "executed_inspections": 0, "segments_per_inspection": 1,
+            "cases": ["short_ascii", "short_unicode"], "inspection_deadline_seconds": 10,
+            "startup_deadline_seconds": None, "hard_process_resource_limit": False,
+            "cpu_threads": 2 if device == "cpu" else None,
+            "warmup": "one normal model warmup during startup",
+            "limitations": "case bounded only; startup/native work requires external process supervision"}
+
+
 def validate_response(http_status, payload, request, model_version, threshold_version):
     """Validate actual response contract and original Unicode codepoint bounds."""
     from detector.schemas import InspectionRequest, InspectionResponse
@@ -64,6 +83,7 @@ def validate_response(http_status, payload, request, model_version, threshold_ve
 async def exercise_app(app, token, model_version, threshold_version):
     """Normal lifecycle and HTTP path; tests may supply an explicitly synthetic app."""
     import httpx
+    from detector.timing import observe
     async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://offline-probe") as client:
         health = await client.get("/healthz")
         _require(health.status_code == 200 and health.json() == {"status": "alive"}, "health_failed")
@@ -83,11 +103,18 @@ async def exercise_app(app, token, model_version, threshold_version):
                 request = {"schema_version": "1.0", "request_id": f"runtime-probe-{index}",
                            "inspection_id": f"runtime-inspection-{index}", "direction": "outbound",
                            "segments": [{"segment_id": f"segment-{index}", "text": text}]}
-                response = await client.post("/v1/inspect", headers={"Authorization": f"Bearer {token}"}, json=request)
+                internal = []
+                with observe(internal.append):
+                    response = await client.post("/v1/inspect", headers={"Authorization": f"Bearer {token}"}, json=request)
                 # The server retains its normal 10-second inspection deadline.
                 results.append(validate_response(response.status_code, response.json(), request, model_version, threshold_version))
+                results[-1]["internal_timing"] = internal[0]
+                results[-1]["internal_timing_scope"] = "ASGI request wall intervals; model_call includes wrapper work, not GPU kernel time"
         return {"initial_readiness": initial.status_code, "readiness": ready.status_code,
                 "unauthorized_status": unauthorized.status_code, "startup_seconds": round(startup_seconds, 4),
+                "warmup_seconds": None, "warmup_measurement": "included in startup; not independently observed",
+                "planned_inspections": 2, "executed_inspections": len(results),
+                "window_counts": None, "window_measurement": "not exposed by current observer",
                 "inspections": results}
 
 
@@ -122,6 +149,7 @@ def run(package, device="cpu"):
 
 def _execute(package, device):
     started = time.monotonic()
+    baseline_rss = rss_evidence()
     import torch
     from detector.server import ServerSettings, create_server
     previous_threads = torch.get_num_threads()
@@ -146,6 +174,8 @@ def _execute(package, device):
                          "requested_device": device, "verified_model_device": first.device.type,
                          "gpu_verified": device == "cuda", "python": sys.executable, "torch_version": torch.__version__,
                          "seconds": round(time.monotonic() - started, 4),
+                         "resource_evidence": {"baseline": baseline_rss, "after": rss_evidence(),
+                                               "baseline_scope": "before torch import; both snapshots are lifetime high-water marks"},
                          "max_rss_native": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss}
     finally:
         torch.set_num_threads(previous_threads)
@@ -155,8 +185,14 @@ def main(argv=None):
     parser = SafeParser(description=__doc__)
     parser.add_argument("package", type=Path)
     parser.add_argument("--device", choices=("cpu", "cuda"), required=True)
-    parser.add_argument("--output", type=Path, required=True, help="new JSON evidence file; existing files are preserved")
+    parser.add_argument("--output", type=Path, help="new JSON evidence file; existing files are preserved")
+    parser.add_argument("--plan", action="store_true", help="print case budgets without loading model or writing files")
     arguments = parser.parse_args(argv)
+    if arguments.plan:
+        print(json.dumps(execution_plan(arguments.device), indent=2))
+        return 0
+    if arguments.output is None:
+        parser.error("output required")
     try:
         # Reserve the evidence path before spending resources on model loading.
         with arguments.output.open("x") as evidence:
