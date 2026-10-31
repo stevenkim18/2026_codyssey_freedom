@@ -1,0 +1,6 @@
+{
+  "name": "pii-gateway",
+  "version": "0.1.0-engineering.1",
+  "description": "Install and diagnose the packaged macOS arm64 protected Codex gateway client.",
+  "skills": "./skills"
+}
