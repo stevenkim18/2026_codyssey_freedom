@@ -24,7 +24,7 @@
 
 ## 현재 진입점과 설정
 
-`server.py`의 기본 loader는 `load_gliner`이며 **기본 device는 `cpu`**다. CUDA 자동 선택이나 GPU 실행 검증을 구현하지 않았다. 현재 진입점에 device 환경변수·CLI 옵션을 임의로 추가하여 설정하지 않는다. GPU 배포에는 별도의 구현·회귀·L4 검증이 필요하다.
+`server.py`의 기본 loader는 `load_gliner`이며 **기본 device는 `cpu`**다. GPU 배포에서는 `PII_DETECTOR_DEVICE=cuda`를 명시한다. CUDA 자동 선택이나 CPU fallback은 하지 않는다. 요청한 CUDA 장치를 사용할 수 없거나 로딩 후 모델 parameter/buffer가 해당 GPU에 있지 않으면 초기화에 실패하고 readiness는 503으로 남는다. 설정 전달·실패 경계는 합성 회귀와 실제 CPU 환경의 CUDA 부재로 확인했지만, 실제 L4 로딩·GPU tensor 배치·추론·성능 검증은 남아 있다.
 
 환경변수는 서비스 관리자가 명시적으로 주입한다. [`.env.example`](.env.example)은 참고용이며 dotenv 파일을 자동으로 읽지 않는다.
 
@@ -33,6 +33,7 @@
 | `PII_DETECTOR_TOKEN` | 필수. 공백 없는 ASCII 전용 비밀 토큰. gateway의 검사 토큰과 일치시킴 |
 | `PII_MODEL_PACKAGE` | 필수. 검증할 로컬 패키지의 절대 경로 |
 | `PII_DETECTOR_PORT` | 기본 `8766`, 정수 `1..65535` |
+| `PII_DETECTOR_DEVICE` | 정확히 `cpu` 또는 `cuda`, 기본 `cpu`. CUDA 사용 실패 시 CPU로 대체하지 않음 |
 
 설정한 Python 환경에서 `dev`를 작업 디렉터리로 사용한다.
 

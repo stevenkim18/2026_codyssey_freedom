@@ -81,7 +81,8 @@ loader 호출·예열·교체 실패 복귀를 위한 기반이다. 로컬 GLiNE
 1회는 확인했다. [실제 CPU 결과·미완료 게이트](detector/M0_INTEGRATION_NOTES.md),
 [의존성 독립 검증·메타데이터 한계](detector/DEPENDENCIES.md),
 [운영 준비 절차](detector/DEPLOYMENT.md)를 참고한다. 현재 서버 기본 loader는 CPU이며
-CUDA 자동 선택·실제 GPU·원격 배포 검증은 남아 있다. `detector.app.create_app`은
+`PII_DETECTOR_DEVICE=cuda`로 GPU를 명시할 수 있다. CUDA 사용 불가·잘못된 tensor
+배치는 준비 실패로 처리한다. 실제 GPU·원격 배포 검증은 남아 있다. `detector.app.create_app`은
 `manager=` 주입 시 readiness와 교체 상태를 동적으로 반영하고, 실제 검사한
 모델·임계값 버전을 응답한다. 기존 backend 직접 주입도 가능하다. `/readyz` 성공은 실제 모델
 패키지 로딩·GPU 예열·가중치와 버전의 일치를 증명하지 않는다. 검사 실행·대기열

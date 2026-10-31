@@ -4,6 +4,7 @@ from collections.abc import Mapping, Sequence
 from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
 import importlib
+from functools import partial
 import os
 from pathlib import Path
 import sys
@@ -27,8 +28,11 @@ class ServerSettings:
     token: str = field(repr=False)
     package_dir: Path = field(repr=False)
     port: int = 8766
+    device: str = "cpu"
 
     def __post_init__(self):
+        if not isinstance(self.device, str) or self.device not in {"cpu", "cuda"}:
+            raise DetectorConfigError()
         if (not isinstance(self.token, str) or not self.token
                 or any(not 33 <= ord(char) <= 126 for char in self.token)):
             raise DetectorConfigError()
@@ -45,7 +49,7 @@ class ServerSettings:
     @classmethod
     def from_env(cls, env: Mapping[str, str] | None = None):
         values = os.environ if env is None else env
-        permitted = {"PII_DETECTOR_TOKEN", "PII_MODEL_PACKAGE", "PII_DETECTOR_PORT"}
+        permitted = {"PII_DETECTOR_TOKEN", "PII_MODEL_PACKAGE", "PII_DETECTOR_PORT", "PII_DETECTOR_DEVICE"}
         if any(isinstance(key, str) and key.startswith(("PII_DETECTOR_", "PII_MODEL_")) and key not in permitted for key in values):
             raise DetectorConfigError()
         try:
@@ -55,7 +59,8 @@ class ServerSettings:
             if (not isinstance(package, str) or not package
                     or not isinstance(raw_port, str) or not raw_port.isascii() or not raw_port.isdecimal()):
                 raise ValueError
-            return cls(token=token, package_dir=Path(package), port=int(raw_port))
+            return cls(token=token, package_dir=Path(package), port=int(raw_port),
+                       device=values.get("PII_DETECTOR_DEVICE", "cpu"))
         except (KeyError, TypeError, ValueError):
             raise DetectorConfigError() from None
 
@@ -73,7 +78,9 @@ def create_server(settings: ServerSettings, *, loader=load_gliner) -> FastAPI:
     """
     if not isinstance(settings, ServerSettings):
         raise DetectorConfigError()
-    manager = ModelManager(loader)
+    # Keep the existing two-argument CPU test-loader contract. CUDA is explicit.
+    selected_loader = partial(loader, device=settings.device) if settings.device == "cuda" else loader
+    manager = ModelManager(selected_loader)
     app = create_app(manager=manager, token=settings.token)
     app.state.model_manager = manager
     app.state.detector_startup_error = None

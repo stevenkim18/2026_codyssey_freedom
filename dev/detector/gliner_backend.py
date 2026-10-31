@@ -269,7 +269,20 @@ Actual backbone/config cache independence requires the separate cold-start gate.
             # option at its model constructor boundary. Builtin config guards
             # above keep its default tokenizer/config path non-custom and local.
             options["trust_remote_code"] = False
+        if device == "cuda":
+            torch = importlib.import_module("torch")
+            if not torch.cuda.is_available():
+                raise ValueError
+            selected_index = torch.cuda.current_device()
         model = loader(str(root), **options)
+        if device == "cuda":
+            # GLiNER 0.2.29 moves its core module after loading weights. Check
+            # actual tensors, not map_location or a model.device declaration.
+            parameters = list(model.parameters())
+            buffers = list(model.buffers())
+            if not parameters or any(tensor.device.type != "cuda" or tensor.device.index != selected_index
+                                     for tensor in parameters + buffers):
+                raise ValueError
         return GLiNERBackend(model, checked)
     except Exception:
         raise ModelBackendError("gliner_load_failed") from None
